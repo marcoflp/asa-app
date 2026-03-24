@@ -1,0 +1,100 @@
+<?php
+
+namespace App\Livewire\Beneficiarios;
+
+use App\Models\Beneficiario;
+use Livewire\Component;
+
+class Form extends Component
+{
+    public ?Beneficiario $beneficiario = null;
+
+    public string $nome = '';
+    public string $telefone = '';
+    public string $rua = '';
+    public string $numero = '';
+    public string $bairro = '';
+    public string $cidade = 'Passo Fundo';
+    public string $cep = '';
+    public string $rg = '';
+    public string $cpf = '';
+    public int $num_pessoas_familia = 1;
+    public array $filhos = [];
+    public bool $inscrito_programa_governo = false;
+    public string $programa_governo = '';
+    public bool $recebe_estudo_biblico = false;
+    public string $instrutor_biblico = '';
+    public string $observacoes = '';
+
+    // Campos temporários para adicionar filho
+    public int $filho_idade = 0;
+
+    public function mount(?Beneficiario $beneficiario = null): void
+    {
+        if ($beneficiario && $beneficiario->exists) {
+            $this->beneficiario = $beneficiario;
+            $this->fill($beneficiario->only([
+                'nome', 'telefone', 'rua', 'numero', 'bairro', 'cidade', 'cep',
+                'rg', 'cpf', 'num_pessoas_familia',
+                'inscrito_programa_governo', 'programa_governo',
+                'recebe_estudo_biblico', 'instrutor_biblico', 'observacoes',
+            ]));
+            $this->filhos = $beneficiario->filhos ?? [];
+        }
+    }
+
+    public function addFilho(): void
+    {
+        $this->filhos[] = ['idade' => $this->filho_idade];
+        $this->filho_idade = 0;
+    }
+
+    public function removeFilho(int $index): void
+    {
+        array_splice($this->filhos, $index, 1);
+        $this->filhos = array_values($this->filhos);
+    }
+
+    public function save(): void
+    {
+        $data = $this->validate([
+            'nome' => 'required|string|max:255',
+            'telefone' => 'nullable|string|max:20',
+            'rua' => 'nullable|string|max:255',
+            'numero' => 'nullable|string|max:20',
+            'bairro' => 'nullable|string|max:100',
+            'cidade' => 'required|string|max:100',
+            'cep' => 'nullable|string|max:9',
+            'rg' => 'nullable|string|max:20',
+            'cpf' => ['nullable', 'string', 'max:14',
+                \Illuminate\Validation\Rule::unique('beneficiarios', 'cpf')
+                    ->ignore($this->beneficiario?->id),
+            ],
+            'num_pessoas_familia' => 'required|integer|min:1',
+            'filhos' => 'nullable|array',
+            'inscrito_programa_governo' => 'boolean',
+            'programa_governo' => 'nullable|string|max:255',
+            'recebe_estudo_biblico' => 'boolean',
+            'instrutor_biblico' => 'nullable|string|max:255',
+            'observacoes' => 'nullable|string',
+        ]);
+
+        if ($this->beneficiario && $this->beneficiario->exists) {
+            $this->beneficiario->update($data);
+            session()->flash('success', 'Beneficiário atualizado com sucesso.');
+        } else {
+            Beneficiario::create($data);
+            session()->flash('success', 'Beneficiário cadastrado com sucesso.');
+        }
+
+        $this->redirect(route('beneficiarios.index'), navigate: true);
+    }
+
+    public function render()
+    {
+        $title = $this->beneficiario?->exists ? 'Editar Beneficiário' : 'Novo Beneficiário';
+
+        return view('livewire.beneficiarios.form')
+            ->layout('layouts.app', ['title' => $title]);
+    }
+}
