@@ -4,7 +4,15 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/offline', fn() => response()->file(public_path('offline.html')))->name('offline');
 
-Route::view('/', 'welcome')->name('home');
+Route::get('/', function () {
+    $produtosEmFalta = \App\Models\Produto::ativo()
+        ->where('estoque', '<', 10)
+        ->orderBy('estoque', 'asc')
+        ->limit(6)
+        ->get();
+
+    return view('welcome', compact('produtosEmFalta'));
+})->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', \App\Livewire\Dashboard::class)->name('dashboard');
