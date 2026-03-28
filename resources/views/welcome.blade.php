@@ -15,70 +15,8 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
 
-        <!-- Tailwind CSS & Custom Styles -->
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script>
-            tailwind.config = {
-                darkMode: 'media',
-                theme: {
-                    extend: {
-                        fontFamily: {
-                            sans: ['Inter', 'sans-serif'],
-                            outfit: ['Outfit', 'sans-serif'],
-                        },
-                        colors: {
-                            asa: {
-                                gold: '#BB900E',
-                                green: '#1E3C32',
-                                bg: '#FFFFFF',
-                            }
-                        },
-                        animation: {
-                            'fade-in': 'fadeIn 1s ease-out forwards',
-                            'slide-up': 'slideUp 0.8s ease-out forwards',
-                        },
-                        keyframes: {
-                            fadeIn: {
-                                '0%': { opacity: '0' },
-                                '100%': { opacity: '1' },
-                            },
-                            slideUp: {
-                                '0%': { transform: 'translateY(20px)', opacity: '0' },
-                                '100%': { transform: 'translateY(0)', opacity: '1' },
-                            }
-                        }
-                    }
-                }
-            }
-        </script>
-
-        <style>
-            .glass {
-                background: rgba(255, 255, 255, 0.8);
-                backdrop-filter: blur(8px);
-                -webkit-backdrop-filter: blur(8px);
-                border: 1px solid rgba(30, 60, 50, 0.1);
-            }
-            .dark .glass {
-                background: rgba(17, 24, 39, 0.8);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-            }
-            .brand-gradient {
-                background: linear-gradient(135deg, #1E3C32 0%, #BB900E 100%);
-            }
-            .mesh-bg {
-                background-color: #FFFFFF;
-                background-image: 
-                    radial-gradient(at 0% 0%, rgba(30, 60, 50, 0.03) 0px, transparent 50%),
-                    radial-gradient(at 100% 100%, rgba(187, 144, 14, 0.03) 0px, transparent 50%);
-            }
-            .dark .mesh-bg {
-                background-color: #030712;
-                background-image: 
-                    radial-gradient(at 0% 0%, rgba(30, 60, 50, 0.1) 0px, transparent 50%),
-                    radial-gradient(at 100% 100%, rgba(187, 144, 14, 0.1) 0px, transparent 50%);
-            }
-        </style>
+        <!-- Tailwind CSS & Vite -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="mesh-bg text-slate-900 dark:text-slate-100 font-sans min-h-screen selection:bg-asa-gold selection:text-white">
         
@@ -132,7 +70,7 @@
                         Ver Itens em Falta
                     </a>
                     <a href="https://www.adventistas.org/pt/asa/" target="_blank" class="px-10 py-4 glass rounded-2xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-white/10 group">
-                        Como Ajudar
+                        Sobre a ASA
                         <svg class="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </a>
                 </div>
@@ -199,8 +137,7 @@
                 @endif
             </section>
 
-            <!-- Call to Action -->
-            <section class="mt-40 animate-slide-up" style="animation-delay: 0.4s">
+            <!-- <section class="mt-40 animate-slide-up" style="animation-delay: 0.4s">
                 <div class="brand-gradient rounded-[3.5rem] p-12 md:p-24 relative overflow-hidden text-center text-white shadow-2xl shadow-asa-green/30">
                     <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 40px 40px;"></div>
                     
@@ -219,18 +156,19 @@
                         </div>
                     </div>
 
-                    <!-- Decorative elements -->
                     <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-white opacity-[0.03] rounded-full"></div>
                     <div class="absolute -right-20 -top-20 w-80 h-80 bg-asa-gold opacity-[0.2] rounded-full blur-[100px]"></div>
                 </div>
-            </section>
+            </section> -->
         </main>
 
         <!-- Footer -->
         <footer class="py-16 border-t border-slate-100 dark:border-white/5 text-center">
             <div class="max-w-7xl mx-auto px-6">
                 <img src="/logo.png" alt="ASA Logo" class="w-10 h-10 object-contain mx-auto mb-6 grayscale opacity-50">
-                <p class="text-sm font-bold text-slate-400 dark:text-slate-600 uppercase tracking-[0.2em]">&copy; {{ date('Y') }} ASA - Ação Solidária Adventista</p>
+                <p class="text-sm font-bold text-slate-400 dark:text-slate-600 uppercase tracking-[0.2em]">&copy; {{ date('Y') }} ASA - Ação Solidária Adventista de Passo Fundo</p>
+                <p class="text-sm font-bold text-slate-400 dark:text-slate-600 uppercase tracking-[0.2em]">Rua Capitão Eleutério, 293 - Centro</p>
+                <p class="text-sm font-bold text-slate-400 dark:text-slate-600 uppercase tracking-[0.2em]">Passo Fundo - RS</p>
                 <div class="mt-4 flex justify-center gap-6 text-slate-300 dark:text-slate-700">
                     <span class="w-1.5 h-1.5 bg-current rounded-full"></span>
                     <span class="w-1.5 h-1.5 bg-current rounded-full"></span>

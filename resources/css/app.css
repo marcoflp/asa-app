@@ -26,6 +26,67 @@
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
     --color-accent-foreground: var(--color-white);
+
+    --color-asa-gold: #BB900E;
+    --color-asa-green: #1E3C32;
+    --font-outfit: "Outfit", sans-serif;
+
+    --animate-fade-in: fade-in 1s ease-out forwards;
+    --animate-slide-up: slide-up 0.8s ease-out forwards;
+
+    @keyframes fade-in {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes slide-up {
+        0% {
+            transform: translateY(20px);
+            opacity: 0;
+        }
+
+        100% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+}
+
+@layer utilities {
+    .glass {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(30, 60, 50, 0.1);
+    }
+
+    .dark .glass {
+        background: rgba(17, 24, 39, 0.8);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .brand-gradient {
+        background: linear-gradient(135deg, #1E3C32 0%, #BB900E 100%);
+    }
+
+    .mesh-bg {
+        background-color: #FFFFFF;
+        background-image:
+            radial-gradient(at 0% 0%, rgba(30, 60, 50, 0.03) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(187, 144, 14, 0.03) 0px, transparent 50%);
+    }
+
+    .dark .mesh-bg {
+        background-color: #030712;
+        background-image:
+            radial-gradient(at 0% 0%, rgba(30, 60, 50, 0.1) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(187, 144, 14, 0.1) 0px, transparent 50%);
+    }
 }
 
 @layer theme {
@@ -52,7 +113,7 @@
 }
 
 [data-flux-label] {
-    @apply  !mb-0 !leading-tight;
+    @apply !mb-0 !leading-tight;
 }
 
 input:focus[data-flux-control],
