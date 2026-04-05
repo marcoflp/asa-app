@@ -8,49 +8,64 @@
         <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
             @csrf
             <!-- Name -->
-            <flux:input
-                name="name"
-                :label="__('Nome')"
-                :value="old('name')"
-                type="text"
-                required
-                autofocus
-                autocomplete="name"
-                :placeholder="__('Nome completo')"
-            />
+            <flux:field>
+                <flux:label>{{ __('Nome') }}</flux:label>
+                <flux:input
+                    name="name"
+                    :value="old('name')"
+                    type="text"
+                    required
+                    autofocus
+                    autocomplete="name"
+                    :placeholder="__('Nome completo')"
+                />
+                <flux:text variant="subtle" size="sm">Mínimo de 3 caracteres.</flux:text>
+                <flux:error name="name" />
+            </flux:field>
 
             <!-- Email Address -->
-            <flux:input
-                name="email"
-                :label="__('Endereço de e-mail')"
-                :value="old('email')"
-                type="email"
-                required
-                autocomplete="email"
-                placeholder="email@example.com"
-            />
+            <flux:field>
+                <flux:label>{{ __('Endereço de e-mail') }}</flux:label>
+                <flux:input
+                    name="email"
+                    :value="old('email')"
+                    type="email"
+                    required
+                    autocomplete="email"
+                    placeholder="email@example.com"
+                />
+                <flux:text variant="subtle" size="sm">Insira um e-mail válido (ex: joao@email.com).</flux:text>
+                <flux:error name="email" />
+            </flux:field>
 
             <!-- Password -->
-            <flux:input
-                name="password"
-                :label="__('Senha')"
-                type="password"
-                required
-                autocomplete="new-password"
-                :placeholder="__('Senha')"
-                viewable
-            />
+            <flux:field>
+                <flux:label>{{ __('Senha') }}</flux:label>
+                <flux:input
+                    name="password"
+                    type="password"
+                    required
+                    autocomplete="new-password"
+                    :placeholder="__('Senha')"
+                    viewable
+                />
+                <flux:text variant="subtle" size="sm">Mínimo de 8 a 12 caracteres, incluindo letras (maiúsculas e minúsculas), números e símbolos.</flux:text>
+                <flux:error name="password" />
+            </flux:field>
 
             <!-- Confirm Password -->
-            <flux:input
-                name="password_confirmation"
-                :label="__('Confirmar senha')"
-                type="password"
-                required
-                autocomplete="new-password"
-                :placeholder="__('Confirmar senha')"
-                viewable
-            />
+            <flux:field>
+                <flux:label>{{ __('Confirmar senha') }}</flux:label>
+                <flux:input
+                    name="password_confirmation"
+                    type="password"
+                    required
+                    autocomplete="new-password"
+                    :placeholder="__('Confirmar senha')"
+                    viewable
+                />
+                <flux:text variant="subtle" size="sm">Repita a senha informada acima.</flux:text>
+            </flux:field>
 
             <div class="flex items-center justify-end">
                 <flux:button type="submit" variant="primary" class="w-full" data-test="register-user-button">

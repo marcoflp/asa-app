@@ -9,28 +9,36 @@
             @csrf
 
             <!-- Email Address -->
-            <flux:input
-                name="email"
-                :label="__('Endereço de e-mail')"
-                :value="old('email')"
-                type="email"
-                required
-                autofocus
-                autocomplete="email"
-                placeholder="email@example.com"
-            />
+            <flux:field>
+                <flux:label>{{ __('Endereço de e-mail') }}</flux:label>
+                <flux:input
+                    name="email"
+                    :value="old('email')"
+                    type="email"
+                    required
+                    autofocus
+                    autocomplete="email"
+                    placeholder="email@example.com"
+                />
+                <flux:text variant="subtle" size="sm">Seu e-mail cadastrado.</flux:text>
+                <flux:error name="email" />
+            </flux:field>
 
             <!-- Password -->
             <div class="relative">
-                <flux:input
-                    name="password"
-                    :label="__('Senha')"
-                    type="password"
-                    required
-                    autocomplete="current-password"
-                    :placeholder="__('Senha')"
-                    viewable
-                />
+                <flux:field>
+                    <flux:label>{{ __('Senha') }}</flux:label>
+                    <flux:input
+                        name="password"
+                        type="password"
+                        required
+                        autocomplete="current-password"
+                        :placeholder="__('Senha')"
+                        viewable
+                    />
+                    <flux:text variant="subtle" size="sm">Sua senha de acesso.</flux:text>
+                    <flux:error name="password" />
+                </flux:field>
 
                 @if (Route::has('password.request'))
                     <flux:link class="absolute top-0 text-sm end-0" :href="route('password.request')" wire:navigate>
