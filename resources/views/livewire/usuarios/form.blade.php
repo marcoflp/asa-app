@@ -1,7 +1,7 @@
 <div class="max-w-3xl mx-auto space-y-6">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <flux:heading size="xl">{{ $user?->exists ? 'Editar Usuário' : 'Novo Usuário' }}</flux:heading>
-        <flux:button variant="ghost" :href="route('dashboard')" wire:navigate>Valtar ao Início</flux:button>
+        <flux:button variant="ghost" :href="route('dashboard')" wire:navigate class="w-full sm:w-auto">Voltar ao Início</flux:button>
     </div>
 
     <form wire:submit.prevent="save" class="space-y-6">

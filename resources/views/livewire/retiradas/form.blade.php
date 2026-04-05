@@ -53,8 +53,8 @@
             <flux:error name="items" />
 
             {{-- Adicionar item --}}
-            <div class="flex flex-wrap items-end gap-3 pt-1">
-                <flux:field class="flex-1 min-w-48">
+            <div class="grid grid-cols-1 sm:grid-cols-12 items-end gap-3 pt-1">
+                <flux:field class="sm:col-span-8">
                     <flux:label>Produto</flux:label>
                     <flux:select wire:model="item_produto_id">
                         <flux:select.option value="0" disabled>Selecione...</flux:select.option>
@@ -69,14 +69,16 @@
                     </flux:select>
                 </flux:field>
 
-                <flux:field class="w-28">
+                <flux:field class="sm:col-span-2">
                     <flux:label>Quantidade</flux:label>
                     <flux:input type="number" wire:model="item_quantidade" min="1" />
                 </flux:field>
 
-                <flux:button type="button" wire:click="addItem" variant="ghost" icon="plus">
-                    Adicionar
-                </flux:button>
+                <div class="sm:col-span-2">
+                    <flux:button type="button" wire:click="addItem" variant="ghost" icon="plus" class="w-full">
+                        Adicionar
+                    </flux:button>
+                </div>
             </div>
         </div>
 
