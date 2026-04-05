@@ -1,13 +1,15 @@
 name: Deploy to Oracle Cloud
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["tests"]
+    types: [completed]
+    branches: [main]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - name: Conectando no servidor e atualizando o Laravel
