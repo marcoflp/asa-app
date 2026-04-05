@@ -38,9 +38,9 @@
                             Login
                         </a>
                         @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="px-6 py-2.5 bg-asa-gold text-white rounded-xl text-sm font-bold shadow-lg shadow-asa-gold/25 hover:scale-105 transition-all active:scale-95">
+                            <!-- <a href="{{ route('register') }}" class="px-6 py-2.5 bg-asa-gold text-white rounded-xl text-sm font-bold shadow-lg shadow-asa-gold/25 hover:scale-105 transition-all active:scale-95">
                                 Registrar
-                            </a>
+                            </a> -->
                         @endif
                     @endauth
                 </nav>
