@@ -49,7 +49,7 @@
                     :placeholder="__('Senha')"
                     viewable
                 />
-                <flux:text variant="subtle" size="sm">Mínimo de 8 a 12 caracteres, incluindo letras (maiúsculas e minúsculas), números e símbolos.</flux:text>
+                <flux:text variant="subtle" size="sm">Mínimo de 8 caracteres.</flux:text>
                 <flux:error name="password" />
             </flux:field>
 

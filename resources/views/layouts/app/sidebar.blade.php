@@ -24,6 +24,9 @@
                     <flux:sidebar.item icon="archive-box" :href="route('produtos.index')" :current="request()->routeIs('produtos.*')" wire:navigate>
                         {{ __('Produtos') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="user-plus" :href="route('usuarios.create')" :current="request()->routeIs('usuarios.*')" wire:navigate>
+                        {{ __('Novo Usuário') }}
+                    </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 

@@ -17,6 +17,9 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', \App\Livewire\Dashboard::class)->name('dashboard');
 
+    Route::get('usuarios/novo', \App\Livewire\Usuarios\Form::class)->name('usuarios.create');
+    Route::get('usuarios/{user}/editar', \App\Livewire\Usuarios\Form::class)->name('usuarios.edit');
+
     Route::get('beneficiarios', \App\Livewire\Beneficiarios\Index::class)->name('beneficiarios.index');
     Route::get('beneficiarios/novo', \App\Livewire\Beneficiarios\Form::class)->name('beneficiarios.create');
     Route::get('beneficiarios/{beneficiario}/editar', \App\Livewire\Beneficiarios\Form::class)->name('beneficiarios.edit');
