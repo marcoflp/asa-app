@@ -58,3 +58,23 @@ jobs:
 
       - name: Run Tests
         run: ./vendor/bin/pest
+
+  deploy:
+    needs: ci
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Conectando no servidor e atualizando o Laravel
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/asa-app
+            git pull origin main
+            composer install --no-interaction --optimize-autoloader --no-dev
+            npm install
+            npm run build
+            php artisan migrate --force
+            php artisan optimize:clear
