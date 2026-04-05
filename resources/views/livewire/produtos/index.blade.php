@@ -54,7 +54,7 @@
                         <td class="px-4 py-3 text-right">
                             <div class="flex justify-end gap-2">
                                 <flux:button href="{{ route('produtos.edit', $p) }}" size="sm" variant="ghost" icon="pencil" wire:navigate />
-                                <flux:button wire:click="confirmDelete({{ $p->id }})" size="sm" variant="ghost" icon="trash" class="text-red-500" />
+                                <flux:button wire:click="confirmDelete({{ $p->id }})" x-on:click="Flux.modal('confirm-delete').show()" size="sm" variant="ghost" icon="trash" class="text-red-500" />
                             </div>
                         </td>
                     </tr>
@@ -69,17 +69,15 @@
 
     <div>{{ $produtos->links() }}</div>
 
-    @if ($deletingId)
-        <flux:modal name="confirm-delete" :show="true" wire:close="$set('deletingId', null)">
-            <div class="space-y-4">
-                <flux:heading>Confirmar exclusão</flux:heading>
-                <flux:text>Tem certeza que deseja remover este produto? Retiradas já registradas não serão afetadas.</flux:text>
-                <div class="flex justify-end gap-2">
-                    <flux:button wire:click="$set('deletingId', null)" variant="ghost">Cancelar</flux:button>
-                    <flux:button wire:click="delete" variant="danger">Excluir</flux:button>
-                </div>
+    <flux:modal name="confirm-delete">
+        <div class="space-y-4">
+            <flux:heading>Confirmar exclusão</flux:heading>
+            <flux:text>Tem certeza que deseja remover este produto? Retiradas já registradas não serão afetadas.</flux:text>
+            <div class="flex justify-end gap-2">
+                <flux:button wire:click="$set('deletingId', null)" x-on:click="Flux.modal('confirm-delete').close()" variant="ghost">Cancelar</flux:button>
+                <flux:button wire:click="delete" x-on:click="Flux.modal('confirm-delete').close()" variant="danger">Excluir</flux:button>
             </div>
-        </flux:modal>
-    @endif
+        </div>
+    </flux:modal>
 
 </div>

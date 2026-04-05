@@ -52,7 +52,7 @@
                             <td class="px-4 py-3 text-right">
                                 <div class="flex justify-end gap-2">
                                     <flux:button href="{{ route('beneficiarios.edit', $b) }}" size="sm" variant="ghost" icon="pencil" wire:navigate />
-                                    <flux:button wire:click="confirmDelete({{ $b->id }})" size="sm" variant="ghost" icon="trash" class="text-red-500" />
+                                    <flux:button wire:click="confirmDelete({{ $b->id }})" x-on:click="Flux.modal('confirm-delete').show()" size="sm" variant="ghost" icon="trash" class="text-red-500" />
                                 </div>
                             </td>
                         </tr>
@@ -70,13 +70,13 @@
         <div>{{ $beneficiarios->links() }}</div>
 
         {{-- Modal de confirmação de exclusão --}}
-        <flux:modal name="confirm-delete" :show="$deletingId !== null" wire:close="$set('deletingId', null)">
+        <flux:modal name="confirm-delete">
             <div class="space-y-4">
                 <flux:heading>Confirmar exclusão</flux:heading>
                 <flux:text>Tem certeza que deseja remover este beneficiário? Esta ação não pode ser desfeita.</flux:text>
                 <div class="flex justify-end gap-2">
-                    <flux:button wire:click="$set('deletingId', null)" variant="ghost">Cancelar</flux:button>
-                    <flux:button wire:click="delete" variant="danger">Excluir</flux:button>
+                    <flux:button wire:click="$set('deletingId', null)" x-on:click="Flux.modal('confirm-delete').close()" variant="ghost">Cancelar</flux:button>
+                    <flux:button wire:click="delete" x-on:click="Flux.modal('confirm-delete').close()" variant="danger">Excluir</flux:button>
                 </div>
             </div>
         </flux:modal>
