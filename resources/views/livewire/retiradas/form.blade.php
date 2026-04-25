@@ -8,6 +8,7 @@
     </div>
 
     <form wire:submit="save" class="space-y-5">
+        <flux:error name="geral" />
 
         {{-- Beneficiário e Data --}}
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 space-y-4">
@@ -66,7 +67,7 @@
                                 @php $categoriaAtual = $p->categoria; @endphp
                                 <flux:select.option disabled>── {{ $p->categoria }} ──</flux:select.option>
                             @endif
-                            <flux:select.option value="{{ $p->id }}">{{ $p->nome }} ({{ $p->unidade }}) @if($p->estoque !== null) - Qtd: {{ $p->estoque }} @endif</flux:select.option>
+                            <flux:select.option value="{{ $p->id }}">{{ $p->nome }} ({{ $p->unidade }})</flux:select.option>
                         @endforeach
                     </flux:select>
                 </flux:field>

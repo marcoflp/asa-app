@@ -83,19 +83,29 @@ class Form extends Component
             'observacoes' => 'nullable|string',
         ]);
 
-        if ($this->foto_documento) {
-            $data['foto_documento'] = $this->foto_documento->store('documentos', 'public');
-        }
+        try {
+            if ($this->foto_documento) {
+                $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
+                $image = $manager->read($this->foto_documento->getRealPath());
+                $image->scale(width: 1000);
+                $filename = 'documentos/' . $this->foto_documento->hashName();
+                \Illuminate\Support\Facades\Storage::disk('public')->put($filename, (string) $image->toJpeg(70));
+                $data['foto_documento'] = $filename;
+            }
 
-        if ($this->beneficiario && $this->beneficiario->exists) {
-            $this->beneficiario->update($data);
-            session()->flash('success', 'Beneficiário atualizado com sucesso.');
-        } else {
-            Beneficiario::create($data);
-            session()->flash('success', 'Beneficiário cadastrado com sucesso.');
-        }
+            if ($this->beneficiario && $this->beneficiario->exists) {
+                $this->beneficiario->update($data);
+                session()->flash('success', 'Beneficiário atualizado com sucesso.');
+            } else {
+                Beneficiario::create($data);
+                session()->flash('success', 'Beneficiário cadastrado com sucesso.');
+            }
 
-        $this->redirect(route('beneficiarios.index'), navigate: true);
+            $this->redirect(route('beneficiarios.index'), navigate: true);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Erro ao salvar beneficiário: " . $e->getMessage());
+            $this->addError('geral', 'Erro ao salvar os dados. ' . $e->getMessage());
+        }
     }
 
     public function render()

@@ -8,6 +8,7 @@
     </div>
 
     <form wire:submit="save" class="space-y-5">
+        <flux:error name="geral" />
 
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 space-y-4">
 

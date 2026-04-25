@@ -68,14 +68,19 @@ class Form extends Component
             'ativo' => $this->ativo,
         ];
 
-        if ($this->produto && $this->produto->exists) {
-            $this->produto->update($data);
-        } else {
-            Produto::create($data);
-        }
+        try {
+            if ($this->produto && $this->produto->exists) {
+                $this->produto->update($data);
+            } else {
+                Produto::create($data);
+            }
 
-        session()->flash('success', 'Produto salvo com sucesso.');
-        $this->redirect(route('produtos.index'), navigate: true);
+            session()->flash('success', 'Produto salvo com sucesso.');
+            $this->redirect(route('produtos.index'), navigate: true);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Erro ao salvar produto: " . $e->getMessage());
+            $this->addError('geral', 'Erro ao salvar o produto no banco de dados.');
+        }
     }
 
     public function render()

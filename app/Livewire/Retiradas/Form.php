@@ -86,23 +86,31 @@ class Form extends Component
             'observacoes' => $this->observacoes ?: null,
         ];
 
-        if ($this->retirada && $this->retirada->exists) {
-            $this->retirada->update($dados);
-            $this->retirada->items()->delete();
-            $retirada = $this->retirada;
-        } else {
-            $retirada = Retirada::create($dados);
-        }
+        try {
+            \Illuminate\Support\Facades\DB::transaction(function () use ($dados) {
+                if ($this->retirada && $this->retirada->exists) {
+                    $this->retirada->update($dados);
+                    $this->retirada->items()->delete();
+                    $retirada = $this->retirada;
+                } else {
+                    $retirada = Retirada::create($dados);
+                }
 
-        foreach ($this->items as $item) {
-            $retirada->items()->create([
-                'produto_id' => $item['produto_id'],
-                'quantidade' => $item['quantidade'],
-            ]);
-        }
+                foreach ($this->items as $item) {
+                    $retirada->items()->create([
+                        'produto_id' => $item['produto_id'],
+                        'quantidade' => $item['quantidade'],
+                    ]);
+                }
+            });
 
-        session()->flash('success', 'Retirada salva com sucesso.');
-        $this->redirect(route('retiradas.index'), navigate: true);
+            session()->flash('success', 'Retirada salva com sucesso.');
+            $this->redirect(route('retiradas.index'), navigate: true);
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Erro ao salvar retirada: " . $e->getMessage());
+            $this->addError('geral', 'Ocorreu um erro ao salvar a retirada. Verifique o estoque e tente novamente.');
+        }
     }
 
     public function render()

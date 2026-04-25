@@ -12,6 +12,12 @@ class Index extends Component
 
     public string $search = '';
     public ?int $deletingId = null;
+    public ?Beneficiario $selectedBeneficiario = null;
+
+    public function show(int $id): void
+    {
+        $this->selectedBeneficiario = Beneficiario::with(['retiradas' => fn($q) => $q->orderByDesc('data')])->findOrFail($id);
+    }
 
     public function updatingSearch(): void
     {

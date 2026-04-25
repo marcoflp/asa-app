@@ -10,7 +10,7 @@ class Index extends Component
     public function render()
     {
         return view('livewire.usuarios.index', [
-            'users' => User::all(),
+            'users' => \App\Models\User::orderBy('name')->get(),
         ])->layout('layouts.app', ['title' => 'Usuários']);
     }
 }
