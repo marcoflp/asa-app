@@ -11,16 +11,22 @@ use Livewire\Component;
 
 class Dashboard extends Component
 {
-    public string $periodo = 'mensal'; // diario | semanal | mensal
+    public string $periodo = 'mensal';
 
-    public function render()
+    public function getPeriodoDates()
     {
-        [$inicio, $fim] = match ($this->periodo) {
-            'diario'  => [now()->startOfDay(), now()->endOfDay()],
-            'semanal' => [now()->startOfWeek(), now()->endOfWeek()],
-            default   => [now()->startOfMonth(), now()->endOfMonth()],
+        return match ($this->periodo) {
+            'hoje'       => [now()->startOfDay(), now()->endOfDay()],
+            'semanal'    => [now()->subDays(7)->startOfDay(), now()->endOfDay()],
+            'mensal'     => [now()->subDays(30)->startOfDay(), now()->endOfDay()],
+            'trimestral' => [now()->subMonths(3)->startOfDay(), now()->endOfDay()],
+            'semestral'  => [now()->subMonths(6)->startOfDay(), now()->endOfDay()],
+            default      => [now()->startOfMonth(), now()->endOfMonth()],
         };
+    }
 
+    public function getDashboardData($inicio, $fim)
+    {
         $retiradas = Retirada::with('items')
             ->whereBetween('data', [$inicio, $fim]);
 
@@ -30,37 +36,55 @@ class Dashboard extends Component
             fn($q) => $q->whereBetween('data', [$inicio, $fim])
         )->sum('quantidade');
 
-        // Top 5 produtos mais retirados no período
         $topProdutos = RetiradaItem::selectRaw('produto_id, sum(quantidade) as total')
             ->whereHas('retirada', fn($q) => $q->whereBetween('data', [$inicio, $fim]))
-            ->with('produto:id,nome,categoria')
+            ->with('produto:id,nome,categoria,unidade')
             ->groupBy('produto_id')
             ->orderByDesc('total')
-            ->limit(5)
+            ->limit(10)
             ->get();
 
-        // Retiradas por dia (para gráfico de barras simples)
         $retiradasPorDia = Retirada::selectRaw('date(data) as dia, count(*) as total')
             ->whereBetween('data', [$inicio, $fim])
             ->groupBy('dia')
             ->orderBy('dia')
             ->pluck('total', 'dia');
 
-        // Últimas retiradas
         $ultimasRetiradas = Retirada::with('beneficiario')
             ->whereBetween('data', [$inicio, $fim])
             ->orderByDesc('data')
             ->limit(8)
             ->get();
 
-        // Totais gerais (sempre)
         $totalBeneficiariosGeral = Beneficiario::count();
         $totalProdutosGeral = Produto::ativo()->count();
 
-        return view('livewire.dashboard', compact(
+        return compact(
             'totalRetiradas', 'totalBeneficiarios', 'totalItens',
             'topProdutos', 'retiradasPorDia', 'ultimasRetiradas',
             'totalBeneficiariosGeral', 'totalProdutosGeral', 'inicio', 'fim'
-        ))->layout('layouts.app', ['title' => 'Dashboard']);
+        );
+    }
+
+    public function gerarRelatorio()
+    {
+        [$inicio, $fim] = $this->getPeriodoDates();
+        $data = $this->getDashboardData($inicio, $fim);
+        $data['titulo'] = "Relatório de Atividades - " . ucfirst($this->periodo);
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.dashboard', $data);
+        
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->output();
+        }, 'relatorio-dashboard-' . $this->periodo . '.pdf');
+    }
+
+    public function render()
+    {
+        [$inicio, $fim] = $this->getPeriodoDates();
+        $data = $this->getDashboardData($inicio, $fim);
+
+        return view('livewire.dashboard', $data)
+            ->layout('layouts.app', ['title' => 'Dashboard']);
     }
 }

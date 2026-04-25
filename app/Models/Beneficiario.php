@@ -12,6 +12,7 @@ class Beneficiario extends Model
         'rg', 'cpf', 'num_pessoas_familia', 'filhos',
         'inscrito_programa_governo', 'programa_governo',
         'recebe_estudo_biblico', 'instrutor_biblico', 'observacoes',
+        'foto_documento',
     ];
 
     protected $casts = [

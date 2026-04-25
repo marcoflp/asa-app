@@ -1,18 +1,28 @@
 <div class="flex h-full w-full flex-1 flex-col gap-6">
 
     {{-- Cabeçalho + filtro de período --}}
-    <div class="flex flex-wrap items-center justify-between gap-3">
-        <flux:heading size="xl">Dashboard</flux:heading>
-        <flux:radio.group wire:model.live="periodo" variant="segmented">
-            <flux:radio value="diario" label="Hoje" />
-            <flux:radio value="semanal" label="Esta semana" />
-            <flux:radio value="mensal" label="Este mês" />
-        </flux:radio.group>
-    </div>
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <flux:heading size="xl">Dashboard</flux:heading>
+            <flux:text class="text-neutral-500 text-sm">
+                {{ $inicio->format('d/m/Y') }} — {{ $fim->format('d/m/Y') }}
+            </flux:text>
+        </div>
 
-    <flux:text class="text-neutral-500 -mt-3 text-sm">
-        {{ $inicio->format('d/m/Y') }} — {{ $fim->format('d/m/Y') }}
-    </flux:text>
+        <div class="flex items-center gap-3">
+            <flux:radio.group wire:model.live="periodo" variant="segmented" size="sm">
+                <flux:radio value="hoje" label="Hoje" />
+                <flux:radio value="semanal" label="Uma semana" />
+                <flux:radio value="mensal" label="Um mês" />
+                <flux:radio value="trimestral" label="Trimestral" />
+                <flux:radio value="semestral" label="Semestral" />
+            </flux:radio.group>
+
+            <flux:button wire:click="gerarRelatorio" icon="document-text" variant="ghost" size="sm">
+                Relatório PDF
+            </flux:button>
+        </div>
+    </div>
 
     {{-- Cards do período --}}
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">

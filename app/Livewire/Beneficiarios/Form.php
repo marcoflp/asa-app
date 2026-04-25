@@ -4,9 +4,12 @@ namespace App\Livewire\Beneficiarios;
 
 use App\Models\Beneficiario;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class Form extends Component
 {
+    use WithFileUploads;
+
     public ?Beneficiario $beneficiario = null;
 
     public string $nome = '';
@@ -25,6 +28,8 @@ class Form extends Component
     public bool $recebe_estudo_biblico = false;
     public string $instrutor_biblico = '';
     public string $observacoes = '';
+    public $foto_documento;
+    public ?string $foto_documento_path = null;
 
     // Campos temporários para adicionar filho
     public int $filho_idade = 0;
@@ -40,6 +45,7 @@ class Form extends Component
                 'recebe_estudo_biblico', 'instrutor_biblico', 'observacoes',
             ]));
             $this->filhos = $beneficiario->filhos ?? [];
+            $this->foto_documento_path = $beneficiario->foto_documento;
         }
     }
 
@@ -66,10 +72,8 @@ class Form extends Component
             'cidade' => 'required|string|max:100',
             'cep' => 'nullable|string|max:9',
             'rg' => 'nullable|string|max:20',
-            'cpf' => ['nullable', 'string', 'max:14',
-                \Illuminate\Validation\Rule::unique('beneficiarios', 'cpf')
-                    ->ignore($this->beneficiario?->id),
-            ],
+            'cpf' => 'nullable|string|max:14',
+            'foto_documento' => 'nullable|image|max:2048',
             'num_pessoas_familia' => 'required|integer|min:1',
             'filhos' => 'nullable|array',
             'inscrito_programa_governo' => 'boolean',
@@ -78,6 +82,10 @@ class Form extends Component
             'instrutor_biblico' => 'nullable|string|max:255',
             'observacoes' => 'nullable|string',
         ]);
+
+        if ($this->foto_documento) {
+            $data['foto_documento'] = $this->foto_documento->store('documentos', 'public');
+        }
 
         if ($this->beneficiario && $this->beneficiario->exists) {
             $this->beneficiario->update($data);
