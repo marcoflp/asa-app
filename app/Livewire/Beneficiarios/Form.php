@@ -73,7 +73,7 @@ class Form extends Component
             'cep' => 'nullable|string|max:9',
             'rg' => 'nullable|string|max:20',
             'cpf' => 'nullable|string|max:14',
-            'foto_documento' => 'nullable|image|max:2048',
+            'foto_documento' => 'nullable|image|max:10240',
             'num_pessoas_familia' => 'required|integer|min:1',
             'filhos' => 'nullable|array',
             'inscrito_programa_governo' => 'boolean',
