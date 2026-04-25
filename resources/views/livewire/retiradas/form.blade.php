@@ -14,8 +14,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <flux:field class="md:col-span-1">
                     <flux:label>Beneficiário *</flux:label>
+                    <flux:input wire:model.live.debounce.300ms="searchBeneficiario" placeholder="Digite para buscar..." icon="magnifying-glass" size="sm" class="mb-2" />
                     <flux:select wire:model="beneficiario_id">
-                        <flux:select.option value="0" disabled>Selecione...</flux:select.option>
+                        <flux:select.option value="0" disabled>Selecione ({{ $beneficiarios->count() }} encontrados)</flux:select.option>
                         @foreach ($beneficiarios as $b)
                             <flux:select.option value="{{ $b->id }}">{{ $b->nome }}</flux:select.option>
                         @endforeach
@@ -56,15 +57,16 @@
             <div class="grid grid-cols-1 sm:grid-cols-12 items-end gap-3 pt-1">
                 <flux:field class="sm:col-span-8">
                     <flux:label>Produto</flux:label>
+                    <flux:input wire:model.live.debounce.300ms="searchProduto" placeholder="Buscar produto ou categoria..." icon="magnifying-glass" size="sm" class="mb-2" />
                     <flux:select wire:model="item_produto_id">
-                        <flux:select.option value="0" disabled>Selecione...</flux:select.option>
+                        <flux:select.option value="0" disabled>Selecione ({{ $produtos->count() }} encontrados)</flux:select.option>
                         @php $categoriaAtual = null; @endphp
                         @foreach ($produtos as $p)
                             @if ($p->categoria !== $categoriaAtual)
                                 @php $categoriaAtual = $p->categoria; @endphp
                                 <flux:select.option disabled>── {{ $p->categoria }} ──</flux:select.option>
                             @endif
-                            <flux:select.option value="{{ $p->id }}">{{ $p->nome }} ({{ $p->unidade }})</flux:select.option>
+                            <flux:select.option value="{{ $p->id }}">{{ $p->nome }} ({{ $p->unidade }}) @if($p->estoque !== null) - Qtd: {{ $p->estoque }} @endif</flux:select.option>
                         @endforeach
                     </flux:select>
                 </flux:field>

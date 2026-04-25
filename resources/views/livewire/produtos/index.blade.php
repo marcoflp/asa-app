@@ -44,7 +44,7 @@
                             <flux:badge color="zinc" size="sm">{{ $p->categoria }}</flux:badge>
                         </td>
                         <td class="px-4 py-3 text-neutral-500">{{ $p->unidade }}</td>
-                        <td class="px-4 py-3 text-neutral-500">{{ $p->estoque }} {{ $p->unidade }}</td>
+                        <td class="px-4 py-3 text-neutral-500">{{ $p->estoque }} {{ $p->unidade }}(s)</td>
                         <td class="px-4 py-3 text-neutral-500 max-w-xs truncate">{{ $p->descricao ?? '—' }}</td>
                         <td class="px-4 py-3">
                             <button wire:click="toggleAtivo({{ $p->id }})" class="cursor-pointer">

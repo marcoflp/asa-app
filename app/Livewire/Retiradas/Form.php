@@ -14,11 +14,13 @@ class Form extends Component
     public int $beneficiario_id = 0;
     public string $data = '';
     public string $observacoes = '';
-    public array $items = []; // [{produto_id, quantidade}]
+    public array $items = [];
 
-    // Temporários para adicionar item
     public int $item_produto_id = 0;
     public int $item_quantidade = 1;
+
+    public string $searchBeneficiario = '';
+    public string $searchProduto = '';
 
     public function mount(?Retirada $retirada = null): void
     {
@@ -41,7 +43,6 @@ class Form extends Component
     {
         if (!$this->item_produto_id || $this->item_quantidade < 1) return;
 
-        // Evita duplicata — soma quantidade se produto já estiver na lista
         foreach ($this->items as &$item) {
             if ($item['produto_id'] === $this->item_produto_id) {
                 $item['quantidade'] += $this->item_quantidade;
@@ -108,9 +109,20 @@ class Form extends Component
     {
         $title = $this->retirada?->exists ? 'Editar Retirada' : 'Nova Retirada';
 
+        $beneficiarios = Beneficiario::query()
+            ->when($this->searchBeneficiario, fn($q) => $q->where('nome', 'like', '%' . $this->searchBeneficiario . '%'))
+            ->orderBy('nome')
+            ->get(['id', 'nome']);
+
+        $produtos = Produto::ativo()
+            ->when($this->searchProduto, fn($q) => $q->where('nome', 'like', '%' . $this->searchProduto . '%')->orWhere('categoria', 'like', '%' . $this->searchProduto . '%'))
+            ->orderBy('categoria')
+            ->orderBy('nome')
+            ->get(['id', 'nome', 'categoria', 'unidade', 'estoque']);
+
         return view('livewire.retiradas.form', [
-            'beneficiarios' => Beneficiario::orderBy('nome')->get(['id', 'nome']),
-            'produtos' => Produto::ativo()->orderBy('categoria')->orderBy('nome')->get(['id', 'nome', 'categoria', 'unidade']),
+            'beneficiarios' => $beneficiarios,
+            'produtos' => $produtos,
         ])->layout('layouts.app', ['title' => $title]);
     }
 }
