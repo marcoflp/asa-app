@@ -18,14 +18,11 @@
                     <flux:sidebar.item icon="users" :href="route('beneficiarios.index')" :current="request()->routeIs('beneficiarios.*')" wire:navigate>
                         {{ __('Beneficiários') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="arrow-up-tray" :href="route('retiradas.index')" :current="request()->routeIs('retiradas.*')" wire:navigate>
-                        {{ __('Retiradas') }}
-                    </flux:sidebar.item>
                     <flux:sidebar.item icon="archive-box" :href="route('produtos.index')" :current="request()->routeIs('produtos.*')" wire:navigate>
                         {{ __('Produtos') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="user-plus" :href="route('usuarios.create')" :current="request()->routeIs('usuarios.*')" wire:navigate>
-                        {{ __('Novo Usuário') }}
+                    <flux:sidebar.item icon="arrow-up-tray" :href="route('retiradas.index')" :current="request()->routeIs('retiradas.*')" wire:navigate>
+                        {{ __('Retiradas') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
@@ -69,6 +66,9 @@
                     <flux:menu.radio.group>
                         <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate>
                             {{ __('Configurações') }}
+                        </flux:menu.item>
+                        <flux:menu.item :href="route('usuarios.index')" icon="users" wire:navigate>
+                            {{ __('Gerenciar Usuários') }}
                         </flux:menu.item>
                     </flux:menu.radio.group>
 
