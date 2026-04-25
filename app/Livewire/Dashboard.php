@@ -63,7 +63,7 @@ class Dashboard extends Component
             'totalRetiradas', 'totalBeneficiarios', 'totalItens',
             'topProdutos', 'retiradasPorDia', 'ultimasRetiradas',
             'totalBeneficiariosGeral', 'totalProdutosGeral', 'inicio', 'fim'
-        );
+        ) + ['periodo' => $this->periodo];
     }
 
     public function gerarRelatorio()

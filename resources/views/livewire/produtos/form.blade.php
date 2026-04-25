@@ -61,6 +61,12 @@
             </flux:field>
 
             <flux:field>
+                <flux:label>Estoque atual (deixe vazio se não quiser controlar)</flux:label>
+                <flux:input type="number" wire:model="estoque" placeholder="0" />
+                <flux:error name="estoque" />
+            </flux:field>
+
+            <flux:field>
                 <flux:checkbox wire:model="ativo" label="Produto ativo (aparece nas retiradas)" />
             </flux:field>
 

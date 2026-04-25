@@ -15,6 +15,7 @@ class Form extends Component
     public string $unidade = '';
     public string $novaUnidade = '';
     public string $descricao = '';
+    public ?int $estoque = null;
     public bool $ativo = true;
 
     const UNIDADES = ['unidade', 'kg', 'litro', 'frasco', 'pacote', 'lata', 'par', 'peça', 'rolo', 'caixa'];
@@ -28,6 +29,7 @@ class Form extends Component
             $this->unidade = in_array($produto->unidade, self::UNIDADES) ? $produto->unidade : 'outro';
             $this->novaUnidade = in_array($produto->unidade, self::UNIDADES) ? '' : $produto->unidade;
             $this->descricao = $produto->descricao ?? '';
+            $this->estoque = $produto->estoque;
             $this->ativo = $produto->ativo;
         }
     }
@@ -42,6 +44,7 @@ class Form extends Component
             'categoria' => 'required|string',
             'unidade' => 'required|string',
             'descricao' => 'nullable|string',
+            'estoque' => 'nullable|integer|min:0',
         ]);
 
         $this->validateOnly('nome', ['nome' => 'required']);
@@ -61,6 +64,7 @@ class Form extends Component
             'categoria' => $categoriaFinal,
             'unidade' => $unidadeFinal,
             'descricao' => $this->descricao ?: null,
+            'estoque' => $this->estoque,
             'ativo' => $this->ativo,
         ];
 
