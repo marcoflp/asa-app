@@ -34,11 +34,11 @@
         </div>
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 space-y-1 bg-white dark:bg-zinc-900 shadow-sm">
             <flux:text class="text-xs text-neutral-500 uppercase font-semibold">Beneficiários atendidos</flux:text>
-            <p class="text-3xl font-bold text-emerald-600 dark:text-emerald-400">{{ $totalBeneficiarios }}</p>
+            <p class="text-3xl font-bold text-emerald-600 dark:text-blue-400">{{ $totalBeneficiarios }}</p>
         </div>
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 space-y-1 bg-white dark:bg-zinc-900 shadow-sm">
             <flux:text class="text-xs text-neutral-500 uppercase font-semibold">Total de itens entregues</flux:text>
-            <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">{{ $totalItens }}</p>
+            <p class="text-3xl font-bold text-purple-600 dark:text-blue-400">{{ $totalItens }}</p>
         </div>
     </div>
 
