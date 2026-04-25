@@ -23,7 +23,6 @@
         </flux:select>
     </div>
 
-    {{-- DESKTOP VIEW --}}
     <div class="hidden md:block overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-700">
         <table class="w-full text-sm">
             <thead class="bg-neutral-50 dark:bg-zinc-800 text-left">
@@ -31,6 +30,7 @@
                     <th class="px-4 py-3 font-medium">Nome</th>
                     <th class="px-4 py-3 font-medium">Categoria</th>
                     <th class="px-4 py-3 font-medium">Unidade</th>
+                    <th class="px-4 py-3 font-medium">Estoque</th>
                     <th class="px-4 py-3 font-medium">Descrição</th>
                     <th class="px-4 py-3 font-medium">Status</th>
                     <th class="px-4 py-3 font-medium text-right">Ações</th>
@@ -44,6 +44,7 @@
                             <flux:badge color="zinc" size="sm">{{ $p->categoria }}</flux:badge>
                         </td>
                         <td class="px-4 py-3 text-neutral-500">{{ $p->unidade }}</td>
+                        <td class="px-4 py-3 text-neutral-500">{{ $p->estoque }} {{ $p->unidade }}</td>
                         <td class="px-4 py-3 text-neutral-500 max-w-xs truncate">{{ $p->descricao ?? '—' }}</td>
                         <td class="px-4 py-3">
                             <button wire:click="toggleAtivo({{ $p->id }})" class="cursor-pointer">
