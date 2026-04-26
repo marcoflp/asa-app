@@ -24,6 +24,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        \Illuminate\Support\Facades\Gate::define('viewLogViewer', function ($user) {
+            // Permite acesso apenas para usuários logados
+            return $user !== null;
+        });
     }
 
     /**

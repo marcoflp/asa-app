@@ -25,6 +25,9 @@
             <flux:menu.item :href="route('usuarios.index')" icon="users" wire:navigate>
                 {{ __('Gerenciar Usuários') }}
             </flux:menu.item>
+            <flux:menu.item href="/log-viewer" icon="command-line" target="_blank">
+                {{ __('Logs do Sistema') }}
+            </flux:menu.item>
             <form method="POST" action="{{ route('logout') }}" class="w-full">
                 @csrf
                 <flux:menu.item

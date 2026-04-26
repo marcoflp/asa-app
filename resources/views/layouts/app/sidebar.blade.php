@@ -70,6 +70,9 @@
                         <flux:menu.item :href="route('usuarios.index')" icon="users" wire:navigate>
                             {{ __('Gerenciar Usuários') }}
                         </flux:menu.item>
+                        <flux:menu.item href="/log-viewer" icon="command-line" target="_blank">
+                            {{ __('Logs do Sistema') }}
+                        </flux:menu.item>
                     </flux:menu.radio.group>
 
                     <flux:menu.separator />
