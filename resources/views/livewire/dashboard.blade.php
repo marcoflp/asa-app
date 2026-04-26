@@ -28,17 +28,17 @@
 
     {{-- Cards do período --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 space-y-1 bg-white dark:bg-zinc-900 shadow-sm">
+        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 space-y-1">
             <flux:text class="text-xs text-neutral-500 uppercase font-semibold">Retiradas no período</flux:text>
-            <p class="text-3xl font-bold text-neutral-800">{{ $totalRetiradas }}</p>
+            <p class="text-3xl font-bold">{{ $totalRetiradas }}</p>
         </div>
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 space-y-1 bg-white dark:bg-zinc-900 shadow-sm">
+        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 space-y-1">
             <flux:text class="text-xs text-neutral-500 uppercase font-semibold">Beneficiários atendidos</flux:text>
-            <p class="text-3xl font-bold text-neutral-800">{{ $totalBeneficiarios }}</p>
+            <p class="text-3xl font-bold">{{ $totalBeneficiarios }}</p>
         </div>
-        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 space-y-1 bg-white dark:bg-zinc-900 shadow-sm">
+        <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-5 space-y-1">
             <flux:text class="text-xs text-neutral-500 uppercase font-semibold">Total de itens entregues</flux:text>
-            <p class="text-3xl font-bold text-neutral-800">{{ $totalItens }}</p>
+            <p class="text-3xl font-bold">{{ $totalItens }}</p>
         </div>
     </div>
 
@@ -52,7 +52,7 @@
                     <div class="flex-1">
                         <div class="flex justify-between text-sm mb-1">
                             <span class="font-medium">{{ $tp->produto->nome }}</span>
-                            <span class="text-neutral-500">{{ $tp->total }} {{ $tp->produto->unidade }}</span>
+                            <span class="text-neutral-500">{{ $tp->total }} {{ $tp->produto->unidade }}(s)</span>
                         </div>
                         @php $max = $topProdutos->first()->total ?: 1; @endphp
                         <div class="h-2 rounded-full bg-neutral-100 dark:bg-neutral-700">
