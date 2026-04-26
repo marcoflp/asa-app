@@ -59,10 +59,19 @@ class Dashboard extends Component
         $totalBeneficiariosGeral = Beneficiario::count();
         $totalProdutosGeral = Produto::ativo()->count();
 
+        // Itens por categoria
+        $itensPorCategoria = RetiradaItem::selectRaw('produtos.categoria, sum(retirada_items.quantidade) as total')
+            ->join('produtos', 'retirada_items.produto_id', '=', 'produtos.id')
+            ->whereHas('retirada', fn($q) => $q->whereBetween('data', [$inicio, $fim]))
+            ->groupBy('produtos.categoria')
+            ->orderByDesc('total')
+            ->get();
+
         return compact(
             'totalRetiradas', 'totalBeneficiarios', 'totalItens',
             'topProdutos', 'retiradasPorDia', 'ultimasRetiradas',
-            'totalBeneficiariosGeral', 'totalProdutosGeral', 'inicio', 'fim'
+            'totalBeneficiariosGeral', 'totalProdutosGeral', 'inicio', 'fim',
+            'itensPorCategoria'
         ) + ['periodo' => $this->periodo];
     }
 
