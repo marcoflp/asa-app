@@ -85,11 +85,17 @@ class Form extends Component
 
         try {
             if ($this->foto_documento) {
-                $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
-                $image = $manager->read($this->foto_documento->getRealPath());
-                $image->scale(width: 1000);
+                $image = \Intervention\Image\Facades\Image::make($this->foto_documento->getRealPath());
+                
+                $image->resize(1000, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+
                 $filename = 'documentos/' . $this->foto_documento->hashName();
-                \Illuminate\Support\Facades\Storage::disk('public')->put($filename, (string) $image->toJpeg(70));
+                
+                \Illuminate\Support\Facades\Storage::disk('public')->put($filename, (string) $image->encode('jpg', 70));
+                
                 $data['foto_documento'] = $filename;
             }
 
