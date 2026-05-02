@@ -37,9 +37,9 @@
                             Login
                         </a>
                         @if (Route::has('register'))
-                            <!-- <a href="{{ route('register') }}" class="px-6 py-2.5 bg-asa-gold text-white rounded-xl text-sm font-bold shadow-lg shadow-asa-gold/25 hover:scale-105 transition-all active:scale-95">
+                            <a href="{{ route('register') }}" class="px-6 py-2.5 bg-asa-gold text-white rounded-xl text-sm font-bold shadow-lg shadow-asa-gold/25 hover:scale-105 transition-all active:scale-95">
                                 Registrar
-                            </a> -->
+                            </a>
                         @endif
                     @endauth
                 </nav>
@@ -136,7 +136,7 @@
                 @endif
             </section>
 
-            <!-- <section class="mt-40 animate-slide-up" style="animation-delay: 0.4s">
+            {{-- <section class="mt-40 animate-slide-up" style="animation-delay: 0.4s">
                 <div class="brand-gradient rounded-[3.5rem] p-12 md:p-24 relative overflow-hidden text-center text-white shadow-2xl shadow-asa-green/30">
                     <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 40px 40px;"></div>
                     
@@ -146,9 +146,11 @@
                             Seja como voluntário local ou contribuindo com doações regulares, sua participação é fundamental para transformarmos a realidade da nossa comunidade.
                         </p>
                         <div class="flex flex-wrap justify-center gap-6">
-                            <a href="{{ route('register') }}" class="px-12 py-5 bg-white text-asa-green rounded-2xl font-black text-lg hover:scale-[1.03] transition-all active:scale-95 shadow-xl">
-                                Quero Ser Voluntário
-                            </a>
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}" class="px-12 py-5 bg-white text-asa-green rounded-2xl font-black text-lg hover:scale-[1.03] transition-all active:scale-95 shadow-xl">
+                                    Quero Ser Voluntário
+                                </a>
+                            @endif
                             <a href="{{ route('login') }}" class="px-12 py-5 border-2 border-white/30 rounded-2xl font-bold text-lg hover:bg-white/10 transition-all backdrop-blur-sm">
                                 Acessar Painel
                             </a>
@@ -158,7 +160,7 @@
                     <div class="absolute -left-20 -bottom-20 w-80 h-80 bg-white opacity-[0.03] rounded-full"></div>
                     <div class="absolute -right-20 -top-20 w-80 h-80 bg-asa-gold opacity-[0.2] rounded-full blur-[100px]"></div>
                 </div>
-            </section> -->
+            </section> --}}
         </main>
 
         <!-- Footer -->
