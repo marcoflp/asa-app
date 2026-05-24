@@ -147,118 +147,129 @@
         {{-- Modal de Detalhes do Beneficiário --}}
         <flux:modal name="show-beneficiario" class="md:min-w-[700px]">
             <div class="space-y-6">
-                @if ($selectedBeneficiario)
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                        <div>
-                            <flux:heading size="lg" class="break-words">{{ $selectedBeneficiario->nome }}</flux:heading>
-                            <flux:text size="sm" class="block mt-1">{{ $selectedBeneficiario->cpf ?? 'Sem CPF' }} | {{ $selectedBeneficiario->rg ?? 'Sem RG' }}</flux:text>
-                        </div>
-                        <flux:badge color="zinc" size="sm" class="self-start sm:self-center">ID: #{{ $selectedBeneficiario->id }}</flux:badge>
+                {{-- Estado de carregamento --}}
+                <div wire:loading wire:target="show" class="w-full">
+                    <div class="flex flex-col items-center justify-center py-20 gap-3">
+                        <flux:icon.loading class="h-8 w-8 text-neutral-400" />
+                        <flux:text class="text-neutral-500 text-sm">Carregando dados...</flux:text>
                     </div>
+                </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {{-- Endereço --}}
-                        <div>
-                            <flux:label class="text-xs text-neutral-500 uppercase">Endereço</flux:label>
-                            <flux:text class="block font-medium">{{ $selectedBeneficiario->rua }}, {{ $selectedBeneficiario->numero }}</flux:text>
-                            <flux:text class="block text-sm text-neutral-500">{{ $selectedBeneficiario->bairro }} - {{ $selectedBeneficiario->cidade }}</flux:text>
-                        </div>
-                        {{-- Contato --}}
-                        <div>
-                            <flux:label class="text-xs text-neutral-500 uppercase">Contato</flux:label>
-                            <flux:text class="block font-medium">{{ $selectedBeneficiario->telefone ?? 'Não informado' }}</flux:text>
-                        </div>
-                        {{-- Composição Familiar --}}
-                        <div class="grid grid-cols-2 gap-2">
+                {{-- Conteúdo do Beneficiário --}}
+                <div wire:loading.remove wire:target="show" class="w-full space-y-6">
+                    @if ($selectedBeneficiario)
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                             <div>
-                                <flux:label class="text-xs text-neutral-500 uppercase">Família</flux:label>
-                                <flux:text class="block font-medium">{{ $selectedBeneficiario->num_pessoas_familia }} pessoas</flux:text>
+                                <flux:heading size="lg" class="break-words">{{ $selectedBeneficiario->nome }}</flux:heading>
+                                <flux:text size="sm" class="block mt-1">{{ $selectedBeneficiario->cpf ?? 'Sem CPF' }} | {{ $selectedBeneficiario->rg ?? 'Sem RG' }}</flux:text>
                             </div>
+                            <flux:badge color="zinc" size="sm" class="self-start sm:self-center">ID: #{{ $selectedBeneficiario->id }}</flux:badge>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {{-- Endereço --}}
                             <div>
-                                <flux:label class="text-xs text-neutral-500 uppercase">Filhos</flux:label>
-                                <flux:text class="block font-medium">{{ count($selectedBeneficiario->filhos ?? []) }} filho(s)</flux:text>
+                                <flux:label class="text-xs text-neutral-500 uppercase">Endereço</flux:label>
+                                <flux:text class="block font-medium">{{ $selectedBeneficiario->rua }}, {{ $selectedBeneficiario->numero }}</flux:text>
+                                <flux:text class="block text-sm text-neutral-500">{{ $selectedBeneficiario->bairro }} - {{ $selectedBeneficiario->cidade }}</flux:text>
+                            </div>
+                            {{-- Contato --}}
+                            <div>
+                                <flux:label class="text-xs text-neutral-500 uppercase">Contato</flux:label>
+                                <flux:text class="block font-medium">{{ $selectedBeneficiario->telefone ?? 'Não informado' }}</flux:text>
+                            </div>
+                            {{-- Composição Familiar --}}
+                            <div class="grid grid-cols-2 gap-2">
+                                <div>
+                                    <flux:label class="text-xs text-neutral-500 uppercase">Família</flux:label>
+                                    <flux:text class="block font-medium">{{ $selectedBeneficiario->num_pessoas_familia }} pessoas</flux:text>
+                                </div>
+                                <div>
+                                    <flux:label class="text-xs text-neutral-500 uppercase">Filhos</flux:label>
+                                    <flux:text class="block font-medium">{{ count($selectedBeneficiario->filhos ?? []) }} filho(s)</flux:text>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    {{-- Seção de Documentos --}}
-                    @if ($selectedBeneficiario->foto_documento || $selectedBeneficiario->foto_documento_verso || $selectedBeneficiario->foto_documento_consentimento)
-                        <div class="border-t border-neutral-100 dark:border-neutral-800 pt-5">
-                            <flux:label class="text-xs text-neutral-500 uppercase mb-3 block">Documentos Cadastrados</flux:label>
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                @if ($selectedBeneficiario->foto_documento)
-                                    <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-2 bg-neutral-50 dark:bg-zinc-800/30">
-                                        <flux:text size="xs" class="font-semibold mb-1 block text-neutral-500">Frente do Documento</flux:text>
-                                        <a href="{{ asset('storage/' . $selectedBeneficiario->foto_documento) }}" target="_blank" class="block group">
-                                            <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
-                                            <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
-                                        </a>
-                                    </div>
-                                @endif
-
-                                @if ($selectedBeneficiario->foto_documento_verso)
-                                    <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-2 bg-neutral-50 dark:bg-zinc-800/30">
-                                        <flux:text size="xs" class="font-semibold mb-1 block text-neutral-500">Verso do Documento</flux:text>
-                                        <a href="{{ asset('storage/' . $selectedBeneficiario->foto_documento_verso) }}" target="_blank" class="block group">
-                                            <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento_verso) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
-                                            <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
-                                        </a>
-                                    </div>
-                                @endif
-
-                                @if ($selectedBeneficiario->foto_documento_consentimento)
-                                    <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-2 bg-neutral-50 dark:bg-zinc-800/30">
-                                        <flux:text size="xs" class="font-semibold mb-1 block text-neutral-500">Termo de Consentimento</flux:text>
-                                        <a href="{{ asset('storage/' . $selectedBeneficiario->foto_documento_consentimento) }}" target="_blank" class="block group">
-                                            <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento_consentimento) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
-                                            <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
-                                        </a>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    @endif
-
-                    <div class="border-t border-neutral-100 dark:border-neutral-800 pt-5">
-                        <div class="flex items-center justify-between mb-4">
-                            <flux:heading size="md">Histórico de Retiradas</flux:heading>
-                            <flux:badge color="blue">{{ $selectedBeneficiario->retiradas->count() }} registradas</flux:badge>
-                        </div>
-                        
-                        <div class="max-h-[300px] overflow-y-auto space-y-3 pr-2 custom-scrollbar">
-                            @forelse ($selectedBeneficiario->retiradas as $retirada)
-                                <div class="p-3 bg-neutral-50 dark:bg-zinc-800/50 rounded-lg border border-neutral-100 dark:border-neutral-800 transition-colors hover:border-blue-200">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <div class="flex items-center gap-2">
-                                            <flux:icon icon="calendar" variant="micro" class="text-neutral-400" />
-                                            <span class="font-bold text-sm text-neutral-700 dark:text-neutral-200">{{ $retirada->data->format('d/m/Y') }}</span>
+                        {{-- Seção de Documentos --}}
+                        @if ($selectedBeneficiario->foto_documento || $selectedBeneficiario->foto_documento_verso || $selectedBeneficiario->foto_documento_consentimento)
+                            <div class="border-t border-neutral-100 dark:border-neutral-800 pt-5">
+                                <flux:label class="text-xs text-neutral-500 uppercase mb-3 block">Documentos Cadastrados</flux:label>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                    @if ($selectedBeneficiario->foto_documento)
+                                        <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-2 bg-neutral-50 dark:bg-zinc-800/30">
+                                            <flux:text size="xs" class="font-semibold mb-1 block text-neutral-500">Frente do Documento</flux:text>
+                                            <a href="{{ asset('storage/' . $selectedBeneficiario->foto_documento) }}" target="_blank" class="block group">
+                                                <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
+                                                <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
+                                            </a>
                                         </div>
-                                        <flux:badge size="sm" variant="ghost">{{ $retirada->items->count() }} itens</flux:badge>
-                                    </div>
-                                    <div class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
-                                        {{ $retirada->items->map(fn($i) => $i->produto->nome . " (" . $i->quantidade . ")")->join(', ') }}
-                                    </div>
-                                    @if ($retirada->observacoes)
-                                        <div class="mt-2 flex items-start gap-1">
-                                            <flux:icon icon="chat-bubble-bottom-center-text" variant="micro" class="text-neutral-300 mt-0.5" />
-                                            <div class="text-[10px] italic text-neutral-500">{{ $retirada->observacoes }}</div>
+                                    @endif
+
+                                    @if ($selectedBeneficiario->foto_documento_verso)
+                                        <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-2 bg-neutral-50 dark:bg-zinc-800/30">
+                                            <flux:text size="xs" class="font-semibold mb-1 block text-neutral-500">Verso do Documento</flux:text>
+                                            <a href="{{ asset('storage/' . $selectedBeneficiario->foto_documento_verso) }}" target="_blank" class="block group">
+                                                <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento_verso) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
+                                                <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
+                                            </a>
+                                        </div>
+                                    @endif
+
+                                    @if ($selectedBeneficiario->foto_documento_consentimento)
+                                        <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-2 bg-neutral-50 dark:bg-zinc-800/30">
+                                            <flux:text size="xs" class="font-semibold mb-1 block text-neutral-500">Termo de Consentimento</flux:text>
+                                            <a href="{{ asset('storage/' . $selectedBeneficiario->foto_documento_consentimento) }}" target="_blank" class="block group">
+                                                <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento_consentimento) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
+                                                <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
+                                            </a>
                                         </div>
                                     @endif
                                 </div>
-                            @empty
-                                <div class="text-center py-10">
-                                    <flux:icon icon="archive-box" class="mx-auto text-neutral-200 mb-2" />
-                                    <flux:text class="text-neutral-400 text-sm">Nenhuma retirada registrada.</flux:text>
-                                </div>
-                            @endforelse
+                            </div>
+                        @endif
+
+                        <div class="border-t border-neutral-100 dark:border-neutral-800 pt-5">
+                            <div class="flex items-center justify-between mb-4">
+                                <flux:heading size="md">Histórico de Retiradas</flux:heading>
+                                <flux:badge color="blue">{{ $selectedBeneficiario->retiradas->count() }} registradas</flux:badge>
+                            </div>
+                            
+                            <div class="max-h-[300px] overflow-y-auto space-y-3 pr-2 custom-scrollbar">
+                                @forelse ($selectedBeneficiario->retiradas as $retirada)
+                                    <div class="p-3 bg-neutral-50 dark:bg-zinc-800/50 rounded-lg border border-neutral-100 dark:border-neutral-800 transition-colors hover:border-blue-200">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <div class="flex items-center gap-2">
+                                                <flux:icon icon="calendar" variant="micro" class="text-neutral-400" />
+                                                <span class="font-bold text-sm text-neutral-700 dark:text-neutral-200">{{ $retirada->data->format('d/m/Y') }}</span>
+                                            </div>
+                                            <flux:badge size="sm" variant="ghost">{{ $retirada->items->count() }} itens</flux:badge>
+                                        </div>
+                                        <div class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                                            {{ $retirada->items->map(fn($i) => $i->produto->nome . " (" . $i->quantidade . ")")->join(', ') }}
+                                        </div>
+                                        @if ($retirada->observacoes)
+                                            <div class="mt-2 flex items-start gap-1">
+                                                <flux:icon icon="chat-bubble-bottom-center-text" variant="micro" class="text-neutral-300 mt-0.5" />
+                                                <div class="text-[10px] italic text-neutral-500">{{ $retirada->observacoes }}</div>
+                                            </div>
+                                        @endif
+                                    </div>
+                                @empty
+                                    <div class="text-center py-10">
+                                        <flux:icon icon="archive-box" class="mx-auto text-neutral-200 mb-2" />
+                                        <flux:text class="text-neutral-400 text-sm">Nenhuma retirada registrada.</flux:text>
+                                    </div>
+                                @endforelse
+                            </div>
                         </div>
-                    </div>
-                @else
-                    <div class="flex flex-col items-center justify-center py-20">
-                        <flux:spacer />
-                        <flux:text>Carregando dados...</flux:text>
-                    </div>
-                @endif
+                    @else
+                        <div class="flex flex-col items-center justify-center py-20 gap-3">
+                            <flux:icon.loading class="h-8 w-8 text-neutral-400" />
+                            <flux:text class="text-neutral-500 text-sm">Carregando dados...</flux:text>
+                        </div>
+                    @endif
+                </div>
 
                 <div class="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-neutral-100 dark:border-neutral-800">
                     <flux:button x-on:click="Flux.modal('show-beneficiario').close()" variant="ghost" class="w-full sm:w-auto">Fechar</flux:button>
