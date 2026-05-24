@@ -1,4 +1,6 @@
 /.phpunit.cache
+/.vscode
+/.antigravitycli
 /node_modules
 /public/build
 /public/hot

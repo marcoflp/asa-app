@@ -30,6 +30,10 @@ class Form extends Component
     public string $observacoes = '';
     public $foto_documento;
     public ?string $foto_documento_path = null;
+    public $foto_documento_verso;
+    public ?string $foto_documento_verso_path = null;
+    public $foto_documento_consentimento;
+    public ?string $foto_documento_consentimento_path = null;
 
     // Campos temporários para adicionar filho
     public int $filho_idade = 0;
@@ -46,6 +50,8 @@ class Form extends Component
             ]));
             $this->filhos = $beneficiario->filhos ?? [];
             $this->foto_documento_path = $beneficiario->foto_documento;
+            $this->foto_documento_verso_path = $beneficiario->foto_documento_verso;
+            $this->foto_documento_consentimento_path = $beneficiario->foto_documento_consentimento;
         }
     }
 
@@ -74,6 +80,8 @@ class Form extends Component
             'rg' => 'nullable|string|max:20',
             'cpf' => 'nullable|string|max:14',
             'foto_documento' => 'nullable|image|max:10240',
+            'foto_documento_verso' => 'nullable|image|max:10240',
+            'foto_documento_consentimento' => 'nullable|image|max:10240',
             'num_pessoas_familia' => 'required|integer|min:1',
             'filhos' => 'nullable|array',
             'inscrito_programa_governo' => 'boolean',
@@ -85,18 +93,15 @@ class Form extends Component
 
         try {
             if ($this->foto_documento) {
-                $image = \Intervention\Image\Facades\Image::make($this->foto_documento->getRealPath());
-                
-                $image->resize(1000, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
+                $data['foto_documento'] = $this->storePhoto($this->foto_documento);
+            }
 
-                $filename = 'documentos/' . $this->foto_documento->hashName();
-                
-                \Illuminate\Support\Facades\Storage::disk('public')->put($filename, (string) $image->encode('jpg', 70));
-                
-                $data['foto_documento'] = $filename;
+            if ($this->foto_documento_verso) {
+                $data['foto_documento_verso'] = $this->storePhoto($this->foto_documento_verso);
+            }
+
+            if ($this->foto_documento_consentimento) {
+                $data['foto_documento_consentimento'] = $this->storePhoto($this->foto_documento_consentimento);
             }
 
             if ($this->beneficiario && $this->beneficiario->exists) {
@@ -112,6 +117,32 @@ class Form extends Component
             \Illuminate\Support\Facades\Log::error("Erro ao salvar beneficiário: " . $e->getMessage());
             $this->addError('geral', 'Erro ao salvar os dados. ' . $e->getMessage());
         }
+    }
+
+    private function storePhoto($file): string
+    {
+        $filename = 'documentos/' . $file->hashName();
+
+        if (class_exists('\Intervention\Image\Facades\Image')) {
+            $image = \Intervention\Image\Facades\Image::make($file->getRealPath());
+            
+            $image->resize(1000, null, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+
+            $encoded = (string) $image->encode('jpg', 70);
+        } else {
+            // Fallback para Intervention Image v3/v4
+            $manager = \Intervention\Image\ImageManager::gd();
+            $image = $manager->read($file->getRealPath());
+            $image->scale(width: 1000);
+            $encoded = $image->toJpeg(70)->toString();
+        }
+
+        \Illuminate\Support\Facades\Storage::disk('public')->put($filename, $encoded);
+        
+        return $filename;
     }
 
     public function render()

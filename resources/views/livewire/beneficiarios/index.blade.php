@@ -130,39 +130,68 @@
                         <flux:badge color="zinc" size="sm">ID: #{{ $selectedBeneficiario->id }}</flux:badge>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {{-- Endereço --}}
+                        <div>
+                            <flux:label class="text-xs text-neutral-500 uppercase">Endereço</flux:label>
+                            <flux:text class="block font-medium">{{ $selectedBeneficiario->rua }}, {{ $selectedBeneficiario->numero }}</flux:text>
+                            <flux:text class="block text-sm text-neutral-500">{{ $selectedBeneficiario->bairro }} - {{ $selectedBeneficiario->cidade }}</flux:text>
+                        </div>
+                        {{-- Contato --}}
+                        <div>
+                            <flux:label class="text-xs text-neutral-500 uppercase">Contato</flux:label>
+                            <flux:text class="block font-medium">{{ $selectedBeneficiario->telefone ?? 'Não informado' }}</flux:text>
+                        </div>
+                        {{-- Composição Familiar --}}
+                        <div class="grid grid-cols-2 gap-2">
                             <div>
-                                <flux:label class="text-xs text-neutral-500 uppercase">Endereço</flux:label>
-                                <flux:text class="block font-medium">{{ $selectedBeneficiario->rua }}, {{ $selectedBeneficiario->numero }}</flux:text>
-                                <flux:text class="block text-sm text-neutral-500">{{ $selectedBeneficiario->bairro }} - {{ $selectedBeneficiario->cidade }}</flux:text>
+                                <flux:label class="text-xs text-neutral-500 uppercase">Família</flux:label>
+                                <flux:text class="block font-medium">{{ $selectedBeneficiario->num_pessoas_familia }} pessoas</flux:text>
                             </div>
                             <div>
-                                <flux:label class="text-xs text-neutral-500 uppercase">Contato</flux:label>
-                                <flux:text class="block font-medium">{{ $selectedBeneficiario->telefone ?? 'Não informado' }}</flux:text>
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <div>
-                                    <flux:label class="text-xs text-neutral-500 uppercase">Família</flux:label>
-                                    <flux:text class="block">{{ $selectedBeneficiario->num_pessoas_familia }} pessoas</flux:text>
-                                </div>
-                                <div>
-                                    <flux:label class="text-xs text-neutral-500 uppercase">Filhos</flux:label>
-                                    <flux:text class="block">{{ count($selectedBeneficiario->filhos ?? []) }} filho(s)</flux:text>
-                                </div>
+                                <flux:label class="text-xs text-neutral-500 uppercase">Filhos</flux:label>
+                                <flux:text class="block font-medium">{{ count($selectedBeneficiario->filhos ?? []) }} filho(s)</flux:text>
                             </div>
                         </div>
-
-                        @if ($selectedBeneficiario->foto_documento)
-                            <div>
-                                <flux:label class="text-xs text-neutral-500 uppercase mb-1 block">Documento Identificado</flux:label>
-                                <a href="{{ asset('storage/' . $selectedBeneficiario->foto_documento) }}" target="_blank" class="block group">
-                                    <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento) }}" class="h-40 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
-                                    <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
-                                </a>
-                            </div>
-                        @endif
                     </div>
+
+                    {{-- Seção de Documentos --}}
+                    @if ($selectedBeneficiario->foto_documento || $selectedBeneficiario->foto_documento_verso || $selectedBeneficiario->foto_documento_consentimento)
+                        <div class="border-t border-neutral-100 dark:border-neutral-800 pt-5">
+                            <flux:label class="text-xs text-neutral-500 uppercase mb-3 block">Documentos Cadastrados</flux:label>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                @if ($selectedBeneficiario->foto_documento)
+                                    <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-2 bg-neutral-50 dark:bg-zinc-800/30">
+                                        <flux:text size="xs" class="font-semibold mb-1 block text-neutral-500">Frente do Documento</flux:text>
+                                        <a href="{{ asset('storage/' . $selectedBeneficiario->foto_documento) }}" target="_blank" class="block group">
+                                            <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
+                                            <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
+                                        </a>
+                                    </div>
+                                @endif
+
+                                @if ($selectedBeneficiario->foto_documento_verso)
+                                    <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-2 bg-neutral-50 dark:bg-zinc-800/30">
+                                        <flux:text size="xs" class="font-semibold mb-1 block text-neutral-500">Verso do Documento</flux:text>
+                                        <a href="{{ asset('storage/' . $selectedBeneficiario->foto_documento_verso) }}" target="_blank" class="block group">
+                                            <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento_verso) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
+                                            <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
+                                        </a>
+                                    </div>
+                                @endif
+
+                                @if ($selectedBeneficiario->foto_documento_consentimento)
+                                    <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-2 bg-neutral-50 dark:bg-zinc-800/30">
+                                        <flux:text size="xs" class="font-semibold mb-1 block text-neutral-500">Termo de Consentimento</flux:text>
+                                        <a href="{{ asset('storage/' . $selectedBeneficiario->foto_documento_consentimento) }}" target="_blank" class="block group">
+                                            <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento_consentimento) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
+                                            <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="border-t border-neutral-100 dark:border-neutral-800 pt-5">
                         <div class="flex items-center justify-between mb-4">

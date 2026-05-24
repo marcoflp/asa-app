@@ -39,26 +39,74 @@
                         <flux:error name="rg" />
                     </flux:field>
 
-                    <flux:field class="md:col-span-2">
-                        <flux:label>Foto do documento</flux:label>
-                        <flux:input type="file" wire:model="foto_documento" accept="image/*" />
-                        <div wire:loading wire:target="foto_documento" class="text-xs text-blue-500 mt-1">Carregando imagem...</div>
-                        <flux:error name="foto_documento" />
-                        
-                        @if ($foto_documento)
-                            <div class="mt-2">
-                                <flux:text size="sm" class="mb-1">Pré-visualização:</flux:text>
-                                <img src="{{ $foto_documento->temporaryUrl() }}" class="h-32 rounded-lg object-cover border border-neutral-200">
-                            </div>
-                        @elseif ($foto_documento_path)
-                            <div class="mt-2">
-                                <flux:text size="sm" class="mb-1">Arquivo atual:</flux:text>
-                                <a href="{{ asset('storage/' . $foto_documento_path) }}" target="_blank">
-                                    <img src="{{ asset('storage/' . $foto_documento_path) }}" class="h-32 rounded-lg object-cover border border-neutral-200 hover:opacity-80 transition-opacity">
-                                </a>
-                            </div>
-                        @endif
-                    </flux:field>
+                    {{-- Documentos (Frente, Verso e Consentimento) --}}
+                    <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-neutral-100 dark:border-neutral-800 pt-4">
+                        {{-- Frente --}}
+                        <flux:field>
+                            <flux:label>Documento (Frente)</flux:label>
+                            <flux:input type="file" wire:model="foto_documento" accept="image/*" />
+                            <div wire:loading wire:target="foto_documento" class="text-xs text-blue-500 mt-1">Carregando imagem...</div>
+                            <flux:error name="foto_documento" />
+                            
+                            @if ($foto_documento)
+                                <div class="mt-2">
+                                    <flux:text size="sm" class="mb-1">Pré-visualização:</flux:text>
+                                    <img src="{{ $foto_documento->temporaryUrl() }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200">
+                                </div>
+                            @elseif ($foto_documento_path)
+                                <div class="mt-2">
+                                    <flux:text size="sm" class="mb-1">Arquivo atual:</flux:text>
+                                    <a href="{{ asset('storage/' . $foto_documento_path) }}" target="_blank">
+                                        <img src="{{ asset('storage/' . $foto_documento_path) }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200 hover:opacity-80 transition-opacity">
+                                    </a>
+                                </div>
+                            @endif
+                        </flux:field>
+
+                        {{-- Verso --}}
+                        <flux:field>
+                            <flux:label>Documento (Verso)</flux:label>
+                            <flux:input type="file" wire:model="foto_documento_verso" accept="image/*" />
+                            <div wire:loading wire:target="foto_documento_verso" class="text-xs text-blue-500 mt-1">Carregando imagem...</div>
+                            <flux:error name="foto_documento_verso" />
+                            
+                            @if ($foto_documento_verso)
+                                <div class="mt-2">
+                                    <flux:text size="sm" class="mb-1">Pré-visualização:</flux:text>
+                                    <img src="{{ $foto_documento_verso->temporaryUrl() }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200">
+                                </div>
+                            @elseif ($foto_documento_verso_path)
+                                <div class="mt-2">
+                                    <flux:text size="sm" class="mb-1">Arquivo atual:</flux:text>
+                                    <a href="{{ asset('storage/' . $foto_documento_verso_path) }}" target="_blank">
+                                        <img src="{{ asset('storage/' . $foto_documento_verso_path) }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200 hover:opacity-80 transition-opacity">
+                                    </a>
+                                </div>
+                            @endif
+                        </flux:field>
+
+                        {{-- Consentimento --}}
+                        <flux:field>
+                            <flux:label>Termo de Consentimento</flux:label>
+                            <flux:input type="file" wire:model="foto_documento_consentimento" accept="image/*" />
+                            <div wire:loading wire:target="foto_documento_consentimento" class="text-xs text-blue-500 mt-1">Carregando imagem...</div>
+                            <flux:error name="foto_documento_consentimento" />
+                            
+                            @if ($foto_documento_consentimento)
+                                <div class="mt-2">
+                                    <flux:text size="sm" class="mb-1">Pré-visualização:</flux:text>
+                                    <img src="{{ $foto_documento_consentimento->temporaryUrl() }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200">
+                                </div>
+                            @elseif ($foto_documento_consentimento_path)
+                                <div class="mt-2">
+                                    <flux:text size="sm" class="mb-1">Arquivo atual:</flux:text>
+                                    <a href="{{ asset('storage/' . $foto_documento_consentimento_path) }}" target="_blank">
+                                        <img src="{{ asset('storage/' . $foto_documento_consentimento_path) }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200 hover:opacity-80 transition-opacity">
+                                    </a>
+                                </div>
+                            @endif
+                        </flux:field>
+                    </div>
                 </div>
             </div>
 
