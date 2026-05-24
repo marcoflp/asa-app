@@ -192,10 +192,17 @@
                         </div>
 
                         {{-- Seção de Documentos --}}
+<<<<<<< HEAD
                         @if ($selectedBeneficiario->foto_documento || $selectedBeneficiario->foto_documento_verso || $selectedBeneficiario->foto_documento_consentimento || $selectedBeneficiario->foto_documento_comprovante_residencia)
                             <div class="border-t border-neutral-100 dark:border-neutral-800 pt-5">
                                 <flux:label class="text-xs text-neutral-500 uppercase mb-3 block">Documentos Cadastrados</flux:label>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+=======
+                        @if ($selectedBeneficiario->foto_documento || $selectedBeneficiario->foto_documento_verso || $selectedBeneficiario->foto_documento_consentimento)
+                            <div class="border-t border-neutral-100 dark:border-neutral-800 pt-5">
+                                <flux:label class="text-xs text-neutral-500 uppercase mb-3 block">Documentos Cadastrados</flux:label>
+                                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+>>>>>>> 23b1a67cad20baadc2174f0fdbe5af5b27ad87e0
                                     @if ($selectedBeneficiario->foto_documento)
                                         <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-2 bg-neutral-50 dark:bg-zinc-800/30">
                                             <flux:text size="xs" class="font-semibold mb-1 block text-neutral-500">Frente do Documento</flux:text>
@@ -223,6 +230,7 @@
                                                 <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento_consentimento) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
                                                 <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
                                             </a>
+<<<<<<< HEAD
                                         </div>
                                     @endif
 
@@ -233,6 +241,8 @@
                                                 <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento_comprovante_residencia) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
                                                 <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
                                             </a>
+=======
+>>>>>>> 23b1a67cad20baadc2174f0fdbe5af5b27ad87e0
                                         </div>
                                     @endif
                                 </div>
