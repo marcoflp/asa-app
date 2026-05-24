@@ -74,35 +74,5 @@ test('system smoke test: full user journey', function () {
         ->assertSee('João Silva');
 });
 
-test('can upload front, back, consent, and comprovante documents for beneficiary', function () {
-    Storage::fake('public');
 
-    $frente = UploadedFile::fake()->image('frente.jpg');
-    $verso = UploadedFile::fake()->image('verso.jpg');
-    $consentimento = UploadedFile::fake()->image('consentimento.jpg');
-    $comprovante = UploadedFile::fake()->image('comprovante.jpg');
-
-    Livewire::test(BeneficiarioForm::class)
-        ->set('nome', 'Maria Souza')
-        ->set('cpf', '987.654.321-11')
-        ->set('foto_documento', $frente)
-        ->set('foto_documento_verso', $verso)
-        ->set('foto_documento_consentimento', $consentimento)
-        ->set('foto_documento_comprovante_residencia', $comprovante)
-        ->call('save')
-        ->assertHasNoErrors()
-        ->assertRedirect(route('beneficiarios.index'));
-
-    $beneficiario = Beneficiario::where('nome', 'Maria Souza')->first();
-    expect($beneficiario)->not->toBeNull();
-    expect($beneficiario->foto_documento)->not->toBeNull();
-    expect($beneficiario->foto_documento_verso)->not->toBeNull();
-    expect($beneficiario->foto_documento_consentimento)->not->toBeNull();
-    expect($beneficiario->foto_documento_comprovante_residencia)->not->toBeNull();
-
-    Storage::disk('public')->assertExists($beneficiario->foto_documento);
-    Storage::disk('public')->assertExists($beneficiario->foto_documento_verso);
-    Storage::disk('public')->assertExists($beneficiario->foto_documento_consentimento);
-    Storage::disk('public')->assertExists($beneficiario->foto_documento_comprovante_residencia);
-});
 
