@@ -28,6 +28,7 @@
                         <th class="px-4 py-3 font-medium">Família</th>
                         <th class="px-4 py-3 font-medium">Prog. Governo</th>
                         <th class="px-4 py-3 font-medium">Est. Bíblico</th>
+                        <th class="px-4 py-3 font-medium">Documentos</th>
                         <th class="px-4 py-3 font-medium text-right">Ações</th>
                     </tr>
                 </thead>
@@ -52,6 +53,18 @@
                                     <flux:badge color="zinc" size="sm">Não</flux:badge>
                                 @endif
                             </td>
+                            <td class="px-4 py-3">
+                                @php
+                                    $docsCount = ($b->foto_documento ? 1 : 0) + ($b->foto_documento_verso ? 1 : 0) + ($b->foto_documento_consentimento ? 1 : 0);
+                                @endphp
+                                @if ($docsCount === 3)
+                                    <flux:badge color="green" size="sm">Completo (3/3)</flux:badge>
+                                @elseif ($docsCount > 0)
+                                    <flux:badge color="yellow" size="sm">Parcial ({{ $docsCount }}/3)</flux:badge>
+                                @else
+                                    <flux:badge color="red" size="sm">Pendente (0/3)</flux:badge>
+                                @endif
+                            </td>
                             <td class="px-4 py-3 text-right">
                                 <div class="flex justify-end gap-2">
                                     <flux:button wire:click="show({{ $b->id }})" x-on:click="Flux.modal('show-beneficiario').show()" size="sm" variant="ghost" icon="eye" />
@@ -62,7 +75,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-4 py-8 text-center text-neutral-500">
+                            <td colspan="8" class="px-4 py-8 text-center text-neutral-500">
                                 Nenhum beneficiário encontrado.
                             </td>
                         </tr>
@@ -105,6 +118,19 @@
                                 <flux:badge color="blue" size="sm">Sim</flux:badge>
                             @else
                                 <flux:badge color="zinc" size="sm">Não</flux:badge>
+                            @endif
+                        </div>
+                        <div class="w-full flex justify-between items-center">
+                            <span class="text-neutral-500">Documentos:</span>
+                            @php
+                                $docsCount = ($b->foto_documento ? 1 : 0) + ($b->foto_documento_verso ? 1 : 0) + ($b->foto_documento_consentimento ? 1 : 0);
+                            @endphp
+                            @if ($docsCount === 3)
+                                <flux:badge color="green" size="sm">Completo (3/3)</flux:badge>
+                            @elseif ($docsCount > 0)
+                                <flux:badge color="yellow" size="sm">Parcial ({{ $docsCount }}/3)</flux:badge>
+                            @else
+                                <flux:badge color="red" size="sm">Pendente (0/3)</flux:badge>
                             @endif
                         </div>
                     </div>
