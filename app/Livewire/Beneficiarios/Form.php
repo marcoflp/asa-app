@@ -34,6 +34,8 @@ class Form extends Component
     public ?string $foto_documento_verso_path = null;
     public $foto_documento_consentimento;
     public ?string $foto_documento_consentimento_path = null;
+    public $foto_documento_comprovante_residencia;
+    public ?string $foto_documento_comprovante_residencia_path = null;
 
     // Campos temporários para adicionar filho
     public int $filho_idade = 0;
@@ -52,6 +54,7 @@ class Form extends Component
             $this->foto_documento_path = $beneficiario->foto_documento;
             $this->foto_documento_verso_path = $beneficiario->foto_documento_verso;
             $this->foto_documento_consentimento_path = $beneficiario->foto_documento_consentimento;
+            $this->foto_documento_comprovante_residencia_path = $beneficiario->foto_documento_comprovante_residencia;
         }
     }
 
@@ -82,6 +85,7 @@ class Form extends Component
             'foto_documento' => 'nullable|image|max:10240',
             'foto_documento_verso' => 'nullable|image|max:10240',
             'foto_documento_consentimento' => 'nullable|image|max:10240',
+            'foto_documento_comprovante_residencia' => 'nullable|image|max:10240',
             'num_pessoas_familia' => 'required|integer|min:1',
             'filhos' => 'nullable|array',
             'inscrito_programa_governo' => 'boolean',
@@ -102,6 +106,10 @@ class Form extends Component
 
             if ($this->foto_documento_consentimento) {
                 $data['foto_documento_consentimento'] = $this->storePhoto($this->foto_documento_consentimento);
+            }
+
+            if ($this->foto_documento_comprovante_residencia) {
+                $data['foto_documento_comprovante_residencia'] = $this->storePhoto($this->foto_documento_comprovante_residencia);
             }
 
             if ($this->beneficiario && $this->beneficiario->exists) {

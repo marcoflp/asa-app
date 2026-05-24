@@ -39,8 +39,8 @@
                         <flux:error name="rg" />
                     </flux:field>
 
-                    {{-- Documentos (Frente, Verso e Consentimento) --}}
-                    <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-neutral-100 dark:border-neutral-800 pt-4">
+                    {{-- Documentos (Frente, Verso, Consentimento e Comprovante de Residência) --}}
+                    <div class="md:col-span-2 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 border-t border-neutral-100 dark:border-neutral-800 pt-4">
                         {{-- Frente --}}
                         <flux:field>
                             <flux:label>Documento (Frente)</flux:label>
@@ -102,6 +102,28 @@
                                     <flux:text size="sm" class="mb-1">Arquivo atual:</flux:text>
                                     <a href="{{ asset('storage/' . $foto_documento_consentimento_path) }}" target="_blank">
                                         <img src="{{ asset('storage/' . $foto_documento_consentimento_path) }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200 hover:opacity-80 transition-opacity">
+                                    </a>
+                                </div>
+                            @endif
+                        </flux:field>
+
+                        {{-- Comprovante de Residência --}}
+                        <flux:field>
+                            <flux:label>Comprovante de Endereço</flux:label>
+                            <flux:input type="file" wire:model="foto_documento_comprovante_residencia" accept="image/*" />
+                            <div wire:loading wire:target="foto_documento_comprovante_residencia" class="text-xs text-blue-500 mt-1">Carregando imagem...</div>
+                            <flux:error name="foto_documento_comprovante_residencia" />
+                            
+                            @if ($foto_documento_comprovante_residencia)
+                                <div class="mt-2">
+                                    <flux:text size="sm" class="mb-1">Pré-visualização:</flux:text>
+                                    <img src="{{ $foto_documento_comprovante_residencia->temporaryUrl() }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200">
+                                </div>
+                            @elseif ($foto_documento_comprovante_residencia_path)
+                                <div class="mt-2">
+                                    <flux:text size="sm" class="mb-1">Arquivo atual:</flux:text>
+                                    <a href="{{ asset('storage/' . $foto_documento_comprovante_residencia_path) }}" target="_blank">
+                                        <img src="{{ asset('storage/' . $foto_documento_comprovante_residencia_path) }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200 hover:opacity-80 transition-opacity">
                                     </a>
                                 </div>
                             @endif
