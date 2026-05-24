@@ -1,10 +1,11 @@
 <div class="flex h-full w-full flex-1 flex-col gap-6">
-    <div class="flex items-center justify-between">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <flux:heading size="xl">Usuários</flux:heading>
-        <flux:button href="{{ route('usuarios.create') }}" variant="primary" icon="plus" wire:navigate>Novo Usuário</flux:button>
+        <flux:button href="{{ route('usuarios.create') }}" variant="primary" icon="plus" wire:navigate class="w-full sm:w-auto">Novo Usuário</flux:button>
     </div>
 
-    <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 overflow-hidden">
+    {{-- DESKTOP VIEW --}}
+    <div class="hidden md:block rounded-xl border border-neutral-200 dark:border-neutral-700 overflow-hidden">
         <table class="w-full text-left">
             <thead class="bg-neutral-50 dark:bg-neutral-800 text-sm text-neutral-500 uppercase">
                 <tr>
@@ -40,5 +41,33 @@
                 @endforeach
             </tbody>
         </table>
+    </div>
+
+    {{-- MOBILE VIEW --}}
+    <div class="block md:hidden space-y-4">
+        @foreach($users as $user)
+            <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 space-y-3 bg-white dark:bg-zinc-900 shadow-sm">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="font-bold text-base text-neutral-800 dark:text-neutral-200">{{ $user->name }}</div>
+                        <div class="text-xs text-neutral-500 mt-1">{{ $user->email }}</div>
+                    </div>
+                    <flux:button href="{{ route('usuarios.edit', $user) }}" size="sm" variant="ghost" icon="pencil-square" wire:navigate />
+                </div>
+                <div class="pt-2 border-t border-neutral-100 dark:border-neutral-800 flex justify-between items-center text-xs">
+                    <span class="text-neutral-500">Último Acesso:</span>
+                    @if($user->last_seen_at)
+                        <div class="flex items-center gap-2">
+                            <div class="h-2 w-2 rounded-full {{ $user->last_seen_at->diffInMinutes(now()) < 5 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-neutral-300' }}"></div>
+                            <span class="text-neutral-600 dark:text-neutral-400">
+                                {{ $user->last_seen_at->diffForHumans() }}
+                            </span>
+                        </div>
+                    @else
+                        <span class="text-neutral-400 italic">N/A</span>
+                    @endif
+                </div>
+            </div>
+        @endforeach
     </div>
 </div>

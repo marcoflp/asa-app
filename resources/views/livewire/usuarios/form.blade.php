@@ -32,9 +32,9 @@
             </div>
         </flux:card>
 
-        <div class="flex justify-end gap-3">
-            <flux:button variant="ghost" :href="route('dashboard')" wire:navigate>Cancelar</flux:button>
-            <flux:button type="submit" variant="primary">
+        <div class="flex flex-col-reverse sm:flex-row justify-end gap-3">
+            <flux:button variant="ghost" :href="route('dashboard')" wire:navigate class="w-full sm:w-auto">Cancelar</flux:button>
+            <flux:button type="submit" variant="primary" class="w-full sm:w-auto">
                 {{ $user?->exists ? 'Salvar Alterações' : 'Criar Usuário' }}
             </flux:button>
         </div>

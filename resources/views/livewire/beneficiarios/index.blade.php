@@ -88,12 +88,12 @@
         <div class="md:hidden space-y-4">
             @forelse ($beneficiarios as $b)
                 <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 space-y-3 bg-white dark:bg-zinc-900 shadow-sm">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="font-bold text-base">{{ $b->nome }}</p>
-                            <p class="text-xs text-neutral-500 uppercase">{{ $b->bairro ?? 'Bairro não inf.' }} - {{ $b->telefone ?? 'Sem tel' }}</p>
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                        <div class="flex-1 min-w-0">
+                            <p class="font-bold text-base truncate">{{ $b->nome }}</p>
+                            <p class="text-xs text-neutral-500 uppercase mt-0.5">{{ $b->bairro ?? 'Bairro não inf.' }} • {{ $b->telefone ?? 'Sem tel' }}</p>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="flex gap-1.5 self-end sm:self-start">
                             <flux:button wire:click="show({{ $b->id }})" x-on:click="Flux.modal('show-beneficiario').show()" size="sm" variant="ghost" icon="eye" />
                             <flux:button href="{{ route('beneficiarios.edit', $b) }}" size="sm" variant="ghost" icon="pencil" wire:navigate />
                             <flux:button wire:click="confirmDelete({{ $b->id }})" x-on:click="Flux.modal('confirm-delete').show()" size="sm" variant="ghost" icon="trash" class="text-red-500" />
@@ -148,12 +148,12 @@
         <flux:modal name="show-beneficiario" class="md:min-w-[700px]">
             <div class="space-y-6">
                 @if ($selectedBeneficiario)
-                    <div class="flex justify-between items-start">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
-                            <flux:heading size="lg">{{ $selectedBeneficiario->nome }}</flux:heading>
-                            <flux:text size="sm">{{ $selectedBeneficiario->cpf ?? 'Sem CPF' }} | {{ $selectedBeneficiario->rg ?? 'Sem RG' }}</flux:text>
+                            <flux:heading size="lg" class="break-words">{{ $selectedBeneficiario->nome }}</flux:heading>
+                            <flux:text size="sm" class="block mt-1">{{ $selectedBeneficiario->cpf ?? 'Sem CPF' }} | {{ $selectedBeneficiario->rg ?? 'Sem RG' }}</flux:text>
                         </div>
-                        <flux:badge color="zinc" size="sm">ID: #{{ $selectedBeneficiario->id }}</flux:badge>
+                        <flux:badge color="zinc" size="sm" class="self-start sm:self-center">ID: #{{ $selectedBeneficiario->id }}</flux:badge>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -260,8 +260,8 @@
                     </div>
                 @endif
 
-                <div class="flex justify-end gap-3 pt-4 border-t border-neutral-100 dark:border-neutral-800">
-                    <flux:button x-on:click="Flux.modal('show-beneficiario').close()" variant="ghost">Fechar</flux:button>
+                <div class="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-neutral-100 dark:border-neutral-800">
+                    <flux:button x-on:click="Flux.modal('show-beneficiario').close()" variant="ghost" class="w-full sm:w-auto">Fechar</flux:button>
                 </div>
             </div>
         </flux:modal>

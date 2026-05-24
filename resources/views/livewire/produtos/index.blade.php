@@ -64,7 +64,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-4 py-8 text-center text-neutral-500">Nenhum produto encontrado.</td>
+                        <td colspan="7" class="px-4 py-8 text-center text-neutral-500">Nenhum produto encontrado.</td>
                     </tr>
                 @endforelse
             </tbody>
@@ -75,12 +75,12 @@
     <div class="block md:hidden space-y-4">
         @forelse ($produtos as $p)
             <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 space-y-3 bg-white dark:bg-zinc-900 shadow-sm {{ !$p->ativo ? 'opacity-50' : '' }}">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="font-bold text-base">{{ $p->nome }}</p>
-                        <p class="text-xs text-neutral-500 capitalize">{{ $p->categoria }}</p>
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                    <div class="flex-1 min-w-0">
+                        <p class="font-bold text-base truncate">{{ $p->nome }}</p>
+                        <p class="text-xs text-neutral-500 capitalize mt-0.5">{{ $p->categoria }}</p>
                     </div>
-                    <div class="flex gap-2">
+                    <div class="flex gap-1.5 self-end sm:self-start">
                         <flux:button href="{{ route('produtos.edit', $p) }}" size="sm" variant="ghost" icon="pencil" wire:navigate />
                         <flux:button wire:click="confirmDelete({{ $p->id }})" x-on:click="Flux.modal('confirm-delete').show()" size="sm" variant="ghost" icon="trash" class="text-red-500" />
                     </div>
