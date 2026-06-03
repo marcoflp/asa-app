@@ -30,7 +30,46 @@ class LogUserActions
         $path = $request->getRequestUri();
         $status = $response->getStatusCode();
 
-        $message = "{$method} {$path} por user {$user} [Status: {$status}]";
+        $livewireDetails = '';
+        if ($method === 'POST' && str_contains($path, 'livewire') && str_contains($path, '/update') && $request->has('components')) {
+            $componentDescriptions = [];
+            foreach ($request->input('components', []) as $component) {
+                $snapshot = $component['snapshot'] ?? null;
+                if (is_string($snapshot)) {
+                    $snapshotData = json_decode($snapshot, true);
+                } else {
+                    $snapshotData = $snapshot;
+                }
+                $name = $snapshotData['memo']['name'] ?? 'unknown-component';
+
+                $updates = $component['updates'] ?? [];
+                $updatedKeys = array_keys($updates);
+
+                $calls = $component['calls'] ?? [];
+                $calledMethods = [];
+                foreach ($calls as $call) {
+                    $calledMethods[] = $call['method'] ?? 'unknown-method';
+                }
+
+                $desc = $name;
+                if (!empty($calledMethods) || !empty($updatedKeys)) {
+                    $actions = [];
+                    if (!empty($calledMethods)) {
+                        $actions[] = "methods: " . implode(', ', $calledMethods);
+                    }
+                    if (!empty($updatedKeys)) {
+                        $actions[] = "updates: " . implode(', ', $updatedKeys);
+                    }
+                    $desc .= " (" . implode('; ', $actions) . ")";
+                }
+                $componentDescriptions[] = $desc;
+            }
+            if (!empty($componentDescriptions)) {
+                $livewireDetails = ' [Livewire: ' . implode(' | ', $componentDescriptions) . ']';
+            }
+        }
+
+        $message = "{$method} {$path}{$livewireDetails} por user {$user} [Status: {$status}]";
 
         $body = $this->sanitizeData($request->all());
 
