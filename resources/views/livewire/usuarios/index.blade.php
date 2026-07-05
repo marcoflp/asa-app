@@ -5,7 +5,7 @@
     </div>
 
     {{-- DESKTOP VIEW --}}
-    <div class="hidden md:block rounded-xl border border-neutral-200 dark:border-neutral-700 overflow-hidden">
+    <div wire:loading.class="opacity-60 pointer-events-none transition-opacity" class="hidden md:block rounded-xl border border-neutral-200 dark:border-neutral-700 overflow-hidden">
         <table class="w-full text-left">
             <thead class="bg-neutral-50 dark:bg-neutral-800 text-sm text-neutral-500 uppercase">
                 <tr>
@@ -44,7 +44,7 @@
     </div>
 
     {{-- MOBILE VIEW --}}
-    <div class="block md:hidden space-y-4">
+    <div wire:loading.class="opacity-60 pointer-events-none transition-opacity" class="block md:hidden space-y-4">
         @foreach($users as $user)
             <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 space-y-3 bg-white dark:bg-zinc-900 shadow-sm">
                 <div class="flex justify-between items-start">

@@ -20,7 +20,7 @@
     </div>
 
     {{-- DESKTOP VIEW --}}
-    <div class="hidden md:block overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-700">
+    <div wire:loading.class="opacity-60 pointer-events-none transition-opacity" class="hidden md:block overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-700">
         <table class="w-full text-sm">
             <thead class="bg-neutral-50 dark:bg-zinc-800 text-left">
                 <tr>
@@ -63,7 +63,7 @@
     </div>
 
     {{-- MOBILE VIEW --}}
-    <div class="block md:hidden space-y-4">
+    <div wire:loading.class="opacity-60 pointer-events-none transition-opacity" class="block md:hidden space-y-4">
         @forelse ($retiradas as $r)
             <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 space-y-3 bg-white dark:bg-zinc-900 shadow-sm">
                 <div class="flex justify-between items-start">
