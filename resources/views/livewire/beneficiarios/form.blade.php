@@ -44,14 +44,22 @@
                         {{-- Frente --}}
                         <flux:field>
                             <flux:label>Documento (Frente)</flux:label>
-                            <flux:input type="file" wire:model="foto_documento" accept="image/*" />
+                            <flux:input type="file" wire:model="foto_documento" accept="image/*,image/heic,image/heif,.heic,.heif" />
                             <div wire:loading wire:target="foto_documento" class="text-xs text-blue-500 mt-1">Carregando imagem...</div>
                             <flux:error name="foto_documento" />
                             
                             @if ($foto_documento)
                                 <div class="mt-2">
                                     <flux:text size="sm" class="mb-1">Pré-visualização:</flux:text>
-                                    <img src="{{ $foto_documento->temporaryUrl() }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200">
+                                    @if (in_array(strtolower($foto_documento->getClientOriginalExtension() ?? ''), ['heic', 'heif']))
+                                        <div class="h-32 w-full rounded-lg border border-neutral-200 bg-neutral-50 dark:bg-neutral-800 flex flex-col items-center justify-center text-xs text-neutral-500 gap-1 p-2">
+                                            <flux:icon name="photo" class="h-6 w-6 text-neutral-400" />
+                                            <span class="font-medium text-center text-neutral-700 dark:text-neutral-300">Foto HEIC (iPhone)</span>
+                                            <span class="text-neutral-400 text-[10px] text-center">A imagem será convertida para JPEG automaticamente ao salvar.</span>
+                                        </div>
+                                    @else
+                                        <img src="{{ $foto_documento->temporaryUrl() }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200">
+                                    @endif
                                 </div>
                             @elseif ($foto_documento_path)
                                 <div class="mt-2">
@@ -66,14 +74,22 @@
                         {{-- Verso --}}
                         <flux:field>
                             <flux:label>Documento (Verso)</flux:label>
-                            <flux:input type="file" wire:model="foto_documento_verso" accept="image/*" />
+                            <flux:input type="file" wire:model="foto_documento_verso" accept="image/*,image/heic,image/heif,.heic,.heif" />
                             <div wire:loading wire:target="foto_documento_verso" class="text-xs text-blue-500 mt-1">Carregando imagem...</div>
                             <flux:error name="foto_documento_verso" />
                             
                             @if ($foto_documento_verso)
                                 <div class="mt-2">
                                     <flux:text size="sm" class="mb-1">Pré-visualização:</flux:text>
-                                    <img src="{{ $foto_documento_verso->temporaryUrl() }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200">
+                                    @if (in_array(strtolower($foto_documento_verso->getClientOriginalExtension() ?? ''), ['heic', 'heif']))
+                                        <div class="h-32 w-full rounded-lg border border-neutral-200 bg-neutral-50 dark:bg-neutral-800 flex flex-col items-center justify-center text-xs text-neutral-500 gap-1 p-2">
+                                            <flux:icon name="photo" class="h-6 w-6 text-neutral-400" />
+                                            <span class="font-medium text-center text-neutral-700 dark:text-neutral-300">Foto HEIC (iPhone)</span>
+                                            <span class="text-neutral-400 text-[10px] text-center">A imagem será convertida para JPEG automaticamente ao salvar.</span>
+                                        </div>
+                                    @else
+                                        <img src="{{ $foto_documento_verso->temporaryUrl() }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200">
+                                    @endif
                                 </div>
                             @elseif ($foto_documento_verso_path)
                                 <div class="mt-2">
@@ -88,14 +104,22 @@
                         {{-- Consentimento --}}
                         <flux:field>
                             <flux:label>Termo de Consentimento</flux:label>
-                            <flux:input type="file" wire:model="foto_documento_consentimento" accept="image/*" />
+                            <flux:input type="file" wire:model="foto_documento_consentimento" accept="image/*,image/heic,image/heif,.heic,.heif" />
                             <div wire:loading wire:target="foto_documento_consentimento" class="text-xs text-blue-500 mt-1">Carregando imagem...</div>
                             <flux:error name="foto_documento_consentimento" />
                             
                             @if ($foto_documento_consentimento)
                                 <div class="mt-2">
                                     <flux:text size="sm" class="mb-1">Pré-visualização:</flux:text>
-                                    <img src="{{ $foto_documento_consentimento->temporaryUrl() }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200">
+                                    @if (in_array(strtolower($foto_documento_consentimento->getClientOriginalExtension() ?? ''), ['heic', 'heif']))
+                                        <div class="h-32 w-full rounded-lg border border-neutral-200 bg-neutral-50 dark:bg-neutral-800 flex flex-col items-center justify-center text-xs text-neutral-500 gap-1 p-2">
+                                            <flux:icon name="photo" class="h-6 w-6 text-neutral-400" />
+                                            <span class="font-medium text-center text-neutral-700 dark:text-neutral-300">Foto HEIC (iPhone)</span>
+                                            <span class="text-neutral-400 text-[10px] text-center">A imagem será convertida para JPEG automaticamente ao salvar.</span>
+                                        </div>
+                                    @else
+                                        <img src="{{ $foto_documento_consentimento->temporaryUrl() }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200">
+                                    @endif
                                 </div>
                             @elseif ($foto_documento_consentimento_path)
                                 <div class="mt-2">
@@ -110,14 +134,22 @@
                         {{-- Comprovante de Residência --}}
                         <flux:field>
                             <flux:label>Comprovante de Endereço</flux:label>
-                            <flux:input type="file" wire:model="foto_documento_comprovante_residencia" accept="image/*" />
+                            <flux:input type="file" wire:model="foto_documento_comprovante_residencia" accept="image/*,image/heic,image/heif,.heic,.heif" />
                             <div wire:loading wire:target="foto_documento_comprovante_residencia" class="text-xs text-blue-500 mt-1">Carregando imagem...</div>
                             <flux:error name="foto_documento_comprovante_residencia" />
                             
                             @if ($foto_documento_comprovante_residencia)
                                 <div class="mt-2">
                                     <flux:text size="sm" class="mb-1">Pré-visualização:</flux:text>
-                                    <img src="{{ $foto_documento_comprovante_residencia->temporaryUrl() }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200">
+                                    @if (in_array(strtolower($foto_documento_comprovante_residencia->getClientOriginalExtension() ?? ''), ['heic', 'heif']))
+                                        <div class="h-32 w-full rounded-lg border border-neutral-200 bg-neutral-50 dark:bg-neutral-800 flex flex-col items-center justify-center text-xs text-neutral-500 gap-1 p-2">
+                                            <flux:icon name="photo" class="h-6 w-6 text-neutral-400" />
+                                            <span class="font-medium text-center text-neutral-700 dark:text-neutral-300">Foto HEIC (iPhone)</span>
+                                            <span class="text-neutral-400 text-[10px] text-center">A imagem será convertida para JPEG automaticamente ao salvar.</span>
+                                        </div>
+                                    @else
+                                        <img src="{{ $foto_documento_comprovante_residencia->temporaryUrl() }}" class="h-32 w-full rounded-lg object-cover border border-neutral-200">
+                                    @endif
                                 </div>
                             @elseif ($foto_documento_comprovante_residencia_path)
                                 <div class="mt-2">

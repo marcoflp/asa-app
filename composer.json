@@ -17,6 +17,7 @@
         "laravel/tinker": "^3.0",
         "livewire/flux": "^2.12.0",
         "livewire/livewire": "^4.1",
+        "maestroerror/php-heic-to-jpg": "^1.0",
         "nativephp/mobile": "*",
         "opcodesio/log-viewer": "^3.24"
     },

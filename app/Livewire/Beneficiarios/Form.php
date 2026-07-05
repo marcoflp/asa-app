@@ -82,10 +82,10 @@ class Form extends Component
             'cep' => 'nullable|string|max:9',
             'rg' => 'nullable|string|max:20',
             'cpf' => 'nullable|string|max:14',
-            'foto_documento' => 'nullable|image|max:10240',
-            'foto_documento_verso' => 'nullable|image|max:10240',
-            'foto_documento_consentimento' => 'nullable|image|max:10240',
-            'foto_documento_comprovante_residencia' => 'nullable|image|max:10240',
+            'foto_documento' => 'nullable|file|mimes:jpg,jpeg,png,gif,heic,heif|max:10240',
+            'foto_documento_verso' => 'nullable|file|mimes:jpg,jpeg,png,gif,heic,heif|max:10240',
+            'foto_documento_consentimento' => 'nullable|file|mimes:jpg,jpeg,png,gif,heic,heif|max:10240',
+            'foto_documento_comprovante_residencia' => 'nullable|file|mimes:jpg,jpeg,png,gif,heic,heif|max:10240',
             'num_pessoas_familia' => 'required|integer|min:1',
             'filhos' => 'nullable|array',
             'inscrito_programa_governo' => 'boolean',
@@ -129,26 +129,44 @@ class Form extends Component
 
     private function storePhoto($file): string
     {
-        $filename = 'documentos/' . $file->hashName();
+        $hashName = pathinfo($file->hashName(), PATHINFO_FILENAME) . '.jpg';
+        $filename = 'documentos/' . $hashName;
 
-        if (class_exists('\Intervention\Image\Facades\Image')) {
-            $image = \Intervention\Image\Facades\Image::make($file->getRealPath());
-            
-            $image->resize(1000, null, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
+        $filePath = $file->getRealPath();
+        $isHeicConverted = false;
 
-            $encoded = (string) $image->encode('jpg', 70);
-        } else {
-            // Fallback para Intervention Image v3/v4
-            $manager = \Intervention\Image\ImageManager::gd();
-            $image = $manager->read($file->getRealPath());
-            $image->scale(width: 1000);
-            $encoded = $image->toJpeg(70)->toString();
+        // Se for HEIC, converte para JPEG antes de processar
+        if (class_exists('\Maestroerror\HeicToJpg') && \Maestroerror\HeicToJpg::isHeic($filePath)) {
+            $tempJpegPath = tempnam(sys_get_temp_dir(), 'heic') . '.jpg';
+            \Maestroerror\HeicToJpg::convert($filePath)->saveAs($tempJpegPath);
+            $filePath = $tempJpegPath;
+            $isHeicConverted = true;
         }
 
-        \Illuminate\Support\Facades\Storage::disk('public')->put($filename, $encoded);
+        try {
+            if (class_exists('\Intervention\Image\Facades\Image')) {
+                $image = \Intervention\Image\Facades\Image::make($filePath);
+                
+                $image->resize(1000, null, function ($constraint) {
+                    $constraint->aspectRatio();
+                    $constraint->upsize();
+                });
+
+                $encoded = (string) $image->encode('jpg', 70);
+            } else {
+                // Fallback para Intervention Image v3/v4
+                $manager = \Intervention\Image\ImageManager::gd();
+                $image = $manager->read($filePath);
+                $image->scale(width: 1000);
+                $encoded = $image->toJpeg(70)->toString();
+            }
+
+            \Illuminate\Support\Facades\Storage::disk('public')->put($filename, $encoded);
+        } finally {
+            if ($isHeicConverted && file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
         
         return $filename;
     }
