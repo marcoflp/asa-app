@@ -23,12 +23,12 @@
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
+    --color-accent: var(--color-asa-green);
+    --color-accent-content: var(--color-asa-green);
     --color-accent-foreground: var(--color-white);
 
-    --color-asa-gold: #BB900E;
-    --color-asa-green: #1E3C32;
+    --color-asa-gold: #d6a838;
+    --color-asa-green: #1a2f26;
     --font-outfit: "Outfit", sans-serif;
 
     --animate-fade-in: fade-in 1s ease-out forwards;
@@ -71,29 +71,29 @@
     }
 
     .brand-gradient {
-        background: linear-gradient(135deg, #1E3C32 0%, #BB900E 100%);
+        background: linear-gradient(135deg, var(--color-asa-green) 0%, var(--color-asa-gold) 100%);
     }
 
     .mesh-bg {
         background-color: #FFFFFF;
         background-image:
-            radial-gradient(at 0% 0%, rgba(30, 60, 50, 0.03) 0px, transparent 50%),
-            radial-gradient(at 100% 100%, rgba(187, 144, 14, 0.03) 0px, transparent 50%);
+            radial-gradient(at 0% 0%, rgba(26, 47, 38, 0.03) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(214, 168, 56, 0.03) 0px, transparent 50%);
     }
 
     .dark .mesh-bg {
         background-color: #030712;
         background-image:
-            radial-gradient(at 0% 0%, rgba(30, 60, 50, 0.1) 0px, transparent 50%),
-            radial-gradient(at 100% 100%, rgba(187, 144, 14, 0.1) 0px, transparent 50%);
+            radial-gradient(at 0% 0%, rgba(26, 47, 38, 0.1) 0px, transparent 50%),
+            radial-gradient(at 100% 100%, rgba(214, 168, 56, 0.1) 0px, transparent 50%);
     }
 }
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
+        --color-accent: var(--color-asa-yellow);
+        --color-accent-content: var(--color-asa-yellow);
+        --color-accent-foreground: var(--color-asa-green);
     }
 }
 

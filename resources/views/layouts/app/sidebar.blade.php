@@ -27,7 +27,7 @@
             </div>
         </div>
 
-        <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+        <flux:sidebar sticky collapsible="mobile" class="border-e border-asa-green/10 bg-asa-green text-zinc-300 dark:border-zinc-800 dark:bg-asa-green dark">
             <flux:sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
                 <flux:sidebar.collapse class="lg:hidden" />
@@ -35,16 +35,16 @@
 
             <flux:sidebar.nav>
                 <flux:sidebar.group :heading="__('Plataforma')" class="grid">
-                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" class="text-zinc-300 hover:text-white" wire:navigate>
                         {{ __('Home') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="users" :href="route('beneficiarios.index')" :current="request()->routeIs('beneficiarios.*')" wire:navigate>
+                    <flux:sidebar.item icon="users" :href="route('beneficiarios.index')" :current="request()->routeIs('beneficiarios.*')" class="text-zinc-300 hover:text-white" wire:navigate>
                         {{ __('Beneficiários') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="archive-box" :href="route('produtos.index')" :current="request()->routeIs('produtos.*')" wire:navigate>
+                    <flux:sidebar.item icon="archive-box" :href="route('produtos.index')" :current="request()->routeIs('produtos.*')" class="text-zinc-300 hover:text-white" wire:navigate>
                         {{ __('Produtos') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="arrow-up-tray" :href="route('retiradas.index')" :current="request()->routeIs('retiradas.*')" wire:navigate>
+                    <flux:sidebar.item icon="arrow-up-tray" :href="route('retiradas.index')" :current="request()->routeIs('retiradas.*')" class="text-zinc-300 hover:text-white" wire:navigate>
                         {{ __('Retiradas') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>

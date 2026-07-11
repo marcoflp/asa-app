@@ -12,14 +12,23 @@ use Livewire\Component;
 class Dashboard extends Component
 {
     public string $periodo = 'mensal';
+    public ?string $dataInicio = null;
+    public ?string $dataFim = null;
 
     public function getPeriodoDates()
     {
+        if ($this->periodo === 'personalizado' && $this->dataInicio && $this->dataFim) {
+            return [
+                Carbon::parse($this->dataInicio)->startOfDay(),
+                Carbon::parse($this->dataFim)->endOfDay()
+            ];
+        }
+
         return match ($this->periodo) {
             'hoje'       => [now()->startOfDay(), now()->endOfDay()],
             'semanal'    => [now()->subDays(7)->startOfDay(), now()->endOfDay()],
             'mensal'     => [now()->subDays(30)->startOfDay(), now()->endOfDay()],
-            'trimestral' => [now()->subMonths(3)->startOfDay(), now()->endOfDay()],
+            'trimestral' => [now()->firstOfQuarter()->startOfDay(), now()->lastOfQuarter()->endOfDay()],
             'semestral'  => [now()->subMonths(6)->startOfDay(), now()->endOfDay()],
             default      => [now()->startOfMonth(), now()->endOfMonth()],
         };
@@ -85,7 +94,7 @@ class Dashboard extends Component
         
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->output();
-        }, 'relatorio-dashboard-' . $this->periodo . '.pdf');
+        }, 'relatorio-dashboard-' . ($this->periodo === 'personalizado' ? 'personalizado' : $this->periodo) . '.pdf');
     }
 
     public function render()
