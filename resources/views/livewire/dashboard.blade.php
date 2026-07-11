@@ -154,7 +154,7 @@
                                 <p class="font-semibold text-sm text-neutral-800 dark:text-neutral-200">{{ $r->beneficiario->nome }}</p>
                                 <p class="text-xs font-medium text-neutral-500 mt-0.5 flex items-center gap-1">
                                     <flux:icon.calendar class="w-3 h-3" />
-                                    {{ $r->data->format('d/m/Y') }} &bull; {{ $r->itens_count ?? $r->itens->count() }} item(ns)
+                                    {{ $r->data->format('d/m/Y') }} &bull; {{ $r->items_count ?? $r->items->count() }} item(ns)
                                 </p>
                             </div>
                         </div>
