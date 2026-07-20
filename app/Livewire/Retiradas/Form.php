@@ -16,9 +16,6 @@ class Form extends Component
     public string $observacoes = '';
     public array $items = [];
 
-    public int $item_produto_id = 0;
-    public int $item_quantidade = 1;
-
     public string $searchBeneficiario = '';
     public string $searchProduto = '';
 
@@ -35,32 +32,50 @@ class Form extends Component
                 'produto_id' => $i->produto_id,
                 'quantidade' => $i->quantidade,
                 'produto_nome' => $i->produto->nome,
+                'produto_unidade' => $i->produto->unidade ?? 'un',
             ])->toArray();
         }
     }
 
-    public function addItem(): void
+    public function adicionarProduto(int $produtoId): void
     {
-        if (!$this->item_produto_id || $this->item_quantidade < 1) return;
-
         foreach ($this->items as &$item) {
-            if ($item['produto_id'] === $this->item_produto_id) {
-                $item['quantidade'] += $this->item_quantidade;
-                $this->item_produto_id = 0;
-                $this->item_quantidade = 1;
+            if ($item['produto_id'] === $produtoId) {
+                $item['quantidade']++;
+                $this->searchProduto = ''; // Limpar busca após adicionar
                 return;
             }
         }
 
-        $produto = Produto::find($this->item_produto_id);
-        $this->items[] = [
-            'produto_id' => $this->item_produto_id,
-            'quantidade' => $this->item_quantidade,
-            'produto_nome' => $produto->nome,
-        ];
+        $produto = Produto::find($produtoId);
+        if ($produto) {
+            $this->items[] = [
+                'produto_id' => $produto->id,
+                'quantidade' => 1,
+                'produto_nome' => $produto->nome,
+                'produto_unidade' => $produto->unidade ?? 'un',
+            ];
+        }
+        
+        $this->searchProduto = '';
+    }
 
-        $this->item_produto_id = 0;
-        $this->item_quantidade = 1;
+    public function incrementarItem(int $index): void
+    {
+        if (isset($this->items[$index])) {
+            $this->items[$index]['quantidade']++;
+        }
+    }
+
+    public function decrementarItem(int $index): void
+    {
+        if (isset($this->items[$index])) {
+            if ($this->items[$index]['quantidade'] > 1) {
+                $this->items[$index]['quantidade']--;
+            } else {
+                $this->removeItem($index);
+            }
+        }
     }
 
     public function removeItem(int $index): void
