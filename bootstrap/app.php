@@ -28,7 +28,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     'trace' => $e->getTraceAsString(),
                 ]);
 
-                if ($request->expectsJson()) {
+                if ($request->expectsJson() || $request->is('livewire/*')) {
                     return response()->json([
                         'message' => 'Ocorreu um erro interno. Nossa equipe já foi notificada.',
                         'error_ref' => $errorRef
