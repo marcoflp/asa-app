@@ -281,8 +281,17 @@
 
             <div class="flex flex-col-reverse sm:flex-row justify-end gap-3">
                 <flux:button href="{{ route('beneficiarios.index') }}" variant="ghost" wire:navigate class="w-full sm:w-auto">Cancelar</flux:button>
-                <flux:button type="submit" variant="primary" class="w-full sm:w-auto">
-                    {{ $beneficiario?->exists ? 'Salvar alterações' : 'Cadastrar beneficiário' }}
+                <flux:button type="submit" variant="primary" class="w-full sm:w-auto" wire:loading.attr="disabled">
+                    <span wire:loading.remove wire:target="foto_documento, foto_documento_verso, foto_documento_consentimento, foto_documento_comprovante_residencia, save">
+                        {{ $beneficiario?->exists ? 'Salvar alterações' : 'Cadastrar beneficiário' }}
+                    </span>
+                    <span wire:loading wire:target="foto_documento, foto_documento_verso, foto_documento_consentimento, foto_documento_comprovante_residencia">
+                        <flux:icon name="photo" class="inline-block w-4 h-4 mr-2" />
+                        Carregando imagens...
+                    </span>
+                    <span wire:loading wire:target="save">
+                        Salvando...
+                    </span>
                 </flux:button>
             </div>
 

@@ -98,18 +98,26 @@ class Form extends Component
         try {
             if ($this->foto_documento) {
                 $data['foto_documento'] = $this->storePhoto($this->foto_documento);
+            } else {
+                unset($data['foto_documento']);
             }
 
             if ($this->foto_documento_verso) {
                 $data['foto_documento_verso'] = $this->storePhoto($this->foto_documento_verso);
+            } else {
+                unset($data['foto_documento_verso']);
             }
 
             if ($this->foto_documento_consentimento) {
                 $data['foto_documento_consentimento'] = $this->storePhoto($this->foto_documento_consentimento);
+            } else {
+                unset($data['foto_documento_consentimento']);
             }
 
             if ($this->foto_documento_comprovante_residencia) {
                 $data['foto_documento_comprovante_residencia'] = $this->storePhoto($this->foto_documento_comprovante_residencia);
+            } else {
+                unset($data['foto_documento_comprovante_residencia']);
             }
 
             if ($this->beneficiario && $this->beneficiario->exists) {
