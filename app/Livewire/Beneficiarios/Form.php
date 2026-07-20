@@ -154,11 +154,11 @@ class Form extends Component
 
                 $encoded = (string) $image->encode('jpg', 70);
             } else {
-                // Fallback para Intervention Image v3/v4
-                $manager = \Intervention\Image\ImageManager::gd();
-                $image = $manager->read($filePath);
+                // Fallback para Intervention Image v4
+                $manager = \Intervention\Image\ImageManager::usingDriver(\Intervention\Image\Drivers\Gd\Driver::class);
+                $image = $manager->decodePath($filePath);
                 $image->scale(width: 1000);
-                $encoded = $image->toJpeg(70)->toString();
+                $encoded = (string) $image->encodeUsingFormat(\Intervention\Image\Format::JPEG, 70);
             }
 
             \Illuminate\Support\Facades\Storage::disk('public')->put($filename, $encoded);

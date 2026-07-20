@@ -18,5 +18,24 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (Throwable $e, \Illuminate\Http\Request $request) {
+            if (!config('app.debug')) {
+                $errorRef = (string) \Illuminate\Support\Str::uuid();
+                
+                \Illuminate\Support\Facades\Log::error('Erro [' . $errorRef . ']: ' . $e->getMessage(), [
+                    'url' => $request->fullUrl(),
+                    'input' => $request->except(['password', 'password_confirmation']),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'message' => 'Ocorreu um erro interno. Nossa equipe já foi notificada.',
+                        'error_ref' => $errorRef
+                    ], 500);
+                }
+
+                return response()->view('errors.500', ['errorRef' => $errorRef], 500);
+            }
+        });
     })->create();
