@@ -24,7 +24,7 @@
     --color-zinc-950: #0a0a0a;
 
     --color-accent: var(--color-asa-green);
-    --color-accent-content: var(--color-asa-green);
+    --color-accent-content: var(--color-white);
     --color-accent-foreground: var(--color-white);
 
     --color-asa-gold: #d6a838;
@@ -91,8 +91,8 @@
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-asa-yellow);
-        --color-accent-content: var(--color-asa-yellow);
+        --color-accent: var(--color-asa-gold);
+        --color-accent-content: var(--color-asa-green);
         --color-accent-foreground: var(--color-asa-green);
     }
 }
