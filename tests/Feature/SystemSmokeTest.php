@@ -52,9 +52,7 @@ test('system smoke test: full user journey', function () {
     Livewire::test(RetiradaForm::class)
         ->set('beneficiario_id', $beneficiario->id)
         ->set('data', now()->toDateString())
-        ->set('item_produto_id', $produto->id)
-        ->set('item_quantidade', 1)
-        ->call('addItem')
+        ->call('adicionarProduto', $produto->id)
         ->call('save')
         ->assertHasNoErrors()
         ->assertRedirect(route('retiradas.index'));
