@@ -11,6 +11,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->redirectGuestsTo('/login');
+        $middleware->redirectUsersTo('/dashboard');
+
         $middleware->web(append: [
             \App\Http\Middleware\SecurityHeaders::class,
             \App\Http\Middleware\UpdateLastSeenAt::class,
@@ -19,6 +22,17 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (Throwable $e, \Illuminate\Http\Request $request) {
+            // Permitir que o Laravel lide normalmente com autenticação, validação e erros HTTP do cliente (< 500)
+            if (
+                $e instanceof \Illuminate\Auth\AuthenticationException ||
+                $e instanceof \Illuminate\Validation\ValidationException ||
+                $e instanceof \Illuminate\Auth\Access\AuthorizationException ||
+                $e instanceof \Illuminate\Session\TokenMismatchException ||
+                ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface && $e->getStatusCode() < 500)
+            ) {
+                return null;
+            }
+
             if (!config('app.debug')) {
                 $errorRef = (string) \Illuminate\Support\Str::uuid();
                 
