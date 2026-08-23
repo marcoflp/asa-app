@@ -4,6 +4,8 @@
         activeTab: 'geral',
         tourRunning: false,
         currentStep: 0,
+        isNavigating: false,
+        navigationTargetName: '',
         showFirstTimePrompt: false,
         spotlightStyle: {},
         cardPositionStyle: {},
@@ -111,19 +113,20 @@
                     this.currentStep = stepNum;
                     this.tourRunning = true;
                     setTimeout(() => {
+                        this.isNavigating = false;
                         this.updateSpotlight();
                     }, 400);
                 }
             }
 
             window.addEventListener('resize', () => {
-                if (this.tourRunning) {
+                if (this.tourRunning && !this.isNavigating) {
                     this.updateSpotlight();
                 }
             });
 
             window.addEventListener('scroll', () => {
-                if (this.tourRunning) {
+                if (this.tourRunning && !this.isNavigating) {
                     this.updateSpotlight();
                 }
             }, true);
@@ -138,84 +141,72 @@
 
             document.addEventListener('livewire:navigated', () => {
                 if (this.tourRunning) {
+                    // Delay para aguardar a montagem e layout do novo DOM
                     setTimeout(() => {
+                        this.isNavigating = false;
                         this.updateSpotlight();
-                    }, 250);
+                    }, 350);
                 }
+            });
+        },
+
+        goToStep(newStepIndex) {
+            if (newStepIndex < 0 || newStepIndex >= this.steps.length) return;
+
+            const targetStep = this.steps[newStepIndex];
+            if (targetStep && targetStep.url) {
+                const targetPath = new URL(targetStep.url, window.location.origin).pathname;
+                if (window.location.pathname !== targetPath) {
+                    // Mudança de tela requerida
+                    this.isNavigating = true;
+                    this.navigationTargetName = targetStep.screenName || 'nova tela';
+                    this.currentStep = newStepIndex;
+                    sessionStorage.setItem('asa_active_tour_step', this.currentStep.toString());
+
+                    if (this.elevatedEl) {
+                        this.elevatedEl.style.zIndex = '';
+                        this.elevatedEl.style.position = '';
+                        this.elevatedEl = null;
+                    }
+                    this.spotlightStyle = { display: 'none' };
+
+                    if (window.Livewire && window.Livewire.navigate) {
+                        window.Livewire.navigate(targetStep.url);
+                    } else {
+                        window.location.href = targetStep.url;
+                    }
+                    return;
+                }
+            }
+
+            this.isNavigating = false;
+            this.currentStep = newStepIndex;
+            sessionStorage.setItem('asa_active_tour_step', this.currentStep.toString());
+            this.$nextTick(() => {
+                this.updateSpotlight();
             });
         },
 
         startTour() {
             this.showHelpModal = false;
             this.showFirstTimePrompt = false;
-            this.currentStep = 0;
             this.tourRunning = true;
-            sessionStorage.setItem('asa_active_tour_step', '0');
-
-            const step = this.steps[0];
-            if (step && step.url) {
-                const targetPath = new URL(step.url, window.location.origin).pathname;
-                if (window.location.pathname !== targetPath) {
-                    if (window.Livewire && window.Livewire.navigate) {
-                        window.Livewire.navigate(step.url);
-                        return;
-                    } else {
-                        window.location.href = step.url;
-                        return;
-                    }
-                }
-            }
-
-            this.$nextTick(() => {
-                this.updateSpotlight();
-            });
+            this.goToStep(0);
         },
 
         nextStep() {
+            if (this.isNavigating) return;
             if (this.currentStep < this.steps.length - 1) {
-                this.currentStep++;
-                sessionStorage.setItem('asa_active_tour_step', this.currentStep.toString());
-                
-                const step = this.steps[this.currentStep];
-                if (step && step.url) {
-                    const targetPath = new URL(step.url, window.location.origin).pathname;
-                    if (window.location.pathname !== targetPath) {
-                        if (window.Livewire && window.Livewire.navigate) {
-                            window.Livewire.navigate(step.url);
-                            return;
-                        } else {
-                            window.location.href = step.url;
-                            return;
-                        }
-                    }
-                }
-
-                this.updateSpotlight();
+                this.goToStep(this.currentStep + 1);
             } else {
                 this.finishTour();
             }
         },
 
         prevStep() {
+            if (this.isNavigating) return;
             if (this.currentStep > 0) {
-                this.currentStep--;
-                sessionStorage.setItem('asa_active_tour_step', this.currentStep.toString());
-
-                const step = this.steps[this.currentStep];
-                if (step && step.url) {
-                    const targetPath = new URL(step.url, window.location.origin).pathname;
-                    if (window.location.pathname !== targetPath) {
-                        if (window.Livewire && window.Livewire.navigate) {
-                            window.Livewire.navigate(step.url);
-                            return;
-                        } else {
-                            window.location.href = step.url;
-                            return;
-                        }
-                    }
-                }
-
-                this.updateSpotlight();
+                this.goToStep(this.currentStep - 1);
             }
         },
 
@@ -226,6 +217,7 @@
                 this.elevatedEl = null;
             }
             this.tourRunning = false;
+            this.isNavigating = false;
             sessionStorage.removeItem('asa_active_tour_step');
             localStorage.setItem('asa_tour_completed', 'true');
         },
@@ -481,48 +473,66 @@
                 </button>
             </div>
 
-            {{-- Conteúdo Explicativo --}}
-            <div class="py-3.5 space-y-2">
-                <h3 class="text-base md:text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2" x-text="steps[currentStep]?.title"></h3>
-                <p class="text-xs md:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed" x-text="steps[currentStep]?.description"></p>
+            {{-- Conteúdo Explicativo (Normal) --}}
+            <div x-show="!isNavigating" class="space-y-2">
+                <div class="py-3.5 space-y-2">
+                    <h3 class="text-base md:text-lg font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2" x-text="steps[currentStep]?.title"></h3>
+                    <p class="text-xs md:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed" x-text="steps[currentStep]?.description"></p>
+                </div>
+
+                {{-- Barra de Progresso Verde ASA --}}
+                <div class="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden my-3">
+                    <div 
+                        class="bg-emerald-600 dark:bg-emerald-500 h-full rounded-full transition-all duration-300"
+                        :style="`width: ${((currentStep + 1) / steps.length) * 100}%`"
+                    ></div>
+                </div>
+
+                {{-- Botões de Ação do Passo --}}
+                <div class="flex items-center justify-between pt-1 gap-2">
+                    <button 
+                        @click="prevStep()" 
+                        x-show="currentStep > 0"
+                        type="button" 
+                        class="px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs md:text-sm font-semibold transition-colors cursor-pointer"
+                    >
+                        &larr; Anterior
+                    </button>
+                    <div x-show="currentStep === 0"></div>
+
+                    <div class="flex items-center gap-2">
+                        <button 
+                            @click="finishTour()" 
+                            type="button" 
+                            class="px-2.5 py-2 text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 text-xs font-semibold transition-colors cursor-pointer"
+                        >
+                            Encerrar
+                        </button>
+
+                        <button 
+                            @click="nextStep()" 
+                            type="button" 
+                            class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs md:text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-1"
+                        >
+                            <span x-text="currentStep === steps.length - 1 ? 'Concluir' : 'Próximo &rarr;'"></span>
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            {{-- Barra de Progresso Verde ASA --}}
-            <div class="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden my-3">
-                <div 
-                    class="bg-emerald-600 dark:bg-emerald-500 h-full rounded-full transition-all duration-300"
-                    :style="`width: ${((currentStep + 1) / steps.length) * 100}%`"
-                ></div>
-            </div>
-
-            {{-- Botões de Ação do Passo --}}
-            <div class="flex items-center justify-between pt-1 gap-2">
-                <button 
-                    @click="prevStep()" 
-                    x-show="currentStep > 0"
-                    type="button" 
-                    class="px-3.5 py-2 rounded-xl border border-zinc-300 dark:border-zinc-700 hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-800 dark:text-zinc-200 text-xs md:text-sm font-semibold transition-colors cursor-pointer"
-                >
-                    &larr; Anterior
-                </button>
-                <div x-show="currentStep === 0"></div>
-
-                <div class="flex items-center gap-2">
-                    <button 
-                        @click="finishTour()" 
-                        type="button" 
-                        class="px-2.5 py-2 text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 text-xs font-semibold transition-colors cursor-pointer"
-                    >
-                        Encerrar
-                    </button>
-
-                    <button 
-                        @click="nextStep()" 
-                        type="button" 
-                        class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs md:text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-1"
-                    >
-                        <span x-text="currentStep === steps.length - 1 ? 'Concluir' : 'Próximo &rarr;'"></span>
-                    </button>
+            {{-- Estado de Carregamento ao Transicionar de Página --}}
+            <div x-show="isNavigating" class="py-6 flex flex-col items-center justify-center text-center gap-3 animate-pulse" style="display: none;">
+                <div class="w-10 h-10 rounded-2xl bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 flex items-center justify-center shadow-xs">
+                    <svg class="animate-spin h-5 w-5 text-emerald-600 dark:text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-bold text-sm text-zinc-900 dark:text-zinc-100 flex items-center gap-1.5 justify-center">
+                        <span>Abrindo tela:</span>
+                        <span class="text-emerald-700 dark:text-emerald-400 font-extrabold" x-text="navigationTargetName"></span>
+                    </p>
                 </div>
             </div>
         </div>

@@ -23,19 +23,38 @@
 
                     <flux:field>
                         <flux:label>Telefone</flux:label>
-                        <flux:input wire:model="telefone" placeholder="(54) 99999-9999" type="tel" inputmode="tel" />
+                        <flux:input 
+                            wire:model="telefone" 
+                            placeholder="(54) 99999-9999" 
+                            type="tel" 
+                            inputmode="tel" 
+                            x-mask:dynamic="$input.length > 14 ? '(99) 99999-9999' : '(99) 9999-9999'" 
+                            maxlength="15" 
+                        />
                         <flux:error name="telefone" />
                     </flux:field>
 
                     <flux:field>
                         <flux:label>CPF</flux:label>
-                        <flux:input wire:model="cpf" placeholder="000.000.000-00" inputmode="numeric" />
+                        <flux:input 
+                            wire:model="cpf" 
+                            placeholder="000.000.000-00" 
+                            inputmode="numeric" 
+                            x-mask="999.999.999-99" 
+                            maxlength="14" 
+                        />
                         <flux:error name="cpf" />
                     </flux:field>
 
                     <flux:field>
                         <flux:label>RG</flux:label>
-                        <flux:input wire:model="rg" placeholder="0000000000" inputmode="numeric" />
+                        <flux:input 
+                            wire:model="rg" 
+                            placeholder="0000000000" 
+                            inputmode="numeric" 
+                            x-mask="9999999999" 
+                            maxlength="10" 
+                        />
                         <flux:error name="rg" />
                     </flux:field>
 
@@ -386,7 +405,21 @@
 
                     <flux:field>
                         <flux:label>Bairro</flux:label>
-                        <flux:input wire:model="bairro" placeholder="Bairro" />
+                        <select 
+                            wire:model.live="bairroSelecionado" 
+                            class="w-full text-sm font-medium py-2.5 px-3 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                        >
+                            <option value="">Selecione o bairro...</option>
+                            @foreach ($this->bairrosDisponiveis as $b)
+                                <option value="{{ $b }}">{{ $b }}</option>
+                            @endforeach
+                            <option value="outro">+ Outro bairro (digitar)</option>
+                        </select>
+                        @if ($bairroSelecionado === 'outro')
+                            <div class="mt-2" x-data x-transition>
+                                <flux:input wire:model="bairro" placeholder="Digite o nome do bairro..." />
+                            </div>
+                        @endif
                         <flux:error name="bairro" />
                     </flux:field>
 
@@ -398,7 +431,13 @@
 
                     <flux:field>
                         <flux:label>CEP</flux:label>
-                        <flux:input wire:model="cep" placeholder="99000-000" inputmode="numeric" />
+                        <flux:input 
+                            wire:model="cep" 
+                            placeholder="99000-000" 
+                            inputmode="numeric" 
+                            x-mask="99999-999" 
+                            maxlength="9" 
+                        />
                         <flux:error name="cep" />
                     </flux:field>
                 </div>

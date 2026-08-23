@@ -17,6 +17,7 @@ class Form extends Component
     public string $rua = '';
     public string $numero = '';
     public string $bairro = '';
+    public string $bairroSelecionado = '';
     public string $cidade = 'Passo Fundo';
     public string $cep = '';
     public string $rg = '';
@@ -37,6 +38,52 @@ class Form extends Component
     public $foto_documento_comprovante_residencia;
     public ?string $foto_documento_comprovante_residencia_path = null;
 
+    // Bairros e distritos oficiais de Passo Fundo em MAIÚSCULO e sem repetições
+    public array $bairrosPadrao = [
+        'ANNES',
+        'BELA VISTA',
+        'BOM JESUS',
+        'BOM RECREIO',
+        'BOQUEIRÃO',
+        'CAPÃO BONITO',
+        'CENTRO',
+        'COHAB SECCHI',
+        'CRUZ ALTA',
+        'CRUZEIRO',
+        'INTEGRAÇÃO',
+        'JOSÉ ALEXANDRE ZÁCHIA (ZÁCHIA)',
+        'LOTEAMENTO POPULAR',
+        'LUCAS ARAÚJO',
+        'NENÊ GRAEFF',
+        'OPERÁRIA',
+        'PASSO DO MIRANDA',
+        'PETRÓPOLIS',
+        'PLANALTINA',
+        'PULADOR',
+        'RODRIGUES',
+        'ROSELÂNDIA',
+        'SANTA MARIA',
+        'SANTA MARTA',
+        'SANTO ANTÃO',
+        'SÃO CRISTÓVÃO',
+        'SÃO JOÃO DA BELA VISTA',
+        'SÃO JOSÉ',
+        'SÃO LUIZ GONZAGA',
+        'SÃO PEDRINHO',
+        'SÃO ROQUE',
+        'SÃO VALENTIM',
+        'SEDE INDEPENDÊNCIA',
+        'VALINHOS',
+        'VERA CRUZ',
+        'VILA CRUZEIRO',
+        'VILA LUIZA',
+        'VILA MATTOS',
+        'VILA NOVA',
+        'VILA RODRIGUES',
+        'VILA ROSSO',
+        'VILA VICTOR ISSLER',
+    ];
+
     // Campos temporários para adicionar filho
     public int $filho_idade = 0;
 
@@ -56,6 +103,46 @@ class Form extends Component
             $this->foto_documento_consentimento_path = $beneficiario->foto_documento_consentimento;
             $this->foto_documento_comprovante_residencia_path = $beneficiario->foto_documento_comprovante_residencia;
         }
+
+        // Configuração do bairro selecionado
+        $listaBairros = $this->bairrosDisponiveis;
+        if (!empty($this->bairro)) {
+            $bairroFormatado = mb_strtoupper(trim($this->bairro), 'UTF-8');
+            $bairroExistente = collect($listaBairros)->first(function ($b) use ($bairroFormatado) {
+                return $b === $bairroFormatado || str_contains($b, $bairroFormatado) || str_contains($bairroFormatado, $b);
+            });
+
+            if ($bairroExistente) {
+                $this->bairro = $bairroExistente;
+                $this->bairroSelecionado = $bairroExistente;
+            } else {
+                $this->bairroSelecionado = 'outro';
+            }
+        }
+    }
+
+    public function updatedBairroSelecionado(string $val): void
+    {
+        if ($val !== 'outro' && !empty($val)) {
+            $this->bairro = $val;
+        } elseif ($val === '') {
+            $this->bairro = '';
+        }
+    }
+
+    public function getBairrosDisponiveisProperty(): array
+    {
+        $bairrosDb = Beneficiario::whereNotNull('bairro')
+            ->where('bairro', '!=', '')
+            ->distinct()
+            ->pluck('bairro')
+            ->map(fn($b) => mb_strtoupper(trim($b), 'UTF-8'))
+            ->filter()
+            ->toArray();
+
+        $todos = array_unique(array_merge($this->bairrosPadrao, $bairrosDb));
+        sort($todos, SORT_NATURAL | SORT_FLAG_CASE);
+        return array_values($todos);
     }
 
     public function addFilho(): void
@@ -72,6 +159,13 @@ class Form extends Component
 
     public function save(): void
     {
+        // Se selecionou um bairro na lista, garante que ele está no campo $bairro em maiúsculo
+        if ($this->bairroSelecionado !== 'outro' && !empty($this->bairroSelecionado)) {
+            $this->bairro = $this->bairroSelecionado;
+        } elseif (!empty($this->bairro)) {
+            $this->bairro = mb_strtoupper(trim($this->bairro), 'UTF-8');
+        }
+
         $data = $this->validate([
             'nome' => 'required|string|max:255',
             'telefone' => 'nullable|string|max:20',

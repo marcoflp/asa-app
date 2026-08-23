@@ -11,28 +11,175 @@
         </flux:button>
     </div>
 
-    <div class="flex flex-col sm:flex-row gap-2.5">
-        <flux:input id="tour-search-retirada" wire:model.live.debounce.300ms="search" placeholder="Buscar por beneficiário..." icon="magnifying-glass" class="w-full sm:flex-1" />
-        
-        <div id="tour-filtros-data" class="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:items-center bg-zinc-50 dark:bg-zinc-800/60 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 shadow-2xs">
-            <div class="flex items-center gap-1.5 min-w-0">
-                <span class="text-xs font-bold text-zinc-600 dark:text-zinc-400 pl-1 shrink-0">De:</span>
-                <input 
-                    type="date" 
-                    wire:model.live="dataInicio" 
-                    class="w-full sm:w-36 text-xs font-bold py-1.5 px-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
-                />
-            </div>
-            <div class="flex items-center gap-1.5 min-w-0">
-                <span class="text-xs font-bold text-zinc-600 dark:text-zinc-400 shrink-0">Até:</span>
-                <input 
-                    type="date" 
-                    wire:model.live="dataFim" 
-                    class="w-full sm:w-36 text-xs font-bold py-1.5 px-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
-                />
-            </div>
+    {{-- BARRA DE BUSCA & FILTROS --}}
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+        <div class="flex-1">
+            <flux:input id="tour-search-retirada" wire:model.live.debounce.300ms="search" placeholder="Buscar por beneficiário, CPF, bairro ou observações..." icon="magnifying-glass" class="w-full" />
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+            <button 
+                id="tour-filtros-data"
+                type="button" 
+                wire:click="toggleFiltros"
+                class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl border text-xs sm:text-sm font-semibold transition-all cursor-pointer {{ $mostrarFiltros || $this->filtrosAtivosCount > 0 ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-500/50 text-emerald-800 dark:text-emerald-300 font-bold' : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800' }}"
+            >
+                <flux:icon.funnel class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <span>Filtros</span>
+                @if ($this->filtrosAtivosCount > 0)
+                    <span class="inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold bg-emerald-700 text-white rounded-full">
+                        {{ $this->filtrosAtivosCount }}
+                    </span>
+                @endif
+            </button>
+            @if ($this->filtrosAtivosCount > 0 || !empty($search))
+                <button 
+                    type="button" 
+                    wire:click="limparFiltros"
+                    class="p-2 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-xs font-semibold"
+                    title="Limpar todos os filtros"
+                >
+                    Limpar
+                </button>
+            @endif
         </div>
     </div>
+
+    {{-- PAINEL EXPANSÍVEL DE FILTROS --}}
+    @if ($mostrarFiltros)
+        <div 
+            x-data 
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4"
+        >
+            <div class="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
+                    <flux:icon.adjustments-horizontal class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    <span>Filtros de Retiradas</span>
+                </span>
+                <button 
+                    type="button" 
+                    wire:click="toggleFiltros"
+                    class="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+                >
+                    Fechar &times;
+                </button>
+            </div>
+
+            {{-- Atalhos Rápidos de Período --}}
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Atalhos de Período</label>
+                <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-1.5">
+                    <button 
+                        type="button" 
+                        wire:click="setPeriodo('hoje')"
+                        class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-center cursor-pointer {{ $periodoPredefinido === 'hoje' ? 'bg-emerald-700 text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700' }}"
+                    >
+                        Hoje
+                    </button>
+                    <button 
+                        type="button" 
+                        wire:click="setPeriodo('7dias')"
+                        class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-center cursor-pointer {{ $periodoPredefinido === '7dias' ? 'bg-emerald-700 text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700' }}"
+                    >
+                        Últimos 7 Dias
+                    </button>
+                    <button 
+                        type="button" 
+                        wire:click="setPeriodo('mes_atual')"
+                        class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-center cursor-pointer {{ $periodoPredefinido === 'mes_atual' ? 'bg-emerald-700 text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700' }}"
+                    >
+                        Este Mês
+                    </button>
+                    <button 
+                        type="button" 
+                        wire:click="setPeriodo('ano_atual')"
+                        class="px-2.5 py-1.5 rounded-lg text-xs font-semibold text-center cursor-pointer {{ $periodoPredefinido === 'ano_atual' ? 'bg-emerald-700 text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700' }}"
+                    >
+                        Este Ano
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                {{-- Beneficiário Específico --}}
+                <div class="space-y-1 sm:col-span-2 lg:col-span-2">
+                    <label class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Beneficiário</label>
+                    <select 
+                        wire:model.live="beneficiarioId" 
+                        class="w-full text-xs font-semibold py-2 px-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                    >
+                        <option value="">Todos os beneficiários</option>
+                        @foreach ($beneficiariosDisponiveis as $b)
+                            <option value="{{ $b->id }}">{{ $b->nome }} @if($b->cpf)({{ $b->cpf }})@endif</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Produto Entregue --}}
+                <div class="space-y-1 sm:col-span-2 lg:col-span-2">
+                    <label class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Contém o Produto</label>
+                    <select 
+                        wire:model.live="produtoId" 
+                        class="w-full text-xs font-semibold py-2 px-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                    >
+                        <option value="">Qualquer produto</option>
+                        @foreach ($produtosDisponiveis as $prod)
+                            <option value="{{ $prod->id }}">{{ $prod->nome }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Data Início & Fim --}}
+                <div class="space-y-1 sm:col-span-1 lg:col-span-2">
+                    <label class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Data Inicial</label>
+                    <input 
+                        type="date" 
+                        wire:model.live="dataInicio" 
+                        class="w-full text-xs font-semibold py-2 px-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                    />
+                </div>
+
+                <div class="space-y-1 sm:col-span-1 lg:col-span-2">
+                    <label class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Data Final</label>
+                    <input 
+                        type="date" 
+                        wire:model.live="dataFim" 
+                        class="w-full text-xs font-semibold py-2 px-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                    />
+                </div>
+
+                {{-- Ordenação --}}
+                <div class="space-y-1 sm:col-span-2 lg:col-span-4">
+                    <label class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Ordenação</label>
+                    <div class="flex flex-wrap gap-2">
+                        <button 
+                            type="button" 
+                            wire:click="$set('ordenacao', 'recente')"
+                            class="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer {{ $ordenacao === 'recente' ? 'bg-emerald-700 text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300' }}"
+                        >
+                            Mais Recentes Primeiro
+                        </button>
+                        <button 
+                            type="button" 
+                            wire:click="$set('ordenacao', 'antigo')"
+                            class="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer {{ $ordenacao === 'antigo' ? 'bg-emerald-700 text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300' }}"
+                        >
+                            Mais Antigas Primeiro
+                        </button>
+                        <button 
+                            type="button" 
+                            wire:click="$set('ordenacao', 'beneficiario_asc')"
+                            class="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer {{ $ordenacao === 'beneficiario_asc' ? 'bg-emerald-700 text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300' }}"
+                        >
+                            Beneficiário (A-Z)
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
     {{-- DESKTOP VIEW --}}
     <div wire:loading.class="opacity-60 pointer-events-none transition-opacity" class="hidden md:block overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-sm">

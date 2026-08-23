@@ -11,9 +11,153 @@
         </flux:button>
     </div>
 
-    <div class="w-full sm:max-w-md">
-        <flux:input id="tour-search-beneficiario" wire:model.live.debounce.300ms="search" placeholder="Buscar por nome, CPF ou bairro..." icon="magnifying-glass" class="w-full" />
+    {{-- BARRA DE BUSCA & FILTROS --}}
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+        <div class="flex-1">
+            <flux:input id="tour-search-beneficiario" wire:model.live.debounce.300ms="search" placeholder="Buscar por nome, CPF, RG, telefone ou bairro..." icon="magnifying-glass" class="w-full" />
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+            <button 
+                type="button" 
+                wire:click="toggleFiltros"
+                class="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl border text-xs sm:text-sm font-semibold transition-all cursor-pointer {{ $mostrarFiltros || $this->filtrosAtivosCount > 0 ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-500/50 text-emerald-800 dark:text-emerald-300 font-bold' : 'bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800' }}"
+            >
+                <flux:icon.funnel class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <span>Filtros</span>
+                @if ($this->filtrosAtivosCount > 0)
+                    <span class="inline-flex items-center justify-center w-5 h-5 text-[11px] font-bold bg-emerald-700 text-white rounded-full">
+                        {{ $this->filtrosAtivosCount }}
+                    </span>
+                @endif
+            </button>
+            @if ($this->filtrosAtivosCount > 0 || !empty($search))
+                <button 
+                    type="button" 
+                    wire:click="limparFiltros"
+                    class="p-2 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer text-xs font-semibold"
+                    title="Limpar todos os filtros"
+                >
+                    Limpar
+                </button>
+            @endif
+        </div>
     </div>
+
+    {{-- PAINEL EXPANSÍVEL DE FILTROS --}}
+    @if ($mostrarFiltros)
+        <div 
+            x-data 
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-2"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm space-y-4"
+        >
+            <div class="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
+                <span class="text-xs font-bold uppercase tracking-wider text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
+                    <flux:icon.adjustments-horizontal class="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                    <span>Filtros Avançados</span>
+                </span>
+                <button 
+                    type="button" 
+                    wire:click="toggleFiltros"
+                    class="text-xs text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 cursor-pointer"
+                >
+                    Fechar &times;
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                {{-- Bairro --}}
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Bairro</label>
+                    <select 
+                        wire:model.live="bairro" 
+                        class="w-full text-xs font-semibold py-2 px-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                    >
+                        <option value="">Todos os bairros</option>
+                        @foreach ($bairrosDisponiveis as $b)
+                            <option value="{{ $b }}">{{ $b }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Programa Social / Governo --}}
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Programa Social</label>
+                    <select 
+                        wire:model.live="programaGoverno" 
+                        class="w-full text-xs font-semibold py-2 px-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                    >
+                        <option value="">Todos</option>
+                        <option value="sim">Inscrito em Programa Social</option>
+                        <option value="nao">Não inscrito</option>
+                    </select>
+                </div>
+
+                {{-- Estudo Bíblico --}}
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Estudo Bíblico</label>
+                    <select 
+                        wire:model.live="estudoBiblico" 
+                        class="w-full text-xs font-semibold py-2 px-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                    >
+                        <option value="">Todos</option>
+                        <option value="sim">Recebe Estudo Bíblico</option>
+                        <option value="nao">Não recebe</option>
+                    </select>
+                </div>
+
+                {{-- Documentação Anexada --}}
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Documentação</label>
+                    <select 
+                        wire:model.live="documentos" 
+                        class="w-full text-xs font-semibold py-2 px-2.5 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                    >
+                        <option value="">Todas as situações</option>
+                        <option value="completos">Completos (4/4 anexados)</option>
+                        <option value="incompletos">Incompletos (com pendências)</option>
+                        <option value="sem_documentos">Sem nenhum documento (0/4)</option>
+                    </select>
+                </div>
+
+                {{-- Ordenação --}}
+                <div class="space-y-1 sm:col-span-2 lg:col-span-4">
+                    <label class="text-xs font-bold text-zinc-700 dark:text-zinc-300">Ordenação dos Resultados</label>
+                    <div class="flex flex-wrap gap-2">
+                        <button 
+                            type="button" 
+                            wire:click="$set('ordenacao', 'nome_asc')"
+                            class="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer {{ $ordenacao === 'nome_asc' ? 'bg-emerald-700 text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300' }}"
+                        >
+                            Nome (A-Z)
+                        </button>
+                        <button 
+                            type="button" 
+                            wire:click="$set('ordenacao', 'nome_desc')"
+                            class="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer {{ $ordenacao === 'nome_desc' ? 'bg-emerald-700 text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300' }}"
+                        >
+                            Nome (Z-A)
+                        </button>
+                        <button 
+                            type="button" 
+                            wire:click="$set('ordenacao', 'recentes')"
+                            class="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer {{ $ordenacao === 'recentes' ? 'bg-emerald-700 text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300' }}"
+                        >
+                            Mais Recentes Primeiro
+                        </button>
+                        <button 
+                            type="button" 
+                            wire:click="$set('ordenacao', 'antigos')"
+                            class="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer {{ $ordenacao === 'antigos' ? 'bg-emerald-700 text-white font-bold' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300' }}"
+                        >
+                            Mais Antigos Primeiro
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
     {{-- DESKTOP VIEW --}}
     <div wire:loading.class="opacity-60 pointer-events-none transition-opacity" class="hidden md:block overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-sm">
