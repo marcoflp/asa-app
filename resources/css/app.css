@@ -134,7 +134,114 @@ select[data-flux-control] {
 input:focus[data-flux-control],
 textarea:focus[data-flux-control],
 select:focus[data-flux-control] {
-    @apply outline-hidden ring-2 ring-emerald-600 dark:ring-amber-400 ring-offset-2 ring-offset-white dark:ring-offset-zinc-900 border-transparent;
+    @apply outline-hidden ring-2 ring-emerald-600 dark:ring-emerald-500 ring-offset-2 ring-offset-white dark:ring-offset-zinc-900 border-transparent;
+}
+
+/* ===================================================
+   DATE INPUTS & CALENDARS HIGH CONTRAST
+   =================================================== */
+
+/* Prevent mobile touch yellow/blue flash */
+* {
+    -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Date input: Light Mode */
+input[type="date"] {
+    color-scheme: light !important;
+    color: #18181b !important;
+    font-weight: 600 !important;
+}
+
+input[type="date"]::-webkit-datetime-edit,
+input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+    color: #18181b !important;
+    font-weight: 600 !important;
+}
+
+input[type="date"]::-webkit-datetime-edit-text {
+    color: #71717a !important;
+    font-weight: 600 !important;
+}
+
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field {
+    color: #18181b !important;
+    font-weight: 700 !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer !important;
+    opacity: 0.8 !important;
+    filter: none !important;
+}
+
+/* Date input: Dark Mode */
+.dark input[type="date"] {
+    color-scheme: dark !important;
+    color: #f4f4f5 !important;
+}
+
+.dark input[type="date"]::-webkit-datetime-edit,
+.dark input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+    color: #f4f4f5 !important;
+    font-weight: 600 !important;
+}
+
+.dark input[type="date"]::-webkit-datetime-edit-text {
+    color: #a1a1aa !important;
+}
+
+.dark input[type="date"]::-webkit-datetime-edit-month-field,
+.dark input[type="date"]::-webkit-datetime-edit-day-field,
+.dark input[type="date"]::-webkit-datetime-edit-year-field {
+    color: #ffffff !important;
+}
+
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1) !important;
+    opacity: 0.9 !important;
+}
+
+/* Flatpickr Calendar Styling */
+.flatpickr-calendar {
+    border-radius: 1rem !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08) !important;
+    border: 1px solid #e4e4e7 !important;
+    font-family: var(--font-sans) !important;
+}
+
+.dark .flatpickr-calendar {
+    background: #18181b !important;
+    border-color: #27272a !important;
+    color: #f4f4f5 !important;
+}
+
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+    background: #059669 !important;
+    border-color: #059669 !important;
+    color: #ffffff !important;
+}
+
+.dark .flatpickr-day {
+    color: #e4e4e7 !important;
+}
+
+.dark .flatpickr-day:hover {
+    background: #27272a !important;
+}
+
+.dark .flatpickr-day.flatpickr-disabled {
+    color: #52525b !important;
+}
+
+.dark .flatpickr-current-month,
+.dark .flatpickr-months .flatpickr-month {
+    color: #ffffff !important;
+    fill: #ffffff !important;
 }
 
 /* ===================================================

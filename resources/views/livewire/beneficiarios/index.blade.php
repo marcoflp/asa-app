@@ -6,13 +6,13 @@
 
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <flux:heading size="xl" class="text-zinc-900 dark:text-zinc-50 font-bold">Beneficiários (Famílias Atendidas)</flux:heading>
-        <flux:button href="{{ route('beneficiarios.create') }}" variant="primary" icon="plus" wire:navigate class="w-full sm:w-auto font-bold shadow-sm">
-            + Novo Beneficiário
+        <flux:button id="tour-btn-novo-beneficiario" href="{{ route('beneficiarios.create') }}" variant="primary" icon="plus" wire:navigate class="w-full sm:w-auto font-bold shadow-sm">
+            Novo Beneficiário
         </flux:button>
     </div>
 
     <div class="w-full sm:max-w-md">
-        <flux:input wire:model.live.debounce.300ms="search" placeholder="Buscar por nome, CPF ou bairro..." icon="magnifying-glass" class="w-full" />
+        <flux:input id="tour-search-beneficiario" wire:model.live.debounce.300ms="search" placeholder="Buscar por nome, CPF ou bairro..." icon="magnifying-glass" class="w-full" />
     </div>
 
     {{-- DESKTOP VIEW --}}
@@ -310,6 +310,7 @@
     {{-- FAB MOBILE (NOVO BENEFICIÁRIO) --}}
     <div class="md:hidden fixed bottom-20 right-4 z-30">
         <a 
+            id="tour-mobile-fab-beneficiario"
             href="{{ route('beneficiarios.create') }}" 
             wire:navigate
             class="flex items-center justify-center w-14 h-14 rounded-full bg-emerald-700 active:bg-emerald-800 text-white shadow-2xl hover:scale-105 active:scale-95 transition-all duration-150 border-2 border-white/40"

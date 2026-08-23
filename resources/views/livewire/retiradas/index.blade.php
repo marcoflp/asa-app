@@ -6,16 +6,22 @@
 
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <flux:heading size="xl" class="text-zinc-900 dark:text-zinc-50 font-bold">Retiradas de Doações</flux:heading>
-        <flux:button href="{{ route('retiradas.create') }}" variant="primary" icon="plus" wire:navigate class="w-full sm:w-auto font-bold shadow-sm">
-            + Nova Retirada
+        <flux:button id="tour-btn-nova-retirada" href="{{ route('retiradas.create') }}" variant="primary" icon="plus" wire:navigate class="w-full sm:w-auto font-bold shadow-sm">
+            Nova Retirada
         </flux:button>
     </div>
 
     <div class="flex flex-col sm:flex-row gap-3">
-        <flux:input wire:model.live.debounce.300ms="search" placeholder="Buscar por beneficiário..." icon="magnifying-glass" class="w-full sm:flex-1" />
-        <div class="flex gap-3 w-full sm:w-auto">
-            <flux:input type="date" wire:model.live="dataInicio" class="flex-1 sm:w-40" />
-            <flux:input type="date" wire:model.live="dataFim" class="flex-1 sm:w-40" />
+        <flux:input id="tour-search-retirada" wire:model.live.debounce.300ms="search" placeholder="Buscar por beneficiário..." icon="magnifying-glass" class="w-full sm:flex-1" />
+        <div id="tour-filtros-data" class="flex items-center gap-2 w-full sm:w-auto bg-zinc-50 dark:bg-zinc-800/60 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 shadow-2xs">
+            <div class="flex items-center gap-1.5 flex-1 sm:flex-initial">
+                <span class="text-xs font-bold text-zinc-700 dark:text-zinc-300 pl-1 shrink-0">De:</span>
+                <flux:input type="date" wire:model.live="dataInicio" class="w-full sm:w-36 font-semibold" />
+            </div>
+            <div class="flex items-center gap-1.5 flex-1 sm:flex-initial">
+                <span class="text-xs font-bold text-zinc-700 dark:text-zinc-300 shrink-0">Até:</span>
+                <flux:input type="date" wire:model.live="dataFim" class="w-full sm:w-36 font-semibold" />
+            </div>
         </div>
     </div>
 
@@ -116,6 +122,7 @@
     {{-- FAB MOBILE (NOVA RETIRADA) --}}
     <div class="md:hidden fixed bottom-20 right-4 z-30">
         <a 
+            id="tour-mobile-fab-retirada"
             href="{{ route('retiradas.create') }}" 
             wire:navigate
             class="flex items-center justify-center w-14 h-14 rounded-full bg-emerald-700 active:bg-emerald-800 text-white shadow-2xl hover:scale-105 active:scale-95 transition-all duration-150 border-2 border-white/40"

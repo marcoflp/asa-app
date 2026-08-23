@@ -1,7 +1,7 @@
 <div class="flex h-full w-full flex-1 flex-col gap-6">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <flux:heading size="xl" class="text-zinc-900 dark:text-zinc-50 font-bold">Gerenciar Usuários</flux:heading>
-        <flux:button href="{{ route('usuarios.create') }}" variant="primary" icon="plus" wire:navigate class="w-full sm:w-auto font-bold shadow-sm">+ Novo Usuário</flux:button>
+        <flux:button id="tour-btn-novo-usuario" href="{{ route('usuarios.create') }}" variant="primary" icon="plus" wire:navigate class="w-full sm:w-auto font-bold shadow-sm">Novo Usuário</flux:button>
     </div>
 
     {{-- DESKTOP VIEW --}}

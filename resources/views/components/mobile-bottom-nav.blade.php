@@ -8,11 +8,13 @@
             
             {{-- 1. Início --}}
             <a 
+                id="tour-mobile-nav-dashboard"
                 href="{{ route('dashboard') }}" 
                 wire:navigate
-                class="flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-150 active:scale-90 {{ request()->routeIs('dashboard') ? 'text-emerald-700 dark:text-amber-400 font-extrabold' : 'text-zinc-600 dark:text-zinc-400 font-semibold hover:text-zinc-900 dark:hover:text-white' }}"
+                class="flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-150 active:scale-90 select-none {{ request()->routeIs('dashboard') ? 'text-emerald-700 dark:text-emerald-400 font-extrabold' : 'text-zinc-600 dark:text-zinc-400 font-semibold hover:text-zinc-900 dark:hover:text-white' }}"
+                style="-webkit-tap-highlight-color: transparent;"
             >
-                <div class="relative p-1 {{ request()->routeIs('dashboard') ? 'bg-emerald-100/70 dark:bg-amber-400/20 rounded-xl' : '' }}">
+                <div class="relative p-1 transition-colors {{ request()->routeIs('dashboard') ? 'bg-emerald-100/80 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-400 rounded-xl' : '' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                     </svg>
@@ -22,11 +24,13 @@
 
             {{-- 2. Famílias / Beneficiários --}}
             <a 
+                id="tour-mobile-nav-beneficiarios"
                 href="{{ route('beneficiarios.index') }}" 
                 wire:navigate
-                class="flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-150 active:scale-90 {{ request()->routeIs('beneficiarios.*') ? 'text-emerald-700 dark:text-amber-400 font-extrabold' : 'text-zinc-600 dark:text-zinc-400 font-semibold hover:text-zinc-900 dark:hover:text-white' }}"
+                class="flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-150 active:scale-90 select-none {{ request()->routeIs('beneficiarios.*') ? 'text-emerald-700 dark:text-emerald-400 font-extrabold' : 'text-zinc-600 dark:text-zinc-400 font-semibold hover:text-zinc-900 dark:hover:text-white' }}"
+                style="-webkit-tap-highlight-color: transparent;"
             >
-                <div class="relative p-1 {{ request()->routeIs('beneficiarios.*') ? 'bg-emerald-100/70 dark:bg-amber-400/20 rounded-xl' : '' }}">
+                <div class="relative p-1 transition-colors {{ request()->routeIs('beneficiarios.*') ? 'bg-emerald-100/80 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-400 rounded-xl' : '' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                     </svg>
@@ -36,11 +40,13 @@
 
             {{-- 3. Estoque / Produtos --}}
             <a 
+                id="tour-mobile-nav-produtos"
                 href="{{ route('produtos.index') }}" 
                 wire:navigate
-                class="flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-150 active:scale-90 {{ request()->routeIs('produtos.*') ? 'text-emerald-700 dark:text-amber-400 font-extrabold' : 'text-zinc-600 dark:text-zinc-400 font-semibold hover:text-zinc-900 dark:hover:text-white' }}"
+                class="flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-150 active:scale-90 select-none {{ request()->routeIs('produtos.*') ? 'text-emerald-700 dark:text-emerald-400 font-extrabold' : 'text-zinc-600 dark:text-zinc-400 font-semibold hover:text-zinc-900 dark:hover:text-white' }}"
+                style="-webkit-tap-highlight-color: transparent;"
             >
-                <div class="relative p-1 {{ request()->routeIs('produtos.*') ? 'bg-emerald-100/70 dark:bg-amber-400/20 rounded-xl' : '' }}">
+                <div class="relative p-1 transition-colors {{ request()->routeIs('produtos.*') ? 'bg-emerald-100/80 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-400 rounded-xl' : '' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                     </svg>
@@ -50,11 +56,13 @@
 
             {{-- 4. Retiradas --}}
             <a 
+                id="tour-mobile-nav-retiradas"
                 href="{{ route('retiradas.index') }}" 
                 wire:navigate
-                class="flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-150 active:scale-90 {{ request()->routeIs('retiradas.*') ? 'text-emerald-700 dark:text-amber-400 font-extrabold' : 'text-zinc-600 dark:text-zinc-400 font-semibold hover:text-zinc-900 dark:hover:text-white' }}"
+                class="flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-150 active:scale-90 select-none {{ request()->routeIs('retiradas.*') ? 'text-emerald-700 dark:text-emerald-400 font-extrabold' : 'text-zinc-600 dark:text-zinc-400 font-semibold hover:text-zinc-900 dark:hover:text-white' }}"
+                style="-webkit-tap-highlight-color: transparent;"
             >
-                <div class="relative p-1 {{ request()->routeIs('retiradas.*') ? 'bg-emerald-100/70 dark:bg-amber-400/20 rounded-xl' : '' }}">
+                <div class="relative p-1 transition-colors {{ request()->routeIs('retiradas.*') ? 'bg-emerald-100/80 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-400 rounded-xl' : '' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
                     </svg>
@@ -64,9 +72,11 @@
 
             {{-- 5. Mais / Menu do Usuário --}}
             <button 
+                id="tour-mobile-nav-mais"
                 @click="moreDrawerOpen = true"
                 type="button"
-                class="flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-150 active:scale-90 text-zinc-600 dark:text-zinc-400 font-semibold hover:text-zinc-900 dark:hover:text-white cursor-pointer"
+                class="flex flex-col items-center justify-center py-1 px-1 rounded-xl transition-all duration-150 active:scale-90 select-none text-zinc-600 dark:text-zinc-400 font-semibold hover:text-zinc-900 dark:hover:text-white cursor-pointer"
+                style="-webkit-tap-highlight-color: transparent;"
             >
                 <div class="relative p-1">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

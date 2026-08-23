@@ -6,16 +6,16 @@
 
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <flux:heading size="xl" class="text-zinc-900 dark:text-zinc-50 font-bold">Produtos & Estoque</flux:heading>
-        <flux:button href="{{ route('produtos.create') }}" variant="primary" icon="plus" wire:navigate class="w-full sm:w-auto font-bold shadow-sm">
-            + Novo Produto
+        <flux:button id="tour-btn-novo-produto" href="{{ route('produtos.create') }}" variant="primary" icon="plus" wire:navigate class="w-full sm:w-auto font-bold shadow-sm">
+            Novo Produto
         </flux:button>
     </div>
 
     <div class="flex flex-col sm:flex-row gap-3">
         <div class="w-full sm:max-w-md">
-            <flux:input wire:model.live.debounce.300ms="search" placeholder="Buscar produto por nome..." icon="magnifying-glass" class="w-full" />
+            <flux:input id="tour-search-produto" wire:model.live.debounce.300ms="search" placeholder="Buscar produto por nome..." icon="magnifying-glass" class="w-full" />
         </div>
-        <flux:select wire:model.live="categoria" class="w-full sm:w-56">
+        <flux:select id="tour-filter-categoria" wire:model.live="categoria" class="w-full sm:w-56">
             <flux:select.option value="">Todas as categorias</flux:select.option>
             @foreach ($categorias as $cat)
                 <flux:select.option value="{{ $cat }}">{{ $cat }}</flux:select.option>
@@ -153,6 +153,7 @@
     {{-- FAB MOBILE (NOVO PRODUTO) --}}
     <div class="md:hidden fixed bottom-20 right-4 z-30">
         <a 
+            id="tour-mobile-fab-produto"
             href="{{ route('produtos.create') }}" 
             wire:navigate
             class="flex items-center justify-center w-14 h-14 rounded-full bg-emerald-700 active:bg-emerald-800 text-white shadow-2xl hover:scale-105 active:scale-95 transition-all duration-150 border-2 border-white/40"

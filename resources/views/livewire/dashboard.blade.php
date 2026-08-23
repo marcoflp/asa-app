@@ -10,7 +10,7 @@
         </div>
 
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-            <div class="overflow-x-auto pb-2 sm:pb-0">
+            <div id="tour-dashboard-periodo" class="overflow-x-auto pb-2 sm:pb-0">
                 <flux:radio.group wire:model.live="periodo" variant="segmented" size="sm" class="flex-nowrap min-w-max shadow-sm">
                     <flux:radio value="hoje" label="Hoje" />
                     <flux:radio value="semanal" label="7 dias" />
@@ -22,7 +22,7 @@
             </div>
 
             @if($periodo === 'personalizado')
-                <div class="flex items-center gap-2" x-data="{
+                <div class="flex items-center gap-2 bg-zinc-50 dark:bg-zinc-800/80 p-1 rounded-xl border border-zinc-200 dark:border-zinc-700" x-data="{
                     init() {
                         if (window.flatpickr) {
                             flatpickr($refs.start, { dateFormat: 'Y-m-d' });
@@ -30,20 +30,20 @@
                         }
                     }
                 }">
-                    <flux:input x-ref="start" wire:model.live="dataInicio" type="text" placeholder="Início" size="sm" class="w-28 cursor-pointer bg-white dark:bg-zinc-800" />
-                    <span class="text-zinc-500 dark:text-zinc-400 text-sm font-bold">até</span>
-                    <flux:input x-ref="end" wire:model.live="dataFim" type="text" placeholder="Fim" size="sm" class="w-28 cursor-pointer bg-white dark:bg-zinc-800" />
+                    <flux:input x-ref="start" wire:model.live="dataInicio" type="text" placeholder="Início" size="sm" class="w-28 cursor-pointer font-bold text-zinc-900 dark:text-zinc-100 bg-white dark:bg-zinc-800" />
+                    <span class="text-zinc-600 dark:text-zinc-400 text-xs font-bold px-0.5">até</span>
+                    <flux:input x-ref="end" wire:model.live="dataFim" type="text" placeholder="Fim" size="sm" class="w-28 cursor-pointer font-bold text-zinc-900 dark:text-zinc-100 bg-white dark:bg-zinc-800" />
                 </div>
             @endif
 
-            <flux:button wire:click="gerarRelatorio" icon="document-text" variant="primary" size="sm" class="w-full sm:w-auto shadow-sm">
+            <flux:button id="tour-dashboard-exportar" wire:click="gerarRelatorio" icon="document-text" variant="primary" size="sm" class="w-full sm:w-auto shadow-sm">
                 Exportar Relatório
             </flux:button>
         </div>
     </div>
 
     {{-- Cards do período --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div id="tour-dashboard-kpis" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="group rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 shadow-sm transition-all hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 flex flex-col gap-4">
             <div class="flex items-center justify-between">
                 <flux:text class="text-xs text-zinc-700 dark:text-zinc-300 uppercase tracking-wider font-bold">Retiradas no período</flux:text>
