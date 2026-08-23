@@ -7,6 +7,7 @@
         showFirstTimePrompt: false,
         spotlightStyle: {},
         cardPositionStyle: {},
+        elevatedEl: null,
         steps: [
             {
                 target: null,
@@ -116,6 +117,11 @@
         },
 
         finishTour() {
+            if (this.elevatedEl) {
+                this.elevatedEl.style.zIndex = '';
+                this.elevatedEl.style.position = '';
+                this.elevatedEl = null;
+            }
             this.tourRunning = false;
             localStorage.setItem('asa_tour_completed', 'true');
         },
@@ -126,6 +132,13 @@
         },
 
         updateSpotlight() {
+            // Limpa elevação do elemento anterior
+            if (this.elevatedEl) {
+                this.elevatedEl.style.zIndex = '';
+                this.elevatedEl.style.position = '';
+                this.elevatedEl = null;
+            }
+
             const step = this.steps[this.currentStep];
             if (!step || !step.target) {
                 // Passo central sem alvo específico
@@ -152,11 +165,16 @@
                 return;
             }
 
+            // Eleva o elemento alvo para que fique 100% visível e nítido
+            el.style.zIndex = '9995';
+            el.style.position = 'relative';
+            this.elevatedEl = el;
+
             // Garante visibilidade do elemento
             el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
 
             const rect = el.getBoundingClientRect();
-            const padding = 8;
+            const padding = 6;
 
             this.spotlightStyle = {
                 display: 'block',
@@ -164,7 +182,13 @@
                 left: (rect.left - padding) + 'px',
                 width: (rect.width + padding * 2) + 'px',
                 height: (rect.height + padding * 2) + 'px',
-                position: 'fixed'
+                position: 'fixed',
+                boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.78), 0 0 20px rgba(245, 158, 11, 0.6)',
+                zIndex: '9990',
+                borderRadius: '12px',
+                border: '3px solid #f59e0b',
+                pointerEvents: 'none',
+                backgroundColor: 'transparent'
             };
 
             const isMobile = window.innerWidth < 768;
@@ -218,18 +242,20 @@
             class="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 border-white/20 focus:outline-none focus:ring-4 focus:ring-emerald-500/40 text-sm cursor-pointer"
             title="Clique para ver o Tutorial e Guia do Sistema"
         >
-            <span class="flex items-center justify-center w-5 h-5 rounded-full bg-white/20 text-xs font-bold">?</span>
-            <span class="tracking-wide">Ajuda & Tutorial</span>
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-white text-emerald-800 font-bold text-xs shadow-inner">
+                ?
+            </span>
+            <span>Ajuda & Tutorial</span>
         </button>
     </div>
 
-    {{-- BANNER DE CONVITE NO PRIMEIRO ACESSO --}}
+    {{-- CONVITE DE BOAS-VINDAS NA PRIMEIRA VISITA --}}
     <div 
         x-show="showFirstTimePrompt" 
-        x-transition:enter="transition ease-out duration-300 transform"
+        x-transition:enter="transition ease-out duration-300"
         x-transition:enter-start="opacity-0 translate-y-8 scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-        x-transition:leave="transition ease-in duration-200 transform"
+        x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
         x-transition:leave-end="opacity-0 translate-y-8 scale-95"
         class="fixed bottom-20 right-5 z-50 max-w-sm w-full p-5 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border-2 border-emerald-500/30 dark:border-emerald-500/40"
@@ -242,7 +268,7 @@
                 </svg>
             </div>
             <div class="flex-1">
-                <h4 class="font-bold text-base text-zinc-900 dark:text-zinc-50">Bem-vindo(a) ao ASA!</h4>
+                <h4 class="font-bold text-base text-zinc-900 dark:text-zinc-50">Bem-vindo(a) ao sistema da ASA!</h4>
                 <p class="text-xs text-zinc-700 dark:text-zinc-300 mt-1 leading-relaxed">
                     Gostaria de fazer um tour guiado de 1 minuto para conhecer onde fica cada ferramenta?
                 </p>
@@ -278,13 +304,17 @@
         class="fixed inset-0 z-[9990] pointer-events-auto"
         style="display: none;"
     >
-        {{-- Fundo escuro com recorte inteligente para o elemento focado --}}
-        <div class="absolute inset-0 bg-black/75 backdrop-blur-[2px] transition-all duration-300"></div>
-
-        {{-- Borda iluminada em volta do elemento com foco --}}
+        {{-- Fundo escuro APENAS quando for um passo central (sem alvo específico) --}}
         <div 
+            x-show="!steps[currentStep]?.target" 
+            class="absolute inset-0 bg-black/75 backdrop-blur-[2px] transition-all duration-300"
+        ></div>
+
+        {{-- Borda iluminada + Máscara Cutout em volta do elemento com foco --}}
+        <div 
+            x-show="steps[currentStep]?.target"
             :style="spotlightStyle"
-            class="rounded-xl border-4 border-amber-400 dark:border-amber-300 shadow-[0_0_25px_rgba(251,191,36,0.6)] animate-pulse pointer-events-none transition-all duration-300"
+            class="transition-all duration-300"
         ></div>
 
         {{-- CARD EXPLICATIVO DO PASSO ATUAL --}}

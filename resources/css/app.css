@@ -145,3 +145,55 @@ table {
 thead th {
     @apply font-bold text-zinc-700 dark:text-zinc-300 text-xs tracking-wider uppercase;
 }
+
+[data-flux-sidebar] {
+    background-color: var(--color-asa-green, #1a2f26) !important;
+}
+
+[data-flux-sidebar] [data-flux-sidebar-item],
+[data-flux-sidebar] a,
+[data-flux-sidebar] button {
+    color: #f4f4f5 !important;
+    /* text-zinc-100 */
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    opacity: 1 !important;
+}
+
+[data-flux-sidebar] [data-flux-sidebar-item] svg,
+[data-flux-sidebar] a svg,
+[data-flux-sidebar] button svg {
+    color: #e4e4e7 !important;
+    /* text-zinc-200 */
+    opacity: 1 !important;
+}
+
+[data-flux-sidebar] [data-flux-sidebar-item]:hover,
+[data-flux-sidebar] a:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+}
+
+[data-flux-sidebar] [data-flux-sidebar-item][data-current="true"],
+[data-flux-sidebar] [data-flux-sidebar-item][aria-current="page"] {
+    background-color: rgba(214, 168, 56, 0.25) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+}
+
+[data-flux-sidebar] [data-flux-sidebar-item][data-current="true"] svg,
+[data-flux-sidebar] [data-flux-sidebar-item][aria-current="page"] svg {
+    color: #fde047 !important;
+    /* yellow-300 */
+}
+
+[data-flux-sidebar] [data-flux-sidebar-group-heading],
+[data-flux-sidebar] [data-flux-heading] {
+    color: #d4d4d8 !important;
+    /* zinc-300 */
+    font-weight: 800 !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    opacity: 1 !important;
+}
