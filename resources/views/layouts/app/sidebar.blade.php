@@ -118,9 +118,7 @@
             </flux:dropdown>
         </flux:header>
 
-        <main class="pb-24 lg:pb-8">
-            {{ $slot }}
-        </main>
+        {{ $slot }}
 
         {{-- Barra de Navegação Inferior Fixa para Smartphones --}}
         <x-mobile-bottom-nav />

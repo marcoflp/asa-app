@@ -11,8 +11,8 @@
         steps: [
             {
                 target: null,
-                title: '👋 Bem-vindo ao Sistema ASA!',
-                description: 'Este sistema foi desenvolvido para facilitar o atendimento a famílias, gestão de doações e registro de entregas. Vamos fazer um tour rápido pelas telas principais!',
+                title: 'Sistema ASA: Apresentação',
+                description: 'Plataforma para gestão de atendimentos a famílias, controle de estoque de doações e registro de entregas. Acompanhe a apresentação dos módulos principais.',
                 badge: 'Introdução',
                 url: '{{ route('dashboard') }}',
                 screenName: 'Início'
@@ -21,8 +21,8 @@
                 targetDesktop: '#tour-nav-dashboard',
                 targetMobile: '#tour-mobile-nav-dashboard',
                 inPageTarget: '#tour-dashboard-periodo',
-                title: '📊 Painel de Indicadores & Período',
-                description: 'Aqui você acompanha o resumo das doações em tempo real. Use os botões de período (Hoje, 7 dias, Mês, Personalizado) para filtrar as datas e clique em Exportar Relatório para gerar relatórios prontos.',
+                title: 'Painel Geral e Filtros de Período',
+                description: 'Visão consolidada das operações. Utilize os botões de período para alternar entre Hoje, 7 Dias, Mês, Semestre ou intervalo personalizado, e gere relatórios em PDF.',
                 badge: 'Dashboard',
                 url: '{{ route('dashboard') }}',
                 screenName: 'Início'
@@ -32,8 +32,8 @@
                 targetMobile: '#tour-mobile-nav-beneficiarios',
                 inPageTarget: '#tour-btn-novo-beneficiario',
                 inPageTargetMobile: '#tour-mobile-fab-beneficiario',
-                title: '👥 Famílias & Beneficiários',
-                description: 'No botão \'Novo Beneficiário\' (ou no botão flutuante + no celular), você cadastra novas famílias, telefone, quantidade de moradores e anexa fotos de documentos (RG, CPF e comprovante) direto pela câmera do celular.',
+                title: 'Cadastro de Beneficiários',
+                description: 'Gerencie o cadastro das famílias atendidas com dados pessoais, endereço, composição familiar e upload dos documentos (frente, verso, comprovante e termo).',
                 badge: 'Famílias',
                 url: '{{ route('beneficiarios.index') }}',
                 screenName: 'Beneficiários'
@@ -42,8 +42,8 @@
                 targetDesktop: '#tour-nav-beneficiarios',
                 targetMobile: '#tour-mobile-nav-beneficiarios',
                 inPageTarget: '#tour-search-beneficiario',
-                title: '🔍 Busca Rápida de Famílias',
-                description: 'Digite o nome, CPF ou bairro para localizar uma família em segundos. Clicando no ícone do olho 👁️, você visualiza a ficha completa com as fotos dos documentos e o histórico de retiradas.',
+                title: 'Consulta Rápida de Famílias',
+                description: 'Localize cadastros por nome, CPF ou bairro. Acesse a ficha para visualizar documentos anexados e o histórico de entregas realizadas.',
                 badge: 'Famílias',
                 url: '{{ route('beneficiarios.index') }}',
                 screenName: 'Beneficiários'
@@ -53,8 +53,8 @@
                 targetMobile: '#tour-mobile-nav-produtos',
                 inPageTarget: '#tour-btn-novo-produto',
                 inPageTargetMobile: '#tour-mobile-fab-produto',
-                title: '📦 Produtos & Controle de Estoque',
-                description: 'Cadastre alimentos, agasalhos e itens de higiene. Defina a unidade (kg, unidade, pacote) e controle as quantidades. O sistema avisa em destaque quando um item estiver com estoque baixo (< 10).',
+                title: 'Controle de Estoque',
+                description: 'Cadastre itens disponíveis para doação por categoria e unidade de medida. O sistema sinaliza automaticamente quando o saldo estiver abaixo do limite mínimo.',
                 badge: 'Estoque',
                 url: '{{ route('produtos.index') }}',
                 screenName: 'Produtos'
@@ -64,8 +64,8 @@
                 targetMobile: '#tour-mobile-nav-retiradas',
                 inPageTarget: '#tour-btn-nova-retirada',
                 inPageTargetMobile: '#tour-mobile-fab-retirada',
-                title: '🤝 Registro de Retiradas de Doações',
-                description: 'Sempre que uma família retirar doações, clique em \'Nova Retirada\', selecione a família e adicione os itens entregues com os controles de + e -. O sistema desconta o estoque na hora!',
+                title: 'Registro de Retiradas',
+                description: 'Registre a entrega de doações vinculando o beneficiário e os itens entregues. A baixa no estoque de cada produto é realizada automaticamente.',
                 badge: 'Retiradas',
                 url: '{{ route('retiradas.index') }}',
                 screenName: 'Retiradas'
@@ -74,8 +74,8 @@
                 targetDesktop: '#tour-nav-retiradas',
                 targetMobile: '#tour-mobile-nav-retiradas',
                 inPageTarget: '#tour-filtros-data',
-                title: '📅 Filtros por Data de Entrega',
-                description: 'Filtre as entregas realizadas preenchendo as datas \'De\' e \'Até\'. Perfeito para conferir o relatório de entregas da semana ou do mês.',
+                title: 'Filtros de Retiradas por Data',
+                description: 'Filtre as entregas por intervalo de datas para conferência de relatórios semanais, mensais ou por período específico.',
                 badge: 'Retiradas',
                 url: '{{ route('retiradas.index') }}',
                 screenName: 'Retiradas'
@@ -83,9 +83,9 @@
             {
                 targetDesktop: '#tour-user-menu',
                 targetMobile: '#tour-mobile-nav-mais',
-                title: '⚙️ Configurações, Tema & Voluntários',
-                description: 'Neste menu você pode alternar entre Modo Claro e Escuro, gerenciar outros voluntários cadastrados no sistema, alterar sua senha e reabrir este tutorial a qualquer hora!',
-                badge: 'Menu',
+                title: 'Configurações e Usuários',
+                description: 'Gerencie preferências de aparência (Modo Claro/Escuro), credenciais de acesso, cadastro de operadores voluntários e acesse o suporte a qualquer momento.',
+                badge: 'Configurações',
                 url: '{{ route('dashboard') }}',
                 screenName: 'Configurações'
             }
@@ -148,6 +148,21 @@
             this.currentStep = 0;
             this.tourRunning = true;
             sessionStorage.setItem('asa_active_tour_step', '0');
+
+            const step = this.steps[0];
+            if (step && step.url) {
+                const targetPath = new URL(step.url, window.location.origin).pathname;
+                if (window.location.pathname !== targetPath) {
+                    if (window.Livewire && window.Livewire.navigate) {
+                        window.Livewire.navigate(step.url);
+                        return;
+                    } else {
+                        window.location.href = step.url;
+                        return;
+                    }
+                }
+            }
+
             this.$nextTick(() => {
                 this.updateSpotlight();
             });
@@ -157,6 +172,21 @@
             if (this.currentStep < this.steps.length - 1) {
                 this.currentStep++;
                 sessionStorage.setItem('asa_active_tour_step', this.currentStep.toString());
+                
+                const step = this.steps[this.currentStep];
+                if (step && step.url) {
+                    const targetPath = new URL(step.url, window.location.origin).pathname;
+                    if (window.location.pathname !== targetPath) {
+                        if (window.Livewire && window.Livewire.navigate) {
+                            window.Livewire.navigate(step.url);
+                            return;
+                        } else {
+                            window.location.href = step.url;
+                            return;
+                        }
+                    }
+                }
+
                 this.updateSpotlight();
             } else {
                 this.finishTour();
@@ -167,24 +197,21 @@
             if (this.currentStep > 0) {
                 this.currentStep--;
                 sessionStorage.setItem('asa_active_tour_step', this.currentStep.toString());
-                this.updateSpotlight();
-            }
-        },
 
-        navigateToStep(stepIndex) {
-            const step = this.steps[stepIndex];
-            if (!step) return;
-
-            this.currentStep = stepIndex;
-            sessionStorage.setItem('asa_active_tour_step', stepIndex.toString());
-
-            if (step.url && !window.location.href.includes(step.url)) {
-                if (window.Livewire && window.Livewire.navigate) {
-                    window.Livewire.navigate(step.url);
-                } else {
-                    window.location.href = step.url;
+                const step = this.steps[this.currentStep];
+                if (step && step.url) {
+                    const targetPath = new URL(step.url, window.location.origin).pathname;
+                    if (window.location.pathname !== targetPath) {
+                        if (window.Livewire && window.Livewire.navigate) {
+                            window.Livewire.navigate(step.url);
+                            return;
+                        } else {
+                            window.location.href = step.url;
+                            return;
+                        }
+                    }
                 }
-            } else {
+
                 this.updateSpotlight();
             }
         },
@@ -210,17 +237,17 @@
 
             const isMobile = window.innerWidth < 1024;
 
-            // 1. Tentar elemento específico dentro da tela se estiver visível
+            // 1. Tenta alvo específico mobile ou desktop
             if (isMobile && step.inPageTargetMobile) {
                 const el = document.querySelector(step.inPageTargetMobile);
                 if (el && el.offsetParent !== null) return el;
             }
+
             if (step.inPageTarget) {
                 const el = document.querySelector(step.inPageTarget);
                 if (el && el.offsetParent !== null) return el;
             }
 
-            // 2. Tentar alvo de navegação mobile ou desktop
             if (isMobile && step.targetMobile) {
                 const el = document.querySelector(step.targetMobile);
                 if (el && el.offsetParent !== null) return el;
@@ -231,7 +258,6 @@
                 if (el && el.offsetParent !== null) return el;
             }
 
-            // 3. Alvo genérico
             if (step.target) {
                 const el = document.querySelector(step.target);
                 if (el && el.offsetParent !== null) return el;
@@ -241,62 +267,61 @@
         },
 
         updateSpotlight() {
+            if (!this.tourRunning) return;
+
+            const step = this.steps[this.currentStep];
+            if (!step) return;
+
             if (this.elevatedEl) {
                 this.elevatedEl.style.zIndex = '';
                 this.elevatedEl.style.position = '';
                 this.elevatedEl = null;
             }
 
-            const step = this.steps[this.currentStep];
-            if (!step) return;
-
-            const isMobile = window.innerWidth < 1024;
             const targetEl = this.resolveTargetElement(step);
 
             if (!targetEl) {
-                // Passo central sem alvo ou alvo não renderizado
-                this.spotlightStyle = { display: 'none' };
+                // Passo sem alvo físico ou tela diferente
+                this.spotlightStyle = {
+                    display: 'none'
+                };
                 this.cardPositionStyle = {
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    width: isMobile ? 'calc(100vw - 32px)' : '460px',
-                    maxWidth: '460px',
+                    width: window.innerWidth < 640 ? 'calc(100vw - 32px)' : '460px',
                     position: 'fixed'
                 };
                 return;
             }
 
-            targetEl.style.zIndex = '9995';
-            targetEl.style.position = 'relative';
-            this.elevatedEl = targetEl;
-
-            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
 
             const rect = targetEl.getBoundingClientRect();
-            const padding = 6;
+            const padding = 8;
 
             this.spotlightStyle = {
                 display: 'block',
+                position: 'fixed',
                 top: Math.max(0, rect.top - padding) + 'px',
                 left: Math.max(0, rect.left - padding) + 'px',
                 width: (rect.width + padding * 2) + 'px',
                 height: (rect.height + padding * 2) + 'px',
-                position: 'fixed',
-                boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.76), 0 0 20px rgba(16, 185, 129, 0.5)',
-                zIndex: '9990',
-                borderRadius: '14px',
-                border: '3px solid #10b981',
+                boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.72), 0 0 20px 2px rgba(16, 185, 129, 0.5)',
+                borderRadius: '16px',
+                border: '2px solid #10b981',
+                zIndex: '9995',
                 pointerEvents: 'none',
-                backgroundColor: 'transparent'
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
             };
 
-            const cardWidth = Math.min(window.innerWidth - 32, 440);
+            const isMobile = window.innerWidth < 768;
+            const cardWidth = isMobile ? Math.min(window.innerWidth - 32, 400) : 460;
 
             if (isMobile) {
-                // Lógica de Posicionamento Mobile Responsivo
-                // Se o elemento estiver na metade inferior da tela (ex: barra under bar), coloca o card em cima
-                if (rect.top > (window.innerHeight / 2 - 40)) {
+                const isTargetAtBottom = rect.top > window.innerHeight / 2;
+
+                if (isTargetAtBottom) {
                     this.cardPositionStyle = {
                         top: '16px',
                         left: '50%',
@@ -308,7 +333,6 @@
                         overflowY: 'auto'
                     };
                 } else {
-                    // Elemento no topo, card fica acima da barra inferior
                     this.cardPositionStyle = {
                         bottom: '76px',
                         left: '50%',
@@ -321,7 +345,6 @@
                     };
                 }
             } else {
-                // Posicionamento inteligente em Desktop
                 let top = rect.top;
                 let left = rect.right + 20;
 
@@ -350,19 +373,19 @@
         <button 
             @click="showHelpModal = true"
             type="button"
-            class="flex items-center gap-2 px-3.5 py-2 lg:px-4 lg:py-2.5 rounded-full bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 border-white/20 focus:outline-none focus:ring-4 focus:ring-emerald-500/40 text-xs lg:text-sm cursor-pointer select-none"
-            title="Clique para ver o Tutorial e Guia do Sistema"
+            class="flex items-center gap-2 px-3.5 py-2 lg:px-4 lg:py-2.5 rounded-full bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 text-white font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 border-white/20 focus:outline-hidden focus:ring-4 focus:ring-emerald-500/40 text-xs lg:text-sm cursor-pointer select-none"
+            title="Manual e Instruções do Sistema"
             style="-webkit-tap-highlight-color: transparent;"
         >
             <span class="flex items-center justify-center w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-white text-emerald-800 font-bold text-xs shadow-inner">
                 ?
             </span>
-            <span class="hidden sm:inline">Ajuda & Tutorial</span>
+            <span class="hidden sm:inline">Ajuda e Manual</span>
             <span class="sm:hidden">Ajuda</span>
         </button>
     </div>
 
-    {{-- CONVITE DE BOAS-VINDAS NA PRIMEIRA VISITA --}}
+    {{-- CONVITE DE APRESENTAÇÃO NA PRIMEIRA VISITA --}}
     <div 
         x-show="showFirstTimePrompt" 
         x-transition:enter="transition ease-out duration-300"
@@ -381,17 +404,17 @@
                 </svg>
             </div>
             <div class="flex-1">
-                <h4 class="font-bold text-base text-zinc-900 dark:text-zinc-50">Bem-vindo(a) à ASA!</h4>
+                <h4 class="font-bold text-base text-zinc-900 dark:text-zinc-50">Apresentação do Sistema ASA</h4>
                 <p class="text-xs text-zinc-700 dark:text-zinc-300 mt-1 leading-relaxed">
-                    Deseja fazer um tour rápido de 1 minuto para conhecer onde fica cada tela e como registrar doações?
+                    Deseja visualizar um tour guiado de 1 minuto pelos módulos principais do sistema?
                 </p>
                 <div class="flex items-center gap-2 mt-4">
                     <button 
                         @click="startTour()" 
                         type="button" 
-                        class="px-3.5 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-colors cursor-pointer shadow-sm"
+                        class="px-3.5 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-colors cursor-pointer shadow-xs"
                     >
-                        Iniciar Tour Agora 🚀
+                        Iniciar Apresentação
                     </button>
                     <button 
                         @click="dismissFirstTime()" 
@@ -447,7 +470,7 @@
                     @click="finishTour()" 
                     type="button" 
                     class="text-zinc-400 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-white p-1 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
-                    title="Fechar tutorial"
+                    title="Fechar apresentação"
                 >
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -461,20 +484,6 @@
                 <p class="text-xs md:text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed" x-text="steps[currentStep]?.description"></p>
             </div>
 
-            {{-- Atalho para abrir a tela correspondente no tour --}}
-            <template x-if="steps[currentStep]?.url && !window.location.href.includes(steps[currentStep]?.url)">
-                <div class="my-2 p-2.5 bg-emerald-50 dark:bg-emerald-950/50 rounded-xl border border-emerald-200 dark:border-emerald-800/80 flex items-center justify-between gap-2">
-                    <span class="text-xs font-medium text-emerald-900 dark:text-emerald-200">Deseja ver esta tela agora?</span>
-                    <button 
-                        @click="navigateToStep(currentStep)"
-                        type="button"
-                        class="px-2.5 py-1 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-all shadow-xs cursor-pointer shrink-0"
-                    >
-                        Abrir tela &rarr;
-                    </button>
-                </div>
-            </template>
-
             {{-- Barra de Progresso Verde ASA --}}
             <div class="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden my-3">
                 <div 
@@ -483,7 +492,7 @@
                 ></div>
             </div>
 
-            {{-- Ações do Tour: Anterior / Próximo / Pular --}}
+            {{-- Botões de Ação do Passo --}}
             <div class="flex items-center justify-between pt-1 gap-2">
                 <button 
                     @click="prevStep()" 
@@ -501,7 +510,7 @@
                         type="button" 
                         class="px-2.5 py-2 text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 text-xs font-semibold transition-colors cursor-pointer"
                     >
-                        Pular
+                        Encerrar
                     </button>
 
                     <button 
@@ -509,7 +518,7 @@
                         type="button" 
                         class="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs md:text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-1"
                     >
-                        <span x-text="currentStep === steps.length - 1 ? 'Concluir 🎉' : 'Próximo &rarr;'"></span>
+                        <span x-text="currentStep === steps.length - 1 ? 'Concluir' : 'Próximo &rarr;'"></span>
                     </button>
                 </div>
             </div>
@@ -525,7 +534,7 @@
         x-transition:leave="transition ease-in duration-150"
         x-transition:leave-start="opacity-100"
         x-transition:leave-end="opacity-0"
-        class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/65 backdrop-blur-sm"
+        class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/65 backdrop-blur-xs"
         style="display: none;"
     >
         <div 
@@ -541,8 +550,8 @@
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-100">Central de Ajuda & Guia ASA</h2>
-                        <p class="text-xs text-zinc-600 dark:text-zinc-400">Instruções práticas para voluntários e operadores</p>
+                        <h2 class="text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-100">Central de Ajuda e Manual de Operação</h2>
+                        <p class="text-xs text-zinc-600 dark:text-zinc-400">Instruções e diretrizes para voluntários e operadores</p>
                     </div>
                 </div>
                 <button 
@@ -556,18 +565,18 @@
                 </button>
             </div>
 
-            {{-- Destaque: Botão para Iniciar Tour Interativo --}}
-            <div class="p-3.5 sm:p-4 bg-gradient-to-r from-emerald-700 to-teal-800 text-white flex flex-col sm:flex-row items-center justify-between gap-3 shadow-inner">
+            {{-- Destaque: Botão para Iniciar Apresentação Guiada --}}
+            <div class="p-3.5 sm:p-4 bg-gradient-to-r from-emerald-800 to-teal-900 text-white flex flex-col sm:flex-row items-center justify-between gap-3 shadow-inner">
                 <div class="space-y-0.5 text-center sm:text-left">
-                    <span class="font-bold text-xs sm:text-sm">Quer ver as telas na prática?</span>
-                    <p class="text-[11px] sm:text-xs text-emerald-100">Inicie o tour guiado para destacar cada botão e função na sua tela.</p>
+                    <span class="font-bold text-xs sm:text-sm">Apresentação Interativa em Tela</span>
+                    <p class="text-[11px] sm:text-xs text-emerald-100">Destaque os elementos e atalhos na tela passo a passo.</p>
                 </div>
                 <button 
                     @click="startTour()" 
                     type="button" 
-                    class="w-full sm:w-auto px-4 py-2 rounded-xl bg-white text-emerald-800 hover:bg-emerald-50 font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer shrink-0 text-center"
+                    class="w-full sm:w-auto px-4 py-2 rounded-xl bg-white text-emerald-900 hover:bg-emerald-50 font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer shrink-0 text-center"
                 >
-                    🚀 Iniciar Tour na Tela
+                    Iniciar Apresentação
                 </button>
             </div>
 
@@ -578,42 +587,42 @@
                     :class="activeTab === 'geral' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 border-b-2 border-emerald-600 shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
                     class="px-3.5 py-2 rounded-t-xl transition-colors cursor-pointer whitespace-nowrap"
                 >
-                    🏠 Visão Geral
+                    Visão Geral
                 </button>
                 <button 
                     @click="activeTab = 'beneficiarios'" 
                     :class="activeTab === 'beneficiarios' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 border-b-2 border-emerald-600 shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
                     class="px-3.5 py-2 rounded-t-xl transition-colors cursor-pointer whitespace-nowrap"
                 >
-                    👥 Famílias
+                    Famílias
                 </button>
                 <button 
                     @click="activeTab = 'produtos'" 
                     :class="activeTab === 'produtos' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 border-b-2 border-emerald-600 shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
                     class="px-3.5 py-2 rounded-t-xl transition-colors cursor-pointer whitespace-nowrap"
                 >
-                    📦 Estoque
+                    Estoque
                 </button>
                 <button 
                     @click="activeTab = 'retiradas'" 
                     :class="activeTab === 'retiradas' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 border-b-2 border-emerald-600 shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
                     class="px-3.5 py-2 rounded-t-xl transition-colors cursor-pointer whitespace-nowrap"
                 >
-                    🤝 Retiradas
+                    Retiradas
                 </button>
                 <button 
                     @click="activeTab = 'mobile'" 
                     :class="activeTab === 'mobile' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 border-b-2 border-emerald-600 shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
                     class="px-3.5 py-2 rounded-t-xl transition-colors cursor-pointer whitespace-nowrap"
                 >
-                    📱 Dicas Celular
+                    Dicas para Smartphones
                 </button>
                 <button 
                     @click="activeTab = 'faq'" 
                     :class="activeTab === 'faq' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 border-b-2 border-emerald-600 shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
                     class="px-3.5 py-2 rounded-t-xl transition-colors cursor-pointer whitespace-nowrap"
                 >
-                    ❓ FAQ
+                    Dúvidas Frequentes
                 </button>
             </div>
 
@@ -623,27 +632,24 @@
                 {{-- ABA: GERAL --}}
                 <div x-show="activeTab === 'geral'" class="space-y-4">
                     <div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60">
-                        <h4 class="font-bold text-sm sm:text-base text-emerald-900 dark:text-emerald-200">Como o sistema ASA funciona?</h4>
+                        <h4 class="font-bold text-sm sm:text-base text-emerald-900 dark:text-emerald-200">Objetivo do Sistema ASA</h4>
                         <p class="text-zinc-700 dark:text-zinc-300 mt-1">
-                            O ASA foi desenvolvido para registrar e organizar o atendimento a famílias vulneráveis, controle de doações e histórico de entregas de forma simples e rápida.
+                            A plataforma ASA foi estruturada para centralizar o atendimento socioassistencial, controle rigoroso de estoques e rastreabilidade total das doações distribuídas.
                         </p>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div class="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 space-y-1.5">
-                            <span class="text-2xl">👥</span>
                             <h5 class="font-bold text-zinc-900 dark:text-zinc-100">1. Famílias</h5>
-                            <p class="text-xs text-zinc-600 dark:text-zinc-400">Cadastre quem recebe a ajuda e anexe fotos de documentos para controle.</p>
+                            <p class="text-xs text-zinc-600 dark:text-zinc-400">Cadastre os beneficiários, composição familiar e anexe documentos comprobatórios.</p>
                         </div>
                         <div class="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 space-y-1.5">
-                            <span class="text-2xl">📦</span>
                             <h5 class="font-bold text-zinc-900 dark:text-zinc-100">2. Estoque</h5>
-                            <p class="text-xs text-zinc-600 dark:text-zinc-400">Cadastre alimentos, agasalhos e itens disponíveis para doação.</p>
+                            <p class="text-xs text-zinc-600 dark:text-zinc-400">Monitore as entradas, categorias e saldos mínimos de alimentos e mantimentos.</p>
                         </div>
                         <div class="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 space-y-1.5">
-                            <span class="text-2xl">🤝</span>
                             <h5 class="font-bold text-zinc-900 dark:text-zinc-100">3. Retiradas</h5>
-                            <p class="text-xs text-zinc-600 dark:text-zinc-400">Registre entregas com baixa automática no estoque em tempo real.</p>
+                            <p class="text-xs text-zinc-600 dark:text-zinc-400">Registre entregas com baixa em tempo real e histórico auditável.</p>
                         </div>
                     </div>
                 </div>
@@ -651,71 +657,71 @@
                 {{-- ABA: BENEFICIARIOS --}}
                 <div x-show="activeTab === 'beneficiarios'" class="space-y-4" style="display: none;">
                     <div class="flex items-center justify-between">
-                        <h4 class="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100">Como cadastrar uma nova família:</h4>
+                        <h4 class="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100">Processo de Cadastro de Famílias</h4>
                         <a href="{{ route('beneficiarios.create') }}" wire:navigate @click="showHelpModal = false" class="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline">
-                            + Abrir Cadastro &rarr;
+                            Novo Cadastro &rarr;
                         </a>
                     </div>
                     <ol class="list-decimal list-inside space-y-2 text-zinc-700 dark:text-zinc-300">
-                        <li>Acesse <strong>Famílias</strong> na barra de navegação e toque em <strong>Novo Beneficiário</strong> (ou no botão flutuante <strong>+</strong>).</li>
-                        <li>Preencha o <strong>Nome completo</strong> (obrigatório), telefone, CPF, RG e endereço.</li>
-                        <li>Informe quantas pessoas moram na casa e as idades dos filhos.</li>
-                        <li><strong>Fotos de Documentos:</strong> Você pode tirar fotos da frente/verso do RG, comprovante de residência e termo assinado diretamente pela câmera do celular!</li>
-                        <li>Clique em <strong>Salvar beneficiário</strong> no final do formulário.</li>
+                        <li>Acesse o menu <strong>Famílias</strong> e clique em <strong>Novo Beneficiário</strong>.</li>
+                        <li>Preencha nome completo, telefone para contato, CPF, RG e endereço residencial.</li>
+                        <li>Informe o número de pessoas no núcleo familiar e a idade dos dependentes.</li>
+                        <li><strong>Anexos de Documentos:</strong> Capture fotos da frente do documento, verso, comprovante de endereço e termo assinado diretamente pela câmera do dispositivo ou galeria.</li>
+                        <li>Revise os dados e clique em <strong>Salvar beneficiário</strong>.</li>
                     </ol>
-                    <div class="p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200 text-xs">
-                        💡 <strong>Consulta rápida:</strong> Na listagem, digite o nome ou CPF para localizar o cadastro e clique no ícone do olho 👁️ para ver todas as doações já entregues àquela família.
+                    <div class="p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 text-xs">
+                        <strong>Consulta e Histórico:</strong> Na listagem principal, utilize a busca por nome ou CPF para consultar fichas cadastrais e o histórico de retiradas anteriores.
                     </div>
                 </div>
 
                 {{-- ABA: PRODUTOS --}}
                 <div x-show="activeTab === 'produtos'" class="space-y-4" style="display: none;">
                     <div class="flex items-center justify-between">
-                        <h4 class="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100">Como gerenciar o estoque:</h4>
+                        <h4 class="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100">Gerenciamento de Estoque</h4>
                         <a href="{{ route('produtos.create') }}" wire:navigate @click="showHelpModal = false" class="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline">
                             Novo Produto &rarr;
                         </a>
                     </div>
                     <ul class="list-disc list-inside space-y-2 text-zinc-700 dark:text-zinc-300">
-                        <li>Acesse <strong>Estoque</strong> e clique em <strong>Novo Produto</strong> (ou no botão flutuante <strong>+</strong>).</li>
-                        <li>Informe o nome do item (ex: <em>Arroz 5kg</em>, <em>Feijão</em>, <em>Leite</em>, <em>Cobertor</em>).</li>
-                        <li>Selecione a <strong>Categoria</strong> (Alimentos, Roupas, Higiene, etc.) e a <strong>Unidade</strong> (kg, unidade, pacote).</li>
-                        <li>Digite a quantidade atual em estoque. O sistema marcará em destaque amarelo se o estoque estiver abaixo de 10 unidades.</li>
+                        <li>Acesse o menu <strong>Estoque</strong> e clique em <strong>Novo Produto</strong>.</li>
+                        <li>Informe a descrição do produto (ex: <em>Arroz 5kg</em>, <em>Feijão 1kg</em>, <em>Leite 1L</em>, <em>Cobertor</em>).</li>
+                        <li>Selecione a <strong>Categoria</strong> (Alimentos, Vestuário, Higiene, etc.) e a <strong>Unidade de Medida</strong> (kg, unidade, pacote).</li>
+                        <li>Defina a quantidade inicial em estoque. Itens com quantidade inferior a 10 unidades receberão alerta de estoque baixo.</li>
                     </ul>
                 </div>
 
                 {{-- ABA: RETIRADAS --}}
                 <div x-show="activeTab === 'retiradas'" class="space-y-4" style="display: none;">
                     <div class="flex items-center justify-between">
-                        <h4 class="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100">Como registrar uma retirada / entrega:</h4>
+                        <h4 class="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100">Registro de Retiradas e Entregas</h4>
                         <a href="{{ route('retiradas.create') }}" wire:navigate @click="showHelpModal = false" class="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline">
                             Nova Retirada &rarr;
                         </a>
                     </div>
                     <ol class="list-decimal list-inside space-y-2 text-zinc-700 dark:text-zinc-300">
-                        <li>Acesse <strong>Retiradas</strong> e clique em <strong>Nova Retirada</strong> (ou no botão flutuante <strong>+</strong>).</li>
-                        <li>Selecione o <strong>Beneficiário</strong> que está recebendo a doação.</li>
-                        <li>Confira a <strong>Data da entrega</strong>.</li>
-                        <li>Busque os produtos doados para adicioná-los e ajuste as quantidades usando os botões <strong>+</strong> e <strong>-</strong>.</li>
-                        <li>Clique em <strong>Salvar retirada</strong>. O estoque é atualizado automaticamente!</li>
+                        <li>Acesse o menu <strong>Retiradas</strong> e clique em <strong>Nova Retirada</strong>.</li>
+                        <li>Selecione o beneficiário cadastrado.</li>
+                        <li>Confirme a data do atendimento.</li>
+                        <li>Adicione os itens e ajuste as quantidades através dos seletores.</li>
+                        <li>Clique em <strong>Salvar retirada</strong> para efetivar a baixa imediata no estoque.</li>
                     </ol>
                 </div>
 
                 {{-- ABA: MOBILE --}}
                 <div x-show="activeTab === 'mobile'" class="space-y-4" style="display: none;">
-                    <h4 class="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100">Dicas para uso no Celular / Smartphone:</h4>
+                    <h4 class="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100">Orientações para Dispositivos Móveis</h4>
                     <div class="space-y-3">
                         <div class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40">
-                            <h5 class="font-bold text-emerald-700 dark:text-emerald-400">1. Botão Flutuante (+)</h5>
-                            <p class="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">Em qualquer tela no celular, use o botão circular verde no canto inferior direito para cadastrar uma nova família, produto ou retirada sem precisar rolar a página.</p>
+                            <h5 class="font-bold text-zinc-900 dark:text-zinc-100">1. Botão Flutuante de Ação (+)</h5>
+                            <p class="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">No smartphone, o botão circular no canto inferior direito permite iniciar novos cadastros em qualquer tela.</p>
                         </div>
                         <div class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40">
-                            <h5 class="font-bold text-emerald-700 dark:text-emerald-400">2. Fotos Direto da Câmera</h5>
-                            <p class="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">Ao cadastrar documentos, toque no campo de foto para abrir a câmera do celular e fotografar o RG/CPF na hora, sem precisar transferir arquivos.</p>
+                            <h5 class="font-bold text-zinc-900 dark:text-zinc-100">2. Captura Direta pela Câmera</h5>
+                            <p class="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">Nos formulários com fotos de documentos, o botão Câmera aciona a lente traseira do aparelho para foto instantânea.</p>
                         </div>
                         <div class="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/40">
-                            <h5 class="font-bold text-emerald-700 dark:text-emerald-400">3. Barra Inferior de Navegação</h5>
-                            <p class="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">Alterne entre Início, Famílias, Estoque e Retiradas tocando nos ícones na barra inferior fixa.</p>
+                            <h5 class="font-bold text-zinc-900 dark:text-zinc-100">3. Barra de Navegação Inferior</h5>
+                            <p class="text-xs text-zinc-600 dark:text-zinc-400 mt-0.5">Acesse os módulos operacionais através dos atalhos fixos na base da tela.</p>
                         </div>
                     </div>
                 </div>
@@ -724,17 +730,17 @@
                 <div x-show="activeTab === 'faq'" class="space-y-3" style="display: none;">
                     <div class="border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 space-y-1">
                         <h5 class="font-bold text-zinc-900 dark:text-zinc-100">Como alternar entre Modo Claro e Escuro?</h5>
-                        <p class="text-xs text-zinc-600 dark:text-zinc-400">Acesse o menu <strong>Mais</strong> (ou seu perfil) &rarr; <strong>Configurações</strong> &rarr; <strong>Aparência</strong> e selecione o tema de sua preferência.</p>
+                        <p class="text-xs text-zinc-600 dark:text-zinc-400">Acesse o menu <strong>Mais</strong> (ou perfil) &rarr; <strong>Configurações</strong> &rarr; <strong>Aparência</strong> e selecione o tema desejado.</p>
                     </div>
 
                     <div class="border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 space-y-1">
-                        <h5 class="font-bold text-zinc-900 dark:text-zinc-100">Como alterar minha senha?</h5>
-                        <p class="text-xs text-zinc-600 dark:text-zinc-400">Vá em <strong>Configurações</strong> &rarr; <strong>Segurança</strong>, digite sua senha atual e informe a nova senha.</p>
+                        <h5 class="font-bold text-zinc-900 dark:text-zinc-100">Como alterar a senha de acesso?</h5>
+                        <p class="text-xs text-zinc-600 dark:text-zinc-400">Acesse <strong>Configurações</strong> &rarr; <strong>Segurança</strong>, insira a senha atual e defina a nova credencial.</p>
                     </div>
 
                     <div class="border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 space-y-1">
-                        <h5 class="font-bold text-zinc-900 dark:text-zinc-100">O que significa o status de Documentos (Pendente / Parcial / Completo)?</h5>
-                        <p class="text-xs text-zinc-600 dark:text-zinc-400">Indica a quantidade de comprovantes anexados para a família (frente do RG, verso do RG, termo de consentimento e comprovante de endereço). O status fica <strong>Completo (4/4)</strong> quando todos forem enviados.</p>
+                        <h5 class="font-bold text-zinc-900 dark:text-zinc-100">O que indica o status de Documentação (Pendente, Parcial, Completo)?</h5>
+                        <p class="text-xs text-zinc-600 dark:text-zinc-400">Representa o preenchimento dos 4 comprovantes exigidos (frente do RG, verso do RG, termo de consentimento e comprovante de endereço). O status torna-se <strong>Completo (4/4)</strong> com o envio integral.</p>
                     </div>
                 </div>
 
@@ -747,7 +753,7 @@
                     type="button" 
                     class="px-5 py-2 rounded-xl bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 font-bold text-xs sm:text-sm transition-colors cursor-pointer"
                 >
-                    Entendido / Fechar
+                    Fechar
                 </button>
             </div>
         </div>
