@@ -235,17 +235,18 @@
 >
 
     {{-- BOTÃO FLUTUANTE DE AJUDA & TUTORIAL --}}
-    <div id="tour-help-button" class="fixed bottom-5 right-5 z-40">
+    <div id="tour-help-button" class="fixed bottom-20 lg:bottom-5 left-4 lg:left-auto lg:right-5 z-40">
         <button 
             @click="showHelpModal = true"
             type="button"
-            class="flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 border-white/20 focus:outline-none focus:ring-4 focus:ring-emerald-500/40 text-sm cursor-pointer"
+            class="flex items-center gap-2 px-3.5 py-2 lg:px-4 lg:py-2.5 rounded-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 border-white/20 focus:outline-none focus:ring-4 focus:ring-emerald-500/40 text-xs lg:text-sm cursor-pointer"
             title="Clique para ver o Tutorial e Guia do Sistema"
         >
-            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-white text-emerald-800 font-bold text-xs shadow-inner">
+            <span class="flex items-center justify-center w-5 h-5 lg:w-6 lg:h-6 rounded-full bg-white text-emerald-800 font-bold text-xs shadow-inner">
                 ?
             </span>
-            <span>Ajuda & Tutorial</span>
+            <span class="hidden sm:inline">Ajuda & Tutorial</span>
+            <span class="sm:hidden">Ajuda</span>
         </button>
     </div>
 
@@ -258,7 +259,7 @@
         x-transition:leave="transition ease-in duration-200"
         x-transition:leave-start="opacity-100 translate-y-0 scale-100"
         x-transition:leave-end="opacity-0 translate-y-8 scale-95"
-        class="fixed bottom-20 right-5 z-50 max-w-sm w-full p-5 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border-2 border-emerald-500/30 dark:border-emerald-500/40"
+        class="fixed bottom-24 lg:bottom-20 right-4 lg:right-5 z-50 max-w-sm w-[calc(100%-2rem)] p-5 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border-2 border-emerald-500/30 dark:border-emerald-500/40"
         style="display: none;"
     >
         <div class="flex items-start gap-3.5">

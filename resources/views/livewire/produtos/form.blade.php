@@ -63,7 +63,7 @@
 
             <flux:field>
                 <flux:label>Estoque atual (deixe vazio se não quiser controlar)</flux:label>
-                <flux:input type="number" wire:model="estoque" placeholder="0" />
+                <flux:input type="number" wire:model="estoque" placeholder="0" inputmode="numeric" />
                 <flux:error name="estoque" />
             </flux:field>
 

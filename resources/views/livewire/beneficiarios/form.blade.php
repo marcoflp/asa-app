@@ -23,19 +23,19 @@
 
                     <flux:field>
                         <flux:label>Telefone</flux:label>
-                        <flux:input wire:model="telefone" placeholder="(54) 99999-9999" />
+                        <flux:input wire:model="telefone" placeholder="(54) 99999-9999" type="tel" inputmode="tel" />
                         <flux:error name="telefone" />
                     </flux:field>
 
                     <flux:field>
                         <flux:label>CPF</flux:label>
-                        <flux:input wire:model="cpf" placeholder="000.000.000-00" />
+                        <flux:input wire:model="cpf" placeholder="000.000.000-00" inputmode="numeric" />
                         <flux:error name="cpf" />
                     </flux:field>
 
                     <flux:field>
                         <flux:label>RG</flux:label>
-                        <flux:input wire:model="rg" placeholder="0000000000" />
+                        <flux:input wire:model="rg" placeholder="0000000000" inputmode="numeric" />
                         <flux:error name="rg" />
                     </flux:field>
 
@@ -177,7 +177,7 @@
 
                     <flux:field>
                         <flux:label>Número</flux:label>
-                        <flux:input wire:model="numero" placeholder="123" />
+                        <flux:input wire:model="numero" placeholder="123" inputmode="numeric" />
                         <flux:error name="numero" />
                     </flux:field>
 
@@ -195,7 +195,7 @@
 
                     <flux:field>
                         <flux:label>CEP</flux:label>
-                        <flux:input wire:model="cep" placeholder="99000-000" />
+                        <flux:input wire:model="cep" placeholder="99000-000" inputmode="numeric" />
                         <flux:error name="cep" />
                     </flux:field>
                 </div>
@@ -207,7 +207,7 @@
 
                 <flux:field>
                     <flux:label>Número de pessoas na família *</flux:label>
-                    <flux:input type="number" wire:model="num_pessoas_familia" min="1" class="w-32" />
+                    <flux:input type="number" wire:model="num_pessoas_familia" min="1" inputmode="numeric" class="w-32" />
                     <flux:error name="num_pessoas_familia" />
                 </flux:field>
 

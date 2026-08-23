@@ -150,4 +150,18 @@
         </div>
     </flux:modal>
 
+    {{-- FAB MOBILE (NOVO PRODUTO) --}}
+    <div class="md:hidden fixed bottom-20 right-4 z-30">
+        <a 
+            href="{{ route('produtos.create') }}" 
+            wire:navigate
+            class="flex items-center justify-center w-14 h-14 rounded-full bg-emerald-700 active:bg-emerald-800 text-white shadow-2xl hover:scale-105 active:scale-95 transition-all duration-150 border-2 border-white/40"
+            title="Novo Produto"
+        >
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path>
+            </svg>
+        </a>
+    </div>
+
 </div>
