@@ -1,30 +1,28 @@
+@php
+    $appearanceCookie = request()->cookie('flux_appearance') ?? ($_COOKIE['flux_appearance'] ?? null);
+    $isDark = $appearanceCookie === 'dark';
+@endphp
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => $isDark])>
     <head>
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
-        {{-- Global Loading Screen for Livewire Navigate --}}
-        <div x-data="{ loading: false }" 
-             x-on:livewire:navigating.window="loading = true" 
-             x-on:livewire:navigated.window="loading = false">
-            <div x-show="loading" 
-                 x-transition:enter="transition ease-out duration-200"
-                 x-transition:enter-start="opacity-0"
-                 x-transition:enter-end="opacity-100"
-                 x-transition:leave="transition ease-in duration-150"
-                 x-transition:leave-start="opacity-100"
-                 x-transition:leave-end="opacity-0"
-                 class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-zinc-900/40 dark:bg-zinc-950/60 backdrop-blur-sm"
-                 style="display: none;">
-                <div class="flex flex-col items-center gap-3 p-6 bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-neutral-100 dark:border-neutral-800">
-                    <svg class="animate-spin h-8 w-8 text-blue-600 dark:text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span class="text-sm font-semibold text-neutral-800 dark:text-neutral-200">Carregando...</span>
-                </div>
-            </div>
+        {{-- Barra de Progresso Superior para Livewire Navigate --}}
+        <div 
+            x-data="{ show: false, timer: null }" 
+            x-on:livewire:navigating.window="timer = setTimeout(() => { show = true }, 100)" 
+            x-on:livewire:navigated.window="clearTimeout(timer); show = false"
+            class="fixed top-0 inset-x-0 z-[9999] pointer-events-none h-1 overflow-hidden"
+        >
+            <div 
+                x-show="show" 
+                x-transition:enter="transition-all ease-out duration-300"
+                x-transition:enter-start="opacity-0 w-0"
+                x-transition:enter-end="opacity-100 w-full"
+                class="h-full bg-emerald-600 shadow-sm shadow-emerald-500/50"
+                style="width: 100%; display: none;"
+            ></div>
         </div>
 
         <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">

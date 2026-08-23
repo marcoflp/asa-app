@@ -4,23 +4,32 @@
         <flux:callout variant="success" icon="check-circle">{{ session('success') }}</flux:callout>
     @endif
 
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div class="flex items-center justify-between gap-4">
         <flux:heading size="xl" class="text-zinc-900 dark:text-zinc-50 font-bold">Retiradas de Doações</flux:heading>
-        <flux:button id="tour-btn-nova-retirada" href="{{ route('retiradas.create') }}" variant="primary" icon="plus" wire:navigate class="w-full sm:w-auto font-bold shadow-sm">
+        <flux:button id="tour-btn-nova-retirada" href="{{ route('retiradas.create') }}" variant="primary" icon="plus" wire:navigate class="hidden sm:inline-flex font-bold shadow-xs">
             Nova Retirada
         </flux:button>
     </div>
 
-    <div class="flex flex-col sm:flex-row gap-3">
+    <div class="flex flex-col sm:flex-row gap-2.5">
         <flux:input id="tour-search-retirada" wire:model.live.debounce.300ms="search" placeholder="Buscar por beneficiário..." icon="magnifying-glass" class="w-full sm:flex-1" />
-        <div id="tour-filtros-data" class="flex items-center gap-2 w-full sm:w-auto bg-zinc-50 dark:bg-zinc-800/60 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 shadow-2xs">
-            <div class="flex items-center gap-1.5 flex-1 sm:flex-initial">
-                <span class="text-xs font-bold text-zinc-700 dark:text-zinc-300 pl-1 shrink-0">De:</span>
-                <flux:input type="date" wire:model.live="dataInicio" class="w-full sm:w-36 font-semibold" />
+        
+        <div id="tour-filtros-data" class="grid grid-cols-2 gap-2 w-full sm:w-auto sm:flex sm:items-center bg-zinc-50 dark:bg-zinc-800/60 p-1.5 rounded-xl border border-zinc-200 dark:border-zinc-700 shadow-2xs">
+            <div class="flex items-center gap-1.5 min-w-0">
+                <span class="text-xs font-bold text-zinc-600 dark:text-zinc-400 pl-1 shrink-0">De:</span>
+                <input 
+                    type="date" 
+                    wire:model.live="dataInicio" 
+                    class="w-full sm:w-36 text-xs font-bold py-1.5 px-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                />
             </div>
-            <div class="flex items-center gap-1.5 flex-1 sm:flex-initial">
-                <span class="text-xs font-bold text-zinc-700 dark:text-zinc-300 shrink-0">Até:</span>
-                <flux:input type="date" wire:model.live="dataFim" class="w-full sm:w-36 font-semibold" />
+            <div class="flex items-center gap-1.5 min-w-0">
+                <span class="text-xs font-bold text-zinc-600 dark:text-zinc-400 shrink-0">Até:</span>
+                <input 
+                    type="date" 
+                    wire:model.live="dataFim" 
+                    class="w-full sm:w-36 text-xs font-bold py-1.5 px-2 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                />
             </div>
         </div>
     </div>

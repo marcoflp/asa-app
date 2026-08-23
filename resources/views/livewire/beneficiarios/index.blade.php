@@ -4,9 +4,9 @@
         <flux:callout variant="success" icon="check-circle">{{ session('success') }}</flux:callout>
     @endif
 
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <flux:heading size="xl" class="text-zinc-900 dark:text-zinc-50 font-bold">Beneficiários (Famílias Atendidas)</flux:heading>
-        <flux:button id="tour-btn-novo-beneficiario" href="{{ route('beneficiarios.create') }}" variant="primary" icon="plus" wire:navigate class="w-full sm:w-auto font-bold shadow-sm">
+    <div class="flex items-center justify-between gap-4">
+        <flux:heading size="xl" class="text-zinc-900 dark:text-zinc-50 font-bold">Beneficiários</flux:heading>
+        <flux:button id="tour-btn-novo-beneficiario" href="{{ route('beneficiarios.create') }}" variant="primary" icon="plus" wire:navigate class="hidden sm:inline-flex font-bold shadow-xs">
             Novo Beneficiário
         </flux:button>
     </div>

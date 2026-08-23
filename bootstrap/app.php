@@ -14,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo('/login');
         $middleware->redirectUsersTo('/dashboard');
 
+        $middleware->encryptCookies(except: [
+            'flux_appearance',
+            'flux.appearance',
+        ]);
+
         $middleware->web(append: [
             \App\Http\Middleware\SecurityHeaders::class,
             \App\Http\Middleware\UpdateLastSeenAt::class,

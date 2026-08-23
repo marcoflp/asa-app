@@ -12,7 +12,7 @@
             {
                 target: null,
                 title: 'Sistema ASA: Apresentação',
-                description: 'Plataforma para gestão de atendimentos a famílias, controle de estoque de doações e registro de entregas. Acompanhe a apresentação dos módulos principais.',
+                description: 'Plataforma para gestão de atendimentos a beneficiários, controle de estoque de doações e registro de entregas. Acompanhe a apresentação dos módulos principais.',
                 badge: 'Introdução',
                 url: '{{ route('dashboard') }}',
                 screenName: 'Início'
@@ -33,8 +33,8 @@
                 inPageTarget: '#tour-btn-novo-beneficiario',
                 inPageTargetMobile: '#tour-mobile-fab-beneficiario',
                 title: 'Cadastro de Beneficiários',
-                description: 'Gerencie o cadastro das famílias atendidas com dados pessoais, endereço, composição familiar e upload dos documentos (frente, verso, comprovante e termo).',
-                badge: 'Famílias',
+                description: 'Gerencie o cadastro dos beneficiários com dados pessoais, endereço, composição familiar e upload dos documentos (frente, verso, comprovante e termo).',
+                badge: 'Beneficiários',
                 url: '{{ route('beneficiarios.index') }}',
                 screenName: 'Beneficiários'
             },
@@ -42,9 +42,9 @@
                 targetDesktop: '#tour-nav-beneficiarios',
                 targetMobile: '#tour-mobile-nav-beneficiarios',
                 inPageTarget: '#tour-search-beneficiario',
-                title: 'Consulta Rápida de Famílias',
+                title: 'Consulta Rápida de Beneficiários',
                 description: 'Localize cadastros por nome, CPF ou bairro. Acesse a ficha para visualizar documentos anexados e o histórico de entregas realizadas.',
-                badge: 'Famílias',
+                badge: 'Beneficiários',
                 url: '{{ route('beneficiarios.index') }}',
                 screenName: 'Beneficiários'
             },
@@ -60,12 +60,22 @@
                 screenName: 'Produtos'
             },
             {
+                targetDesktop: '#tour-nav-produtos',
+                targetMobile: '#tour-mobile-nav-produtos',
+                inPageTarget: '#tour-search-produto',
+                title: 'Busca de Produtos',
+                description: 'Pesquise por nome ou filtre por categorias de produtos para verificar o saldo disponível no inventário.',
+                badge: 'Estoque',
+                url: '{{ route('produtos.index') }}',
+                screenName: 'Produtos'
+            },
+            {
                 targetDesktop: '#tour-nav-retiradas',
                 targetMobile: '#tour-mobile-nav-retiradas',
                 inPageTarget: '#tour-btn-nova-retirada',
                 inPageTargetMobile: '#tour-mobile-fab-retirada',
                 title: 'Registro de Retiradas',
-                description: 'Registre a entrega de doações vinculando o beneficiário e os itens entregues. A baixa no estoque de cada produto é realizada automaticamente.',
+                description: 'Lance entregas de doações selecionando o beneficiário, a data e os produtos entregues. O estoque é atualizado em tempo real.',
                 badge: 'Retiradas',
                 url: '{{ route('retiradas.index') }}',
                 screenName: 'Retiradas'
@@ -74,19 +84,20 @@
                 targetDesktop: '#tour-nav-retiradas',
                 targetMobile: '#tour-mobile-nav-retiradas',
                 inPageTarget: '#tour-filtros-data',
-                title: 'Filtros de Retiradas por Data',
-                description: 'Filtre as entregas por intervalo de datas para conferência de relatórios semanais, mensais ou por período específico.',
+                title: 'Filtros por Data e Histórico',
+                description: 'Filtre as retiradas por intervalos de datas para auditorias, relatórios e conferência do histórico de atendimentos.',
                 badge: 'Retiradas',
                 url: '{{ route('retiradas.index') }}',
                 screenName: 'Retiradas'
             },
             {
-                targetDesktop: '#tour-user-menu',
+                targetDesktop: '#tour-nav-configuracoes',
                 targetMobile: '#tour-mobile-nav-mais',
-                title: 'Configurações e Usuários',
-                description: 'Gerencie preferências de aparência (Modo Claro/Escuro), credenciais de acesso, cadastro de operadores voluntários e acesse o suporte a qualquer momento.',
+                inPageTarget: '#tour-menu-usuario',
+                title: 'Configurações e Ajuda',
+                description: 'Ajuste dados de perfil, segurança, temas (claro/escuro) e acesse a Central de Ajuda e Manual de Operação sempre que precisar.',
                 badge: 'Configurações',
-                url: '{{ route('dashboard') }}',
+                url: '{{ route('profile.edit') }}',
                 screenName: 'Configurações'
             }
         ],
@@ -102,14 +113,6 @@
                     setTimeout(() => {
                         this.updateSpotlight();
                     }, 400);
-                }
-            } else {
-                // Se é primeira visita geral
-                const completed = localStorage.getItem('asa_tour_completed');
-                if (!completed) {
-                    setTimeout(() => {
-                        this.showFirstTimePrompt = true;
-                    }, 1200);
                 }
             }
 
@@ -580,49 +583,49 @@
                 </button>
             </div>
 
-            {{-- Navegação por Abas do Manual --}}
-            <div class="flex overflow-x-auto border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-950 px-2 pt-2 gap-1.5 text-xs sm:text-sm font-semibold select-none custom-scrollbar">
+            {{-- Navegação por Abas do Manual (Sem scroll lateral) --}}
+            <div class="grid grid-cols-3 sm:flex sm:flex-wrap border-b border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-950 p-1.5 gap-1 text-[11px] sm:text-xs font-semibold select-none">
                 <button 
                     @click="activeTab = 'geral'" 
-                    :class="activeTab === 'geral' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 border-b-2 border-emerald-600 shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
-                    class="px-3.5 py-2 rounded-t-xl transition-colors cursor-pointer whitespace-nowrap"
+                    :class="activeTab === 'geral' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 font-bold shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
+                    class="py-1.5 px-2 rounded-lg transition-colors cursor-pointer text-center"
                 >
                     Visão Geral
                 </button>
                 <button 
                     @click="activeTab = 'beneficiarios'" 
-                    :class="activeTab === 'beneficiarios' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 border-b-2 border-emerald-600 shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
-                    class="px-3.5 py-2 rounded-t-xl transition-colors cursor-pointer whitespace-nowrap"
+                    :class="activeTab === 'beneficiarios' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 font-bold shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
+                    class="py-1.5 px-2 rounded-lg transition-colors cursor-pointer text-center"
                 >
                     Famílias
                 </button>
                 <button 
                     @click="activeTab = 'produtos'" 
-                    :class="activeTab === 'produtos' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 border-b-2 border-emerald-600 shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
-                    class="px-3.5 py-2 rounded-t-xl transition-colors cursor-pointer whitespace-nowrap"
+                    :class="activeTab === 'produtos' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 font-bold shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
+                    class="py-1.5 px-2 rounded-lg transition-colors cursor-pointer text-center"
                 >
                     Estoque
                 </button>
                 <button 
                     @click="activeTab = 'retiradas'" 
-                    :class="activeTab === 'retiradas' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 border-b-2 border-emerald-600 shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
-                    class="px-3.5 py-2 rounded-t-xl transition-colors cursor-pointer whitespace-nowrap"
+                    :class="activeTab === 'retiradas' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 font-bold shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
+                    class="py-1.5 px-2 rounded-lg transition-colors cursor-pointer text-center"
                 >
                     Retiradas
                 </button>
                 <button 
                     @click="activeTab = 'mobile'" 
-                    :class="activeTab === 'mobile' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 border-b-2 border-emerald-600 shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
-                    class="px-3.5 py-2 rounded-t-xl transition-colors cursor-pointer whitespace-nowrap"
+                    :class="activeTab === 'mobile' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 font-bold shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
+                    class="py-1.5 px-2 rounded-lg transition-colors cursor-pointer text-center"
                 >
-                    Dicas para Smartphones
+                    Celular
                 </button>
                 <button 
                     @click="activeTab = 'faq'" 
-                    :class="activeTab === 'faq' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 border-b-2 border-emerald-600 shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
-                    class="px-3.5 py-2 rounded-t-xl transition-colors cursor-pointer whitespace-nowrap"
+                    :class="activeTab === 'faq' ? 'bg-white dark:bg-zinc-900 text-emerald-700 dark:text-emerald-400 font-bold shadow-xs' : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-200'"
+                    class="py-1.5 px-2 rounded-lg transition-colors cursor-pointer text-center"
                 >
-                    Dúvidas Frequentes
+                    Dúvidas
                 </button>
             </div>
 
@@ -640,7 +643,7 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div class="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 space-y-1.5">
-                            <h5 class="font-bold text-zinc-900 dark:text-zinc-100">1. Famílias</h5>
+                            <h5 class="font-bold text-zinc-900 dark:text-zinc-100">1. Beneficiários</h5>
                             <p class="text-xs text-zinc-600 dark:text-zinc-400">Cadastre os beneficiários, composição familiar e anexe documentos comprobatórios.</p>
                         </div>
                         <div class="p-3.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/50 space-y-1.5">
@@ -657,13 +660,13 @@
                 {{-- ABA: BENEFICIARIOS --}}
                 <div x-show="activeTab === 'beneficiarios'" class="space-y-4" style="display: none;">
                     <div class="flex items-center justify-between">
-                        <h4 class="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100">Processo de Cadastro de Famílias</h4>
+                        <h4 class="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100">Cadastro e Gestão de Beneficiários</h4>
                         <a href="{{ route('beneficiarios.create') }}" wire:navigate @click="showHelpModal = false" class="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:underline">
                             Novo Cadastro &rarr;
                         </a>
                     </div>
                     <ol class="list-decimal list-inside space-y-2 text-zinc-700 dark:text-zinc-300">
-                        <li>Acesse o menu <strong>Famílias</strong> e clique em <strong>Novo Beneficiário</strong>.</li>
+                        <li>Acesse o menu <strong>Beneficiários</strong> e clique em <strong>Novo Beneficiário</strong>.</li>
                         <li>Preencha nome completo, telefone para contato, CPF, RG e endereço residencial.</li>
                         <li>Informe o número de pessoas no núcleo familiar e a idade dos dependentes.</li>
                         <li><strong>Anexos de Documentos:</strong> Capture fotos da frente do documento, verso, comprovante de endereço e termo assinado diretamente pela câmera do dispositivo ou galeria.</li>
