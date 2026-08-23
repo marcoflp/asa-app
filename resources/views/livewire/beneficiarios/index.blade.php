@@ -1,15 +1,13 @@
 <div class="flex h-full w-full flex-1 flex-col gap-4">
 
     @if (session('success'))
-        <flux:callout variant="success" icon="check-circle">
-            {{ session('success') }}
-        </flux:callout>
+        <flux:callout variant="success" icon="check-circle">{{ session('success') }}</flux:callout>
     @endif
 
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <flux:heading size="xl">Beneficiários</flux:heading>
-        <flux:button href="{{ route('beneficiarios.create') }}" variant="primary" icon="plus" wire:navigate class="w-full sm:w-auto">
-            Novo Beneficiário
+        <flux:heading size="xl" class="text-zinc-900 dark:text-zinc-50 font-bold">Beneficiários (Famílias Atendidas)</flux:heading>
+        <flux:button href="{{ route('beneficiarios.create') }}" variant="primary" icon="plus" wire:navigate class="w-full sm:w-auto font-bold shadow-sm">
+            + Novo Beneficiário
         </flux:button>
     </div>
 
@@ -17,65 +15,71 @@
         <flux:input wire:model.live.debounce.300ms="search" placeholder="Buscar por nome, CPF ou bairro..." icon="magnifying-glass" class="w-full" />
     </div>
 
-    {{-- DESKTOP VIEW (Mantém o layout original 100% intacto) --}}
-    <div wire:loading.class="opacity-60 pointer-events-none transition-opacity" class="hidden md:block overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-700">
+    {{-- DESKTOP VIEW --}}
+    <div wire:loading.class="opacity-60 pointer-events-none transition-opacity" class="hidden md:block overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-sm">
         <table class="w-full text-sm">
-            <thead class="bg-neutral-50 dark:bg-zinc-800 text-left">
+            <thead class="bg-zinc-100 dark:bg-zinc-800 text-left border-b border-zinc-200 dark:border-zinc-700">
                 <tr>
-                    <th class="px-4 py-3 font-medium">Nome</th>
-                    <th class="px-4 py-3 font-medium">Telefone</th>
-                    <th class="px-4 py-3 font-medium">Bairro</th>
-                    <th class="px-4 py-3 font-medium">Família</th>
-                    <th class="px-4 py-3 font-medium">Prog. Governo</th>
-                    <th class="px-4 py-3 font-medium">Est. Bíblico</th>
-                    <th class="px-4 py-3 font-medium">Documentos</th>
-                    <th class="px-4 py-3 font-medium text-right">Ações</th>
+                    <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">Nome</th>
+                    <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">Telefone</th>
+                    <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">Bairro</th>
+                    <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">Família</th>
+                    <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">Prog. Governo</th>
+                    <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">Est. Bíblico</th>
+                    <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">Documentos</th>
+                    <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100 text-right">Ações</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-neutral-200 dark:divide-neutral-700">
+            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
                 @forelse ($beneficiarios as $b)
-                    <tr class="hover:bg-neutral-50 dark:hover:bg-zinc-800/50">
-                        <td class="px-4 py-3 font-medium">{{ $b->nome }}</td>
-                        <td class="px-4 py-3 text-neutral-600 dark:text-neutral-400">{{ $b->telefone ?? '—' }}</td>
-                        <td class="px-4 py-3 text-neutral-600 dark:text-neutral-400">{{ $b->bairro ?? '—' }}</td>
-                        <td class="px-4 py-3">{{ $b->num_pessoas_familia }} pessoa(s)</td>
-                        <td class="px-4 py-3">
+                    <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-800/60 transition-colors">
+                        <td class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">{{ $b->nome }}</td>
+                        <td class="px-4 py-3.5 font-semibold text-zinc-700 dark:text-zinc-300">{{ $b->telefone ?? '—' }}</td>
+                        <td class="px-4 py-3.5 font-semibold text-zinc-700 dark:text-zinc-300">{{ $b->bairro ?? '—' }}</td>
+                        <td class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">{{ $b->num_pessoas_familia }} pessoa(s)</td>
+                        <td class="px-4 py-3.5">
                             @if ($b->inscrito_programa_governo)
-                                <flux:badge color="green" size="sm">Sim</flux:badge>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">Sim</span>
                             @else
-                                <flux:badge color="zinc" size="sm">Não</flux:badge>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700">Não</span>
                             @endif
                         </td>
-                        <td class="px-4 py-3">
+                        <td class="px-4 py-3.5">
                             @if ($b->recebe_estudo_biblico)
-                                <flux:badge color="blue" size="sm">Sim</flux:badge>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300 border border-blue-300 dark:border-blue-800">Sim</span>
                             @else
-                                <flux:badge color="zinc" size="sm">Não</flux:badge>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 border border-zinc-300 dark:border-zinc-700">Não</span>
                             @endif
                         </td>
-                        <td class="px-4 py-3">
+                        <td class="px-4 py-3.5">
                             @php
                                 $docsCount = ($b->foto_documento ? 1 : 0) + ($b->foto_documento_verso ? 1 : 0) + ($b->foto_documento_consentimento ? 1 : 0) + ($b->foto_documento_comprovante_residencia ? 1 : 0);
                             @endphp
                             @if ($docsCount === 4)
-                                <flux:badge color="green" size="sm">Completo (4/4)</flux:badge>
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span> Completo (4/4)
+                                </span>
                             @elseif ($docsCount > 0)
-                                <flux:badge color="yellow" size="sm">Parcial ({{ $docsCount }}/4)</flux:badge>
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span> Parcial ({{ $docsCount }}/4)
+                                </span>
                             @else
-                                <flux:badge color="red" size="sm">Pendente (0/4)</flux:badge>
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-900 dark:bg-rose-950 dark:text-rose-300 border border-rose-300 dark:border-rose-800">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span> Pendente (0/4)
+                                </span>
                             @endif
                         </td>
-                        <td class="px-4 py-3 text-right">
+                        <td class="px-4 py-3.5 text-right">
                             <div class="flex justify-end gap-2">
-                                <flux:button wire:click="show({{ $b->id }})" x-on:click="Flux.modal('show-beneficiario').show()" size="sm" variant="ghost" icon="eye" />
-                                <flux:button href="{{ route('beneficiarios.edit', $b) }}" size="sm" variant="ghost" icon="pencil" wire:navigate />
-                                <flux:button wire:click="confirmDelete({{ $b->id }})" x-on:click="Flux.modal('confirm-delete').show()" size="sm" variant="ghost" icon="trash" class="text-red-500" />
+                                <flux:button wire:click="show({{ $b->id }})" x-on:click="Flux.modal('show-beneficiario').show()" size="sm" variant="ghost" icon="eye" class="text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white" />
+                                <flux:button href="{{ route('beneficiarios.edit', $b) }}" size="sm" variant="ghost" icon="pencil" class="text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white" wire:navigate />
+                                <flux:button wire:click="confirmDelete({{ $b->id }})" x-on:click="Flux.modal('confirm-delete').show()" size="sm" variant="ghost" icon="trash" class="text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40" />
                             </div>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="px-4 py-8 text-center text-neutral-500">
+                        <td colspan="8" class="px-4 py-8 text-center text-zinc-500 font-medium">
                             Nenhum beneficiário encontrado.
                         </td>
                     </tr>
@@ -87,56 +91,56 @@
     {{-- MOBILE VIEW (Cards Empilhados) --}}
     <div wire:loading.class="opacity-60 pointer-events-none transition-opacity" class="md:hidden space-y-4">
         @forelse ($beneficiarios as $b)
-            <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-4 space-y-3 bg-white dark:bg-zinc-900 shadow-sm">
+            <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-4 space-y-3 bg-white dark:bg-zinc-900 shadow-sm">
                 <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                     <div class="flex-1 min-w-0">
-                        <p class="font-bold text-base truncate">{{ $b->nome }}</p>
-                        <p class="text-xs text-neutral-500 uppercase mt-0.5">{{ $b->bairro ?? 'Bairro não inf.' }} • {{ $b->telefone ?? 'Sem tel' }}</p>
+                        <p class="font-bold text-base text-zinc-900 dark:text-zinc-100 truncate">{{ $b->nome }}</p>
+                        <p class="text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mt-0.5">{{ $b->bairro ?? 'Bairro não inf.' }} • {{ $b->telefone ?? 'Sem tel' }}</p>
                     </div>
                     <div class="flex gap-1.5 self-end sm:self-start">
-                        <flux:button wire:click="show({{ $b->id }})" x-on:click="Flux.modal('show-beneficiario').show()" size="sm" variant="ghost" icon="eye" />
-                        <flux:button href="{{ route('beneficiarios.edit', $b) }}" size="sm" variant="ghost" icon="pencil" wire:navigate />
-                        <flux:button wire:click="confirmDelete({{ $b->id }})" x-on:click="Flux.modal('confirm-delete').show()" size="sm" variant="ghost" icon="trash" class="text-red-500" />
+                        <flux:button wire:click="show({{ $b->id }})" x-on:click="Flux.modal('show-beneficiario').show()" size="sm" variant="ghost" icon="eye" class="text-zinc-700 dark:text-zinc-300" />
+                        <flux:button href="{{ route('beneficiarios.edit', $b) }}" size="sm" variant="ghost" icon="pencil" class="text-zinc-700 dark:text-zinc-300" wire:navigate />
+                        <flux:button wire:click="confirmDelete({{ $b->id }})" x-on:click="Flux.modal('confirm-delete').show()" size="sm" variant="ghost" icon="trash" class="text-rose-600 dark:text-rose-400" />
                     </div>
                 </div>
-                <div class="flex flex-wrap gap-2 text-sm pt-2 border-t border-neutral-100 dark:border-neutral-800">
+                <div class="flex flex-wrap gap-2 text-sm pt-2 border-t border-zinc-100 dark:border-zinc-800">
                     <div class="w-full flex justify-between">
-                        <span class="text-neutral-500">Família:</span>
-                        <span>{{ $b->num_pessoas_familia }} pessoa(s)</span>
+                        <span class="text-zinc-600 dark:text-zinc-400 font-medium">Família:</span>
+                        <span class="font-bold text-zinc-900 dark:text-zinc-100">{{ $b->num_pessoas_familia }} pessoa(s)</span>
                     </div>
                     <div class="w-full flex justify-between items-center">
-                        <span class="text-neutral-500">Prog. Governo:</span>
+                        <span class="text-zinc-600 dark:text-zinc-400 font-medium">Prog. Governo:</span>
                         @if ($b->inscrito_programa_governo)
-                            <flux:badge color="green" size="sm">Sim</flux:badge>
+                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300">Sim</span>
                         @else
-                            <flux:badge color="zinc" size="sm">Não</flux:badge>
+                            <span class="px-2 py-0.5 rounded text-xs font-semibold bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">Não</span>
                         @endif
                     </div>
                     <div class="w-full flex justify-between items-center">
-                        <span class="text-neutral-500">Estudo Bíblico:</span>
+                        <span class="text-zinc-600 dark:text-zinc-400 font-medium">Estudo Bíblico:</span>
                         @if ($b->recebe_estudo_biblico)
-                            <flux:badge color="blue" size="sm">Sim</flux:badge>
+                            <span class="px-2 py-0.5 rounded text-xs font-bold bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300">Sim</span>
                         @else
-                            <flux:badge color="zinc" size="sm">Não</flux:badge>
+                            <span class="px-2 py-0.5 rounded text-xs font-semibold bg-zinc-100 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">Não</span>
                         @endif
                     </div>
                     <div class="w-full flex justify-between items-center">
-                        <span class="text-neutral-500">Documentos:</span>
+                        <span class="text-zinc-600 dark:text-zinc-400 font-medium">Documentos:</span>
                         @php
                             $docsCount = ($b->foto_documento ? 1 : 0) + ($b->foto_documento_verso ? 1 : 0) + ($b->foto_documento_consentimento ? 1 : 0) + ($b->foto_documento_comprovante_residencia ? 1 : 0);
                         @endphp
                         @if ($docsCount === 4)
-                            <flux:badge color="green" size="sm">Completo (4/4)</flux:badge>
+                            <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300">Completo (4/4)</span>
                         @elseif ($docsCount > 0)
-                            <flux:badge color="yellow" size="sm">Parcial ({{ $docsCount }}/4)</flux:badge>
+                            <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300">Parcial ({{ $docsCount }}/4)</span>
                         @else
-                            <flux:badge color="red" size="sm">Pendente (0/4)</flux:badge>
+                            <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-900 dark:bg-rose-950 dark:text-rose-300">Pendente (0/4)</span>
                         @endif
                     </div>
                 </div>
             </div>
         @empty
-            <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 p-8 text-center text-neutral-500">
+            <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-8 text-center text-zinc-500 font-medium bg-white dark:bg-zinc-900">
                 Nenhum beneficiário encontrado.
             </div>
         @endforelse
@@ -150,88 +154,90 @@
             {{-- Estado de carregamento --}}
             <div wire:loading wire:target="show" class="w-full">
                 <div class="flex flex-col items-center justify-center py-20 gap-3">
-                    <flux:icon.loading class="h-8 w-8 text-neutral-400" />
-                    <flux:text class="text-neutral-500 text-sm">Carregando dados...</flux:text>
+                    <flux:icon.loading class="h-8 w-8 text-emerald-600" />
+                    <flux:text class="text-zinc-600 dark:text-zinc-400 text-sm font-bold">Carregando dados do beneficiário...</flux:text>
                 </div>
             </div>
 
             {{-- Conteúdo do Beneficiário --}}
             <div wire:loading.remove wire:target="show" class="w-full space-y-6">
                 @if ($selectedBeneficiario)
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-zinc-200 dark:border-zinc-800">
                         <div>
-                            <flux:heading size="lg" class="break-words">{{ $selectedBeneficiario->nome }}</flux:heading>
-                            <flux:text size="sm" class="block mt-1">{{ $selectedBeneficiario->cpf ?? 'Sem CPF' }} | {{ $selectedBeneficiario->rg ?? 'Sem RG' }}</flux:text>
+                            <flux:heading size="lg" class="break-words font-bold text-zinc-900 dark:text-zinc-100">{{ $selectedBeneficiario->nome }}</flux:heading>
+                            <flux:text size="sm" class="block mt-1 font-semibold text-zinc-700 dark:text-zinc-300">{{ $selectedBeneficiario->cpf ?? 'Sem CPF' }} | {{ $selectedBeneficiario->rg ?? 'Sem RG' }}</flux:text>
                         </div>
-                        <flux:badge color="zinc" size="sm" class="self-start sm:self-center">ID: #{{ $selectedBeneficiario->id }}</flux:badge>
+                        <span class="inline-flex items-center px-3 py-1 rounded-md text-xs font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-300 dark:border-zinc-700 self-start sm:self-center">
+                            Código: #{{ $selectedBeneficiario->id }}
+                        </span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {{-- Endereço --}}
                         <div>
-                            <flux:label class="text-xs text-neutral-500 uppercase">Endereço</flux:label>
-                            <flux:text class="block font-medium">{{ $selectedBeneficiario->rua }}, {{ $selectedBeneficiario->numero }}</flux:text>
-                            <flux:text class="block text-sm text-neutral-500">{{ $selectedBeneficiario->bairro }} - {{ $selectedBeneficiario->cidade }}</flux:text>
+                            <span class="text-xs font-bold text-zinc-500 uppercase block mb-1">Endereço</span>
+                            <span class="block font-bold text-zinc-900 dark:text-zinc-100 text-sm">{{ $selectedBeneficiario->rua }}, {{ $selectedBeneficiario->numero }}</span>
+                            <span class="block text-xs font-semibold text-zinc-600 dark:text-zinc-400 mt-0.5">{{ $selectedBeneficiario->bairro }} - {{ $selectedBeneficiario->cidade }}</span>
                         </div>
                         {{-- Contato --}}
                         <div>
-                            <flux:label class="text-xs text-neutral-500 uppercase">Contato</flux:label>
-                            <flux:text class="block font-medium">{{ $selectedBeneficiario->telefone ?? 'Não informado' }}</flux:text>
+                            <span class="text-xs font-bold text-zinc-500 uppercase block mb-1">Contato</span>
+                            <span class="block font-bold text-zinc-900 dark:text-zinc-100 text-sm">{{ $selectedBeneficiario->telefone ?? 'Não informado' }}</span>
                         </div>
                         {{-- Composição Familiar --}}
                         <div class="grid grid-cols-2 gap-2">
                             <div>
-                                <flux:label class="text-xs text-neutral-500 uppercase">Família</flux:label>
-                                <flux:text class="block font-medium">{{ $selectedBeneficiario->num_pessoas_familia }} pessoas</flux:text>
+                                <span class="text-xs font-bold text-zinc-500 uppercase block mb-1">Família</span>
+                                <span class="block font-bold text-zinc-900 dark:text-zinc-100 text-sm">{{ $selectedBeneficiario->num_pessoas_familia }} pessoas</span>
                             </div>
                             <div>
-                                <flux:label class="text-xs text-neutral-500 uppercase">Filhos</flux:label>
-                                <flux:text class="block font-medium">{{ count($selectedBeneficiario->filhos ?? []) }} filho(s)</flux:text>
+                                <span class="text-xs font-bold text-zinc-500 uppercase block mb-1">Filhos</span>
+                                <span class="block font-bold text-zinc-900 dark:text-zinc-100 text-sm">{{ count($selectedBeneficiario->filhos ?? []) }} filho(s)</span>
                             </div>
                         </div>
                     </div>
 
                     {{-- Seção de Documentos --}}
                     @if ($selectedBeneficiario->foto_documento || $selectedBeneficiario->foto_documento_verso || $selectedBeneficiario->foto_documento_consentimento || $selectedBeneficiario->foto_documento_comprovante_residencia)
-                        <div class="border-t border-neutral-100 dark:border-neutral-800 pt-5">
-                            <flux:label class="text-xs text-neutral-500 uppercase mb-3 block">Documentos Cadastrados</flux:label>
+                        <div class="border-t border-zinc-200 dark:border-zinc-800 pt-5">
+                            <span class="text-xs font-bold text-zinc-500 uppercase mb-3 block">Documentos Cadastrados</span>
                             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 @if ($selectedBeneficiario->foto_documento)
-                                    <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-2 bg-neutral-50 dark:bg-zinc-800/30">
-                                        <flux:text size="xs" class="font-semibold mb-1 block text-neutral-500">Frente do Documento</flux:text>
+                                    <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-2.5 bg-zinc-50 dark:bg-zinc-800/40">
+                                        <span class="text-xs font-bold mb-1.5 block text-zinc-800 dark:text-zinc-200">Frente do Documento</span>
                                         <a href="{{ asset('storage/' . $selectedBeneficiario->foto_documento) }}" target="_blank" class="block group">
-                                            <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
-                                            <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
+                                            <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-zinc-300 dark:border-zinc-700 shadow-sm group-hover:opacity-90 transition-opacity">
+                                            <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mt-1.5 block text-center">Clique para ampliar</span>
                                         </a>
                                     </div>
                                 @endif
 
                                 @if ($selectedBeneficiario->foto_documento_verso)
-                                    <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-2 bg-neutral-50 dark:bg-zinc-800/30">
-                                        <flux:text size="xs" class="font-semibold mb-1 block text-neutral-500">Verso do Documento</flux:text>
+                                    <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-2.5 bg-zinc-50 dark:bg-zinc-800/40">
+                                        <span class="text-xs font-bold mb-1.5 block text-zinc-800 dark:text-zinc-200">Verso do Documento</span>
                                         <a href="{{ asset('storage/' . $selectedBeneficiario->foto_documento_verso) }}" target="_blank" class="block group">
-                                            <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento_verso) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
-                                            <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
+                                            <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento_verso) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-zinc-300 dark:border-zinc-700 shadow-sm group-hover:opacity-90 transition-opacity">
+                                            <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mt-1.5 block text-center">Clique para ampliar</span>
                                         </a>
                                     </div>
                                 @endif
 
                                 @if ($selectedBeneficiario->foto_documento_consentimento)
-                                    <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-2 bg-neutral-50 dark:bg-zinc-800/30">
-                                        <flux:text size="xs" class="font-semibold mb-1 block text-neutral-500">Termo de Consentimento</flux:text>
+                                    <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-2.5 bg-zinc-50 dark:bg-zinc-800/40">
+                                        <span class="text-xs font-bold mb-1.5 block text-zinc-800 dark:text-zinc-200">Termo de Consentimento</span>
                                         <a href="{{ asset('storage/' . $selectedBeneficiario->foto_documento_consentimento) }}" target="_blank" class="block group">
-                                            <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento_consentimento) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
-                                            <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
+                                            <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento_consentimento) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-zinc-300 dark:border-zinc-700 shadow-sm group-hover:opacity-90 transition-opacity">
+                                            <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mt-1.5 block text-center">Clique para ampliar</span>
                                         </a>
                                     </div>
                                 @endif
 
                                 @if ($selectedBeneficiario->foto_documento_comprovante_residencia)
-                                    <div class="rounded-lg border border-neutral-200 dark:border-neutral-700 p-2 bg-neutral-50 dark:bg-zinc-800/30">
-                                        <flux:text size="xs" class="font-semibold mb-1 block text-neutral-500">Comprovante de Endereço</flux:text>
+                                    <div class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-2.5 bg-zinc-50 dark:bg-zinc-800/40">
+                                        <span class="text-xs font-bold mb-1.5 block text-zinc-800 dark:text-zinc-200">Comprovante de Endereço</span>
                                         <a href="{{ asset('storage/' . $selectedBeneficiario->foto_documento_comprovante_residencia) }}" target="_blank" class="block group">
-                                            <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento_comprovante_residencia) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-neutral-200 shadow-sm group-hover:opacity-90 transition-opacity">
-                                            <span class="text-[10px] text-neutral-400 mt-1 block text-center">Clique para ampliar</span>
+                                            <img src="{{ asset('storage/' . $selectedBeneficiario->foto_documento_comprovante_residencia) }}" loading="lazy" decoding="async" class="h-32 w-full object-cover rounded-lg border border-zinc-300 dark:border-zinc-700 shadow-sm group-hover:opacity-90 transition-opacity">
+                                            <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 mt-1.5 block text-center">Clique para ampliar</span>
                                         </a>
                                     </div>
                                 @endif
@@ -239,50 +245,52 @@
                         </div>
                     @endif
 
-                    <div class="border-t border-neutral-100 dark:border-neutral-800 pt-5">
+                    <div class="border-t border-zinc-200 dark:border-zinc-800 pt-5">
                         <div class="flex items-center justify-between mb-4">
-                            <flux:heading size="md">Histórico de Retiradas</flux:heading>
-                            <flux:badge color="blue">{{ $selectedBeneficiario->retiradas->count() }} registradas</flux:badge>
+                            <flux:heading size="md" class="font-bold text-zinc-900 dark:text-zinc-100">Histórico de Retiradas de Doações</flux:heading>
+                            <span class="px-3 py-1 rounded-md text-xs font-bold bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300">
+                                {{ $selectedBeneficiario->retiradas->count() }} retirada(s)
+                            </span>
                         </div>
                         
                         <div class="max-h-[300px] overflow-y-auto space-y-3 pr-2 custom-scrollbar">
                             @forelse ($selectedBeneficiario->retiradas as $retirada)
-                                <div class="p-3 bg-neutral-50 dark:bg-zinc-800/50 rounded-lg border border-neutral-100 dark:border-neutral-800 transition-colors hover:border-blue-200">
+                                <div class="p-3.5 bg-zinc-50 dark:bg-zinc-800/60 rounded-xl border border-zinc-200 dark:border-zinc-700">
                                     <div class="flex justify-between items-center mb-2">
                                         <div class="flex items-center gap-2">
-                                            <flux:icon icon="calendar" variant="micro" class="text-neutral-400" />
-                                            <span class="font-bold text-sm text-neutral-700 dark:text-neutral-200">{{ $retirada->data->format('d/m/Y') }}</span>
+                                            <flux:icon icon="calendar" variant="micro" class="text-emerald-600" />
+                                            <span class="font-bold text-sm text-zinc-900 dark:text-zinc-100">{{ $retirada->data->format('d/m/Y') }}</span>
                                         </div>
-                                        <flux:badge size="sm" variant="ghost">{{ $retirada->items->count() }} itens</flux:badge>
+                                        <span class="text-xs font-bold text-zinc-700 dark:text-zinc-300 bg-zinc-200 dark:bg-zinc-700 px-2 py-0.5 rounded">{{ $retirada->items->count() }} item(ns)</span>
                                     </div>
-                                    <div class="text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                                    <div class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 leading-relaxed">
                                         {{ $retirada->items->map(fn($i) => $i->produto->nome . " (" . $i->quantidade . ")")->join(', ') }}
                                     </div>
                                     @if ($retirada->observacoes)
                                         <div class="mt-2 flex items-start gap-1">
-                                            <flux:icon icon="chat-bubble-bottom-center-text" variant="micro" class="text-neutral-300 mt-0.5" />
-                                            <div class="text-[10px] italic text-neutral-500">{{ $retirada->observacoes }}</div>
+                                            <flux:icon icon="chat-bubble-bottom-center-text" variant="micro" class="text-zinc-400 mt-0.5" />
+                                            <div class="text-xs italic text-zinc-600 dark:text-zinc-400">{{ $retirada->observacoes }}</div>
                                         </div>
                                     @endif
                                 </div>
                             @empty
                                 <div class="text-center py-10">
-                                    <flux:icon icon="archive-box" class="mx-auto text-neutral-200 mb-2" />
-                                    <flux:text class="text-neutral-400 text-sm">Nenhuma retirada registrada.</flux:text>
+                                    <flux:icon icon="archive-box" class="mx-auto text-zinc-400 mb-2" />
+                                    <flux:text class="text-zinc-500 text-sm font-medium">Nenhuma retirada registrada para esta família ainda.</flux:text>
                                 </div>
                             @endforelse
                         </div>
                     </div>
                 @else
                     <div class="flex flex-col items-center justify-center py-20 gap-3">
-                        <flux:icon.loading class="h-8 w-8 text-neutral-400" />
-                        <flux:text class="text-neutral-500 text-sm">Carregando dados...</flux:text>
+                        <flux:icon.loading class="h-8 w-8 text-emerald-600" />
+                        <flux:text class="text-zinc-500 text-sm font-bold">Carregando dados...</flux:text>
                     </div>
                 @endif
             </div>
 
-            <div class="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-neutral-100 dark:border-neutral-800">
-                <flux:button x-on:click="Flux.modal('show-beneficiario').close()" variant="ghost" class="w-full sm:w-auto">Fechar</flux:button>
+            <div class="flex flex-col sm:flex-row justify-end gap-3 pt-4 border-t border-zinc-200 dark:border-zinc-800">
+                <flux:button x-on:click="Flux.modal('show-beneficiario').close()" variant="ghost" class="w-full sm:w-auto font-bold">Fechar</flux:button>
             </div>
         </div>
     </flux:modal>
@@ -290,11 +298,11 @@
     {{-- Modal de confirmação de exclusão --}}
     <flux:modal name="confirm-delete">
         <div class="space-y-4">
-            <flux:heading>Confirmar exclusão</flux:heading>
-            <flux:text>Tem certeza que deseja remover este beneficiário? Esta ação não pode ser desfeita.</flux:text>
-            <div class="flex justify-end gap-2">
+            <flux:heading class="font-bold text-zinc-900 dark:text-zinc-100">Confirmar exclusão</flux:heading>
+            <flux:text class="text-zinc-700 dark:text-zinc-300">Tem certeza que deseja remover este beneficiário? Esta ação não pode ser desfeita.</flux:text>
+            <div class="flex justify-end gap-2 pt-2">
                 <flux:button wire:click="$set('deletingId', null)" x-on:click="Flux.modal('confirm-delete').close()" variant="ghost">Cancelar</flux:button>
-                <flux:button wire:click="delete" x-on:click="Flux.modal('confirm-delete').close()" variant="danger">Excluir</flux:button>
+                <flux:button wire:click="delete" x-on:click="Flux.modal('confirm-delete').close()" variant="danger" class="font-bold">Excluir Beneficiário</flux:button>
             </div>
         </div>
     </flux:modal>

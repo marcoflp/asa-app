@@ -47,8 +47,6 @@ class Form extends Component
             'estoque' => 'nullable|integer|min:0',
         ]);
 
-        $this->validateOnly('nome', ['nome' => 'required']);
-
         if (!$categoriaFinal) {
             $this->addError('categoria', 'Informe a categoria.');
             return;
