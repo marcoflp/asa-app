@@ -24,7 +24,7 @@
     --color-zinc-950: #0a0a0a;
 
     --color-accent: var(--color-asa-green);
-    --color-accent-content: var(--color-white);
+    --color-accent-content: var(--color-asa-green);
     --color-accent-foreground: var(--color-white);
 
     --color-asa-gold: #d6a838;
@@ -91,9 +91,9 @@
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-asa-gold);
-        --color-accent-content: var(--color-asa-green);
-        --color-accent-foreground: var(--color-asa-green);
+        --color-accent: #d6a838;
+        --color-accent-content: #d6a838;
+        --color-accent-foreground: #18181b;
     }
 }
 
@@ -128,16 +128,158 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-emerald-600 dark:ring-amber-400 ring-offset-2 ring-offset-white dark:ring-offset-zinc-900 border-transparent;
 }
 
-/* Accessibility: Buttons with clear contrast and touch sizes */
+/* ===================================================
+   ACCESSIBILITY & HIGH CONTRAST RULES (LIGHT & DARK)
+   =================================================== */
+
+/* Buttons */
 [data-flux-button] {
     @apply transition-all duration-150 font-semibold;
 }
 
+/* Primary Button: Solid dark-green in Light, Solid gold in Dark */
 [data-flux-button][data-flux-variant="primary"] {
-    @apply font-bold shadow-sm hover:shadow-md;
+    background-color: #1a2f26 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Table accessibility */
+[data-flux-button][data-flux-variant="primary"]:hover {
+    background-color: #28473a !important;
+    color: #ffffff !important;
+}
+
+.dark [data-flux-button][data-flux-variant="primary"] {
+    background-color: #d6a838 !important;
+    color: #18181b !important;
+}
+
+.dark [data-flux-button][data-flux-variant="primary"]:hover {
+    background-color: #e5b948 !important;
+    color: #09090b !important;
+}
+
+/* Outline Button: Crisp borders & dark text in Light, light text in Dark */
+[data-flux-button][data-flux-variant="outline"] {
+    background-color: #ffffff !important;
+    color: #18181b !important;
+    border: 1px solid #d4d4d8 !important;
+    font-weight: 600 !important;
+}
+
+[data-flux-button][data-flux-variant="outline"]:hover {
+    background-color: #f4f4f5 !important;
+    color: #09090b !important;
+}
+
+.dark [data-flux-button][data-flux-variant="outline"] {
+    background-color: #27272a !important;
+    color: #f4f4f5 !important;
+    border: 1px solid #3f3f46 !important;
+}
+
+.dark [data-flux-button][data-flux-variant="outline"]:hover {
+    background-color: #3f3f46 !important;
+    color: #ffffff !important;
+}
+
+/* Ghost Button */
+[data-flux-button][data-flux-variant="ghost"] {
+    color: #27272a !important;
+    font-weight: 600 !important;
+}
+
+.dark [data-flux-button][data-flux-variant="ghost"] {
+    color: #e4e4e7 !important;
+}
+
+/* Navlist Items & Settings Tabs (e.g. Perfil, Segurança, Aparência) */
+[data-flux-navlist-item],
+[data-flux-tab] {
+    color: #52525b !important; /* zinc-600 */
+    font-weight: 600 !important;
+}
+
+.dark [data-flux-navlist-item],
+.dark [data-flux-tab] {
+    color: #a1a1aa !important; /* zinc-400 */
+}
+
+[data-flux-navlist-item]:hover,
+[data-flux-tab]:hover {
+    color: #18181b !important;
+    background-color: rgba(0, 0, 0, 0.04) !important;
+}
+
+.dark [data-flux-navlist-item]:hover,
+.dark [data-flux-tab]:hover {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* ACTIVE NAVLIST / TAB ITEM: Dark visible text in Light mode, Gold in Dark mode */
+[data-flux-navlist-item][data-current="true"],
+[data-flux-navlist-item][data-current],
+[data-flux-tab][data-current="true"],
+[data-flux-tab][data-current],
+[data-flux-navlist-item][aria-current="page"] {
+    background-color: #f4f4f5 !important; /* zinc-100 */
+    color: #18181b !important; /* zinc-900 */
+    font-weight: 800 !important;
+}
+
+.dark [data-flux-navlist-item][data-current="true"],
+.dark [data-flux-navlist-item][data-current],
+.dark [data-flux-tab][data-current="true"],
+.dark [data-flux-tab][data-current],
+.dark [data-flux-navlist-item][aria-current="page"] {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #fde047 !important; /* gold-300 */
+    font-weight: 800 !important;
+}
+
+/* Segmented Controls (e.g. Claro / Escuro / Sistema, Filtros de Período) */
+[data-flux-radio-segmented] {
+    color: #52525b !important; /* zinc-600 */
+    font-weight: 600 !important;
+}
+
+.dark [data-flux-radio-segmented] {
+    color: #a1a1aa !important; /* zinc-400 */
+}
+
+[data-flux-radio-segmented]:hover {
+    color: #18181b !important;
+}
+
+.dark [data-flux-radio-segmented]:hover {
+    color: #ffffff !important;
+}
+
+[data-flux-radio-segmented][data-checked] {
+    background-color: #ffffff !important;
+    color: #18181b !important; /* zinc-900 */
+    font-weight: 800 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+.dark [data-flux-radio-segmented][data-checked] {
+    background-color: #27272a !important; /* zinc-800 */
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-flux-radio-segmented][data-checked] svg {
+    color: #059669 !important; /* emerald-600 */
+}
+
+.dark [data-flux-radio-segmented][data-checked] svg {
+    color: #fde047 !important; /* gold-300 */
+}
+
+/* Tables */
 table {
     @apply text-zinc-800 dark:text-zinc-200;
 }
@@ -146,51 +288,43 @@ thead th {
     @apply font-bold text-zinc-700 dark:text-zinc-300 text-xs tracking-wider uppercase;
 }
 
-[data-flux-sidebar] {
+/* Sidebar Specific High Contrast (Green Background) */
+aside[data-flux-sidebar] {
     background-color: var(--color-asa-green, #1a2f26) !important;
 }
 
-[data-flux-sidebar] [data-flux-sidebar-item],
-[data-flux-sidebar] a,
-[data-flux-sidebar] button {
+aside[data-flux-sidebar] [data-flux-sidebar-item] {
     color: #f4f4f5 !important;
-    /* text-zinc-100 */
     font-weight: 600 !important;
     font-size: 0.95rem !important;
     opacity: 1 !important;
 }
 
-[data-flux-sidebar] [data-flux-sidebar-item] svg,
-[data-flux-sidebar] a svg,
-[data-flux-sidebar] button svg {
+aside[data-flux-sidebar] [data-flux-sidebar-item] svg {
     color: #e4e4e7 !important;
-    /* text-zinc-200 */
     opacity: 1 !important;
 }
 
-[data-flux-sidebar] [data-flux-sidebar-item]:hover,
-[data-flux-sidebar] a:hover {
+aside[data-flux-sidebar] [data-flux-sidebar-item]:hover {
     background-color: rgba(255, 255, 255, 0.15) !important;
     color: #ffffff !important;
 }
 
-[data-flux-sidebar] [data-flux-sidebar-item][data-current="true"],
-[data-flux-sidebar] [data-flux-sidebar-item][aria-current="page"] {
+aside[data-flux-sidebar] [data-flux-sidebar-item][data-current="true"],
+aside[data-flux-sidebar] [data-flux-sidebar-item][aria-current="page"] {
     background-color: rgba(214, 168, 56, 0.25) !important;
     color: #ffffff !important;
     font-weight: 700 !important;
 }
 
-[data-flux-sidebar] [data-flux-sidebar-item][data-current="true"] svg,
-[data-flux-sidebar] [data-flux-sidebar-item][aria-current="page"] svg {
+aside[data-flux-sidebar] [data-flux-sidebar-item][data-current="true"] svg,
+aside[data-flux-sidebar] [data-flux-sidebar-item][aria-current="page"] svg {
     color: #fde047 !important;
-    /* yellow-300 */
 }
 
-[data-flux-sidebar] [data-flux-sidebar-group-heading],
-[data-flux-sidebar] [data-flux-heading] {
+aside[data-flux-sidebar] [data-flux-sidebar-group-heading],
+aside[data-flux-sidebar] [data-flux-heading] {
     color: #d4d4d8 !important;
-    /* zinc-300 */
     font-weight: 800 !important;
     font-size: 0.75rem !important;
     letter-spacing: 0.08em !important;
