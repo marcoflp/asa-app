@@ -9,10 +9,6 @@
         <link rel="icon" href="/logo.png" type="image/png">
         <link rel="apple-touch-icon" href="/logo.png">
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
 
         <!-- Tailwind CSS & Vite -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -141,8 +137,8 @@
                             <img src="/logo.png" alt="Logo da ASA" class="w-16 h-16 md:w-[5.5rem] md:h-[5.5rem] object-contain">
                         </div>
                         <h2 class="leading-none">
-                            <span class="block font-['Caveat'] font-semibold text-5xl md:text-6xl text-asa-gold -rotate-3 origin-left">O que é a</span>
-                            <span class="block mt-1 font-outfit font-extrabold text-7xl md:text-8xl tracking-tight">ASA?</span>
+                            <span class="block font-script font-normal text-[3.25rem] md:text-7xl leading-[0.9] text-asa-gold pl-1">O que é a</span>
+                            <span class="block -mt-1 font-outfit font-extrabold text-7xl md:text-8xl tracking-tight">ASA?</span>
                         </h2>
                         <p class="mt-6 md:mt-8 text-lg text-white/80 leading-relaxed max-w-[34ch]">
                             É a Ação Solidária Adventista: liderança e membros da igreja local servindo ao próximo, de forma organizada e com base nos princípios bíblicos.
