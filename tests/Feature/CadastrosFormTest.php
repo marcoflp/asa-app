@@ -13,17 +13,23 @@ beforeEach(function () {
 
 // ---------- Beneficiário ----------
 
-test('recusa CPF inválido com mensagem clara', function () {
+test('CPF com número errado só avisa e deixa salvar', function () {
     Livewire::test(BeneficiarioForm::class)
+        ->set('nome', 'Pessoa com CPF Errado')
         ->set('cpf', '123.456.789-00')
-        ->assertHasErrors(['cpf'])
-        ->assertSee('CPF inválido');
+        ->assertHasNoErrors(['cpf'])
+        ->assertSee('parece ter algum número errado')
+        ->call('save')
+        ->assertHasNoErrors();
+
+    expect(Beneficiario::where('nome', 'Pessoa com CPF Errado')->value('cpf'))->toBe('123.456.789-00');
 });
 
 test('aceita CPF válido', function () {
     Livewire::test(BeneficiarioForm::class)
         ->set('cpf', '529.982.247-25')
-        ->assertHasNoErrors(['cpf']);
+        ->assertHasNoErrors(['cpf'])
+        ->assertDontSee('parece ter algum número errado');
 });
 
 test('CPF repetido mostra mensagem amigável em vez de erro do banco', function () {

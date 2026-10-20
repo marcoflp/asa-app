@@ -197,7 +197,6 @@ class Form extends Component
     protected function rules(): array
     {
         $id = $this->beneficiario?->id;
-        $cpfOriginal = $this->beneficiario?->cpf;
 
         return [
             'nome' => 'required|string|min:3|max:255',
@@ -212,14 +211,8 @@ class Form extends Component
             'cidade' => 'required|string|max:100',
             'cep' => 'nullable|string|max:9',
             'rg' => 'nullable|string|max:20',
-            'cpf' => ['nullable', 'string', 'max:14',
-                Rule::unique('beneficiarios', 'cpf')->ignore($id),
-                function ($attr, $valor, $falha) use ($cpfOriginal) {
-                    // Cadastros antigos com CPF inválido não ficam travados se o CPF não foi alterado
-                    if ($valor && $valor !== $cpfOriginal && ! self::cpfValido($valor)) {
-                        $falha('CPF inválido. Confira os números.');
-                    }
-                }],
+            // CPF com dígitos errados só gera aviso (ver cpfComAviso); repetido continua bloqueando
+            'cpf' => ['nullable', 'string', 'max:14', Rule::unique('beneficiarios', 'cpf')->ignore($id)],
             'foto_documento' => 'nullable|file|mimes:jpg,jpeg,png,gif,heic,heif|max:10240',
             'foto_documento_verso' => 'nullable|file|mimes:jpg,jpeg,png,gif,heic,heif|max:10240',
             'foto_documento_consentimento' => 'nullable|file|mimes:jpg,jpeg,png,gif,heic,heif|max:10240',
@@ -300,6 +293,13 @@ class Form extends Component
         if (str_starts_with($campo, 'foto_documento')) {
             $this->validateOnly($campo);
         }
+    }
+
+    /** CPF preenchido com números que não fecham: avisa, mas deixa salvar. */
+    #[Computed]
+    public function cpfComAviso(): bool
+    {
+        return $this->cpf !== '' && ! self::cpfValido($this->cpf);
     }
 
     /** Cadastros parecidos (mesmo CPF ou mesmo nome) para evitar duplicidade. */

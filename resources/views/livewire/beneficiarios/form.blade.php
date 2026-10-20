@@ -53,6 +53,9 @@
                     <flux:label>CPF</flux:label>
                     <flux:input wire:model.live.blur="cpf" placeholder="000.000.000-00" inputmode="numeric" autocomplete="off" x-mask="999.999.999-99" />
                     <flux:error name="cpf" />
+                    @if ($this->cpfComAviso && ! $errors->has('cpf'))
+                        <p class="mt-1.5 text-sm text-amber-700 dark:text-amber-400">Esse CPF parece ter algum número errado. Dá para salvar assim e corrigir depois.</p>
+                    @endif
                 </flux:field>
 
                 <flux:field>
