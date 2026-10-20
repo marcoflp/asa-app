@@ -465,3 +465,6 @@ aside[data-flux-sidebar] [data-flux-heading] {
     text-transform: uppercase !important;
     opacity: 1 !important;
 }
+[x-cloak] {
+    display: none !important;
+}
