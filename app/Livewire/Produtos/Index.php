@@ -77,6 +77,17 @@ class Index extends Component
         $produto->update(['ativo' => ! $produto->ativo]);
     }
 
+    /** Liga/desliga "urgente": aparece em "O que estamos precisando" na página inicial. */
+    public function toggleUrgente(int $id): void
+    {
+        $produto = Produto::findOrFail($id);
+        $produto->update(['urgente' => ! $produto->urgente]);
+
+        session()->now('success', $produto->urgente
+            ? "{$produto->nome} agora aparece como urgente na página inicial."
+            : "{$produto->nome} saiu da lista de urgentes da página inicial.");
+    }
+
     /** Dados mostrados na janela de exclusão. */
     public string $excluindoNome = '';
 

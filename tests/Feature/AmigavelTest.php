@@ -149,3 +149,26 @@ test('retirada para família que retirou há poucos dias pede confirmação', fu
 
     expect(Retirada::count())->toBe(2);
 });
+
+// ---------- Página inicial ----------
+
+test('página inicial mostra só os produtos marcados como urgentes', function () {
+    novoProduto('Fralda', null, ['urgente' => true]);
+    novoProduto('Feijão', 0);
+    novoProduto('Leite', null, ['urgente' => true, 'ativo' => false]);
+
+    $this->get('/')
+        ->assertSee('Fralda')
+        ->assertDontSee('Feijão')
+        ->assertDontSee('Leite');
+});
+
+test('marcar e desmarcar urgente pela lista de produtos', function () {
+    $fralda = novoProduto('Fralda', null);
+
+    Livewire::test(ProdutoIndex::class)->call('toggleUrgente', $fralda->id);
+    expect($fralda->fresh()->urgente)->toBeTrue();
+
+    Livewire::test(ProdutoIndex::class)->call('toggleUrgente', $fralda->id);
+    expect($fralda->fresh()->urgente)->toBeFalse();
+});

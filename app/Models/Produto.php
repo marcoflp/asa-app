@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Produto extends Model
 {
-    protected $fillable = ['nome', 'categoria', 'unidade', 'estoque', 'descricao', 'ativo'];
+    protected $fillable = ['nome', 'categoria', 'unidade', 'estoque', 'descricao', 'ativo', 'urgente'];
 
-    protected $casts = ['ativo' => 'boolean'];
+    protected $casts = ['ativo' => 'boolean', 'urgente' => 'boolean'];
 
     public function scopeAtivo($query)
     {

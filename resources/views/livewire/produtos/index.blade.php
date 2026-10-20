@@ -154,7 +154,7 @@
                     <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">Categoria</th>
                     <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">Unidade</th>
                     <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">Estoque</th>
-                    <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">Descrição</th>
+                    <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">Página inicial</th>
                     <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">Status</th>
                     <th class="px-4 py-3.5 font-bold text-zinc-900 dark:text-zinc-100 text-right">Ações</th>
                 </tr>
@@ -178,7 +178,17 @@
                                 <span class="text-zinc-400 font-normal italic">Sem controle</span>
                             @endif
                         </td>
-                        <td class="px-4 py-3.5 text-zinc-600 dark:text-zinc-400 max-w-xs truncate">{{ $p->descricao ?? '—' }}</td>
+                        <td class="px-4 py-3.5">
+                            <button type="button" wire:click="toggleUrgente({{ $p->id }})" aria-pressed="{{ $p->urgente ? 'true' : 'false' }}"
+                                title="{{ $p->urgente ? 'Clique para tirar da página inicial' : 'Clique para mostrar na página inicial' }}"
+                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border transition-colors cursor-pointer {{ $p->urgente ? 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800' : 'bg-white text-zinc-600 border-zinc-300 hover:border-amber-400 hover:text-amber-800 dark:bg-zinc-900 dark:text-zinc-400 dark:border-zinc-700' }}">
+                                @if ($p->urgente)
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg> Urgente
+                                @else
+                                    Marcar urgente
+                                @endif
+                            </button>
+                        </td>
                         <td class="px-4 py-3.5">
                             <button wire:click="toggleAtivo({{ $p->id }})" class="cursor-pointer">
                                 @if ($p->ativo)
@@ -230,6 +240,18 @@
                     <div class="w-full flex justify-between">
                         <span class="text-zinc-600 dark:text-zinc-400 font-medium">Estoque:</span>
                         <span class="font-bold text-zinc-900 dark:text-zinc-100">{{ $p->estoque ?? 'Sem controle' }}</span>
+                    </div>
+                    <div class="w-full flex justify-between items-center">
+                        <span class="text-zinc-600 dark:text-zinc-400 font-medium">Página inicial:</span>
+                        <button type="button" wire:click="toggleUrgente({{ $p->id }})" aria-pressed="{{ $p->urgente ? 'true' : 'false' }}"
+                                title="{{ $p->urgente ? 'Clique para tirar da página inicial' : 'Clique para mostrar na página inicial' }}"
+                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border transition-colors cursor-pointer {{ $p->urgente ? 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800' : 'bg-white text-zinc-600 border-zinc-300 hover:border-amber-400 hover:text-amber-800 dark:bg-zinc-900 dark:text-zinc-400 dark:border-zinc-700' }}">
+                                @if ($p->urgente)
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z"/></svg> Urgente
+                                @else
+                                    Marcar urgente
+                                @endif
+                            </button>
                     </div>
                     <div class="w-full flex justify-between items-center">
                         <span class="text-zinc-600 dark:text-zinc-400 font-medium">Status:</span>

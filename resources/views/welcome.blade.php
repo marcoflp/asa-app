@@ -46,10 +46,6 @@
             
             <!-- Hero Section -->
             <section class="text-center mb-16 md:mb-24 animate-fade-in">
-                <div class="inline-flex items-center gap-2 px-4 py-2 bg-asa-green/5 dark:bg-white/5 rounded-full mb-8 border border-asa-green/10">
-                    <span class="w-2 h-2 bg-asa-gold rounded-full animate-pulse"></span>
-                    <span class="text-xs font-bold text-asa-green dark:text-asa-gold uppercase tracking-widest">Ação Solidária Adventista</span>
-                </div>
                 
                 <h1 class="font-outfit text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-8">
                     <span class="text-asa-green dark:text-white">Juntos, fazemos</span> <br>
@@ -76,7 +72,7 @@
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 md:mb-16">
                     <div class="max-w-xl">
                         <h2 class="font-outfit text-3xl md:text-5xl font-bold mb-4 text-asa-green dark:text-white line-clamp-2">O que estamos precisando</h2>
-                        <p class="text-slate-500 dark:text-slate-400">Estes são os itens com maior urgência em nosso estoque. Se puder doar qualquer quantidade, será de grande ajuda.</p>
+                        <p class="text-slate-500 dark:text-slate-400">Estes são os itens que mais precisamos agora. Qualquer quantidade já ajuda muito.</p>
                     </div>
                 </div>
 
@@ -110,7 +106,7 @@
                                 </p>
 
                                 <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest bg-asa-gold/15 text-[#8a6210] dark:text-asa-gold">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-current animate-pulse motion-reduce:animate-none"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
                                     Urgente
                                 </span>
                                 
@@ -121,10 +117,10 @@
                 @else
                     <div class="text-center py-20 px-8 bg-asa-green/5 rounded-[2rem] border-2 border-dashed border-asa-green/10">
                         <div class="w-24 h-24 bg-asa-green text-white rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
                         </div>
-                        <h3 class="font-outfit text-3xl font-bold mb-4 text-asa-green">Estoque Abastecido!</h3>
-                        <p class="text-slate-600 dark:text-slate-400 max-w-md mx-auto text-lg font-medium leading-relaxed">Graças às doações recentes, nosso estoque de itens básicos está completo. Continue nos apoiando!</p>
+                        <h3 class="font-outfit text-3xl font-bold mb-4 text-asa-green">Toda doação é bem-vinda</h3>
+                        <p class="text-slate-600 dark:text-slate-400 max-w-md mx-auto text-lg font-medium leading-relaxed">No momento não há um item específico em falta. Alimentos, produtos de higiene e roupas em bom estado sempre ajudam.</p>
                     </div>
                 @endif
             </section>

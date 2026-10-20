@@ -78,6 +78,12 @@
 
             <flux:separator variant="subtle" />
 
+            <flux:switch wire:model="urgente" align="left"
+                label="Mostrar como urgente na página inicial"
+                description="Aparece em “O que estamos precisando” no site da ASA. Desmarque quando não precisar mais." />
+
+            <flux:separator variant="subtle" />
+
             <flux:switch wire:model="ativo" align="left"
                 label="Produto ativo"
                 description="Produtos inativos não aparecem na busca das retiradas nem na página inicial." />

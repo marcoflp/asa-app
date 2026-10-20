@@ -5,15 +5,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/offline', fn() => response()->file(public_path('offline.html')))->name('offline');
 
 Route::get('/', function () {
-    // Itens de inverno só aparecem na vitrine entre abril e setembro
-    $itensDeInverno = ['cobertor', 'agasalho'];
-    $foraDoInverno = ! in_array(now()->month, range(4, 9));
-
+    // A coordenação escolhe o que aparece marcando o produto como urgente
     $produtosEmFalta = \App\Models\Produto::ativo()
-        ->where('estoque', '<', 10)
-        ->when($foraDoInverno, fn ($q) => $q->whereNotIn(\Illuminate\Support\Facades\DB::raw('LOWER(nome)'), $itensDeInverno))
-        ->orderBy('estoque', 'asc')
-        ->limit(6)
+        ->where('urgente', true)
+        ->orderBy('categoria')
+        ->orderBy('nome')
+        ->limit(12)
         ->get();
 
     return view('welcome', compact('produtosEmFalta'));

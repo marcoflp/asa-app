@@ -29,6 +29,8 @@ class Form extends Component
 
     public bool $ativo = true;
 
+    public bool $urgente = false;
+
     const UNIDADES = ['unidade', 'kg', 'litro', 'frasco', 'pacote', 'lata', 'par', 'peça', 'rolo', 'caixa'];
 
     public function mount(?Produto $produto = null): void
@@ -42,6 +44,7 @@ class Form extends Component
             $this->estoque = $produto->estoque;
             $this->controlarEstoque = $produto->estoque !== null;
             $this->ativo = (bool) $produto->ativo;
+            $this->urgente = (bool) $produto->urgente;
         }
     }
 
@@ -179,6 +182,7 @@ class Form extends Component
             'descricao' => $this->descricao ?: null,
             'estoque' => $this->controlarEstoque ? (int) $this->estoque : null,
             'ativo' => $this->ativo,
+            'urgente' => $this->urgente,
         ];
 
         try {
