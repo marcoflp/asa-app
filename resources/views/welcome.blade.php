@@ -12,7 +12,7 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Inter:wght@400;500;600&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
 
         <!-- Tailwind CSS & Vite -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -134,46 +134,35 @@
             </section>
 
             <!-- O que é a ASA -->
-            <section id="sobre" class="mt-16 md:mt-28 scroll-mt-28 relative overflow-hidden bg-asa-green text-white rounded-[2rem] md:rounded-[3rem] p-6 sm:p-10 md:p-16">
-                <div class="absolute -right-24 -top-24 w-80 h-80 bg-asa-gold/20 rounded-full blur-[90px] pointer-events-none"></div>
-                <div class="relative grid md:grid-cols-[1fr_1.4fr] gap-8 md:gap-14 items-center">
-                    <div class="text-center md:text-left">
-                        <div class="w-28 h-28 md:w-36 md:h-36 mx-auto md:mx-0 bg-white rounded-full flex items-center justify-center shadow-2xl shadow-black/30">
-                            <img src="/logo.png" alt="Logo da ASA" class="w-20 h-20 md:w-24 md:h-24 object-contain">
-                        </div>
-                        <h2 class="mt-6 font-outfit text-3xl md:text-5xl font-bold">O que é a ASA?</h2>
-                        <p class="mt-4 text-white/75 leading-relaxed max-w-md mx-auto md:mx-0">A Ação Solidária Adventista é o braço social da igreja local, feito por liderança e membros em favor dos seus semelhantes, com base nos princípios bíblicos.</p>
+            <section id="sobre" class="mt-16 md:mt-28 scroll-mt-28 bg-asa-green text-white rounded-[2rem] md:rounded-[3rem] px-6 py-10 sm:p-12 md:p-16">
+                <div class="grid md:grid-cols-[0.9fr_1.1fr] gap-10 md:gap-16">
+                    <div>
+                        <h2 class="leading-none">
+                            <span class="block font-['Caveat'] font-semibold text-5xl md:text-6xl text-asa-gold -rotate-3 origin-left">O que é a</span>
+                            <span class="block mt-1 font-outfit font-extrabold text-7xl md:text-8xl tracking-tight">ASA?</span>
+                        </h2>
+                        <p class="mt-6 md:mt-8 text-lg text-white/80 leading-relaxed max-w-[34ch]">
+                            É a Ação Solidária Adventista: liderança e membros da igreja local servindo ao próximo, de forma organizada e com base nos princípios bíblicos.
+                        </p>
                     </div>
-                    <ul class="grid gap-3">
-                    <li class="flex gap-4 bg-white/[.06] border border-white/10 rounded-2xl p-5">
-                        <span class="shrink-0 w-11 h-11 rounded-xl bg-asa-gold/15 text-asa-gold flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/></svg></span>
-                        <span>
-                            <span class="block font-outfit font-bold text-lg">Cestas básicas</span>
-                            <span class="block mt-1 text-sm leading-relaxed text-white/70">Entrega de alimentos para as famílias cadastradas.</span>
-                        </span>
-                    </li>
-                    <li class="flex gap-4 bg-white/[.06] border border-white/10 rounded-2xl p-5">
-                        <span class="shrink-0 w-11 h-11 rounded-xl bg-asa-gold/15 text-asa-gold flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
-                        <span>
-                            <span class="block font-outfit font-bold text-lg">Varal solidário</span>
-                            <span class="block mt-1 text-sm leading-relaxed text-white/70">Roupas e calçados doados para quem precisa.</span>
-                        </span>
-                    </li>
-                    <li class="flex gap-4 bg-white/[.06] border border-white/10 rounded-2xl p-5">
-                        <span class="shrink-0 w-11 h-11 rounded-xl bg-asa-gold/15 text-asa-gold flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-                        <span>
-                            <span class="block font-outfit font-bold text-lg">Visitas</span>
-                            <span class="block mt-1 text-sm leading-relaxed text-white/70">Acompanhamento das pessoas cadastradas.</span>
-                        </span>
-                    </li>
-                    <li class="flex gap-4 bg-white/[.06] border border-white/10 rounded-2xl p-5">
-                        <span class="shrink-0 w-11 h-11 rounded-xl bg-asa-gold/15 text-asa-gold flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>
-                        <span>
-                            <span class="block font-outfit font-bold text-lg">Apoio à comunidade</span>
-                            <span class="block mt-1 text-sm leading-relaxed text-white/70">Suporte psicológico, espiritual e social.</span>
-                        </span>
-                    </li>
-                    </ul>
+                    <dl class="border-b border-white/15 self-end">
+                        <div class="py-5 md:py-6 border-t border-white/15 md:grid md:grid-cols-[13rem_1fr] md:gap-8">
+                            <dt class="font-outfit font-semibold text-xl text-white">Cestas básicas</dt>
+                            <dd class="mt-1 md:mt-0.5 text-white/70 leading-relaxed">Entrega de alimentos para as famílias cadastradas.</dd>
+                        </div>
+                        <div class="py-5 md:py-6 border-t border-white/15 md:grid md:grid-cols-[13rem_1fr] md:gap-8">
+                            <dt class="font-outfit font-semibold text-xl text-white">Varal solidário</dt>
+                            <dd class="mt-1 md:mt-0.5 text-white/70 leading-relaxed">Roupas e calçados doados para quem precisa.</dd>
+                        </div>
+                        <div class="py-5 md:py-6 border-t border-white/15 md:grid md:grid-cols-[13rem_1fr] md:gap-8">
+                            <dt class="font-outfit font-semibold text-xl text-white">Visitas</dt>
+                            <dd class="mt-1 md:mt-0.5 text-white/70 leading-relaxed">Acompanhamento de perto das pessoas cadastradas.</dd>
+                        </div>
+                        <div class="py-5 md:py-6 border-t border-white/15 md:grid md:grid-cols-[13rem_1fr] md:gap-8">
+                            <dt class="font-outfit font-semibold text-xl text-white">Apoio à comunidade</dt>
+                            <dd class="mt-1 md:mt-0.5 text-white/70 leading-relaxed">Suporte psicológico, espiritual e social.</dd>
+                        </div>
+                    </dl>
                 </div>
             </section>
 
