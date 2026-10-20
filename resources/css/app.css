@@ -445,16 +445,17 @@ aside[data-flux-sidebar] [data-flux-sidebar-item]:hover {
     color: #ffffff !important;
 }
 
-aside[data-flux-sidebar] [data-flux-sidebar-item][data-current="true"],
-aside[data-flux-sidebar] [data-flux-sidebar-item][aria-current="page"] {
-    background-color: rgba(214, 168, 56, 0.25) !important;
+/* Item ativo: branco e em negrito, com fundo claro discreto (o Flux marca com data-current sem valor) */
+[data-flux-sidebar] [data-flux-sidebar-item][data-current],
+[data-flux-sidebar] [data-flux-sidebar-item][aria-current="page"] {
+    background-color: rgba(255, 255, 255, 0.14) !important;
     color: #ffffff !important;
     font-weight: 700 !important;
 }
 
-aside[data-flux-sidebar] [data-flux-sidebar-item][data-current="true"] svg,
-aside[data-flux-sidebar] [data-flux-sidebar-item][aria-current="page"] svg {
-    color: #fde047 !important;
+[data-flux-sidebar] [data-flux-sidebar-item][data-current] *,
+[data-flux-sidebar] [data-flux-sidebar-item][aria-current="page"] * {
+    color: #ffffff !important;
 }
 
 aside[data-flux-sidebar] [data-flux-sidebar-group-heading],
