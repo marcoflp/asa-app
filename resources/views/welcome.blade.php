@@ -137,6 +137,9 @@
             <section id="sobre" class="mt-16 md:mt-28 scroll-mt-28 bg-asa-green text-white rounded-[2rem] md:rounded-[3rem] px-6 py-10 sm:p-12 md:p-16">
                 <div class="grid md:grid-cols-[0.9fr_1.1fr] gap-10 md:gap-16">
                     <div>
+                        <div class="w-24 h-24 md:w-32 md:h-32 mb-8 bg-white rounded-full flex items-center justify-center shadow-2xl shadow-black/30">
+                            <img src="/logo.png" alt="Logo da ASA" class="w-16 h-16 md:w-[5.5rem] md:h-[5.5rem] object-contain">
+                        </div>
                         <h2 class="leading-none">
                             <span class="block font-['Caveat'] font-semibold text-5xl md:text-6xl text-asa-gold -rotate-3 origin-left">O que é a</span>
                             <span class="block mt-1 font-outfit font-extrabold text-7xl md:text-8xl tracking-tight">ASA?</span>
@@ -145,7 +148,7 @@
                             É a Ação Solidária Adventista: liderança e membros da igreja local servindo ao próximo, de forma organizada e com base nos princípios bíblicos.
                         </p>
                     </div>
-                    <dl class="border-b border-white/15 self-end">
+                    <dl class="border-b border-white/15 self-center">
                         <div class="py-5 md:py-6 border-t border-white/15 md:grid md:grid-cols-[13rem_1fr] md:gap-8">
                             <dt class="font-outfit font-semibold text-xl text-white">Cestas básicas</dt>
                             <dd class="mt-1 md:mt-0.5 text-white/70 leading-relaxed">Entrega de alimentos para as famílias cadastradas.</dd>
