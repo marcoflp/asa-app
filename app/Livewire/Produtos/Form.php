@@ -3,6 +3,11 @@
 namespace App\Livewire\Produtos;
 
 use App\Models\Produto;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class Form extends Component
@@ -10,12 +15,17 @@ class Form extends Component
     public ?Produto $produto = null;
 
     public string $nome = '';
+
     public string $categoria = '';
-    public string $novaCategoria = '';
+
     public string $unidade = '';
-    public string $novaUnidade = '';
+
     public string $descricao = '';
+
+    public bool $controlarEstoque = false;
+
     public ?int $estoque = null;
+
     public bool $ativo = true;
 
     const UNIDADES = ['unidade', 'kg', 'litro', 'frasco', 'pacote', 'lata', 'par', 'peça', 'rolo', 'caixa'];
@@ -25,44 +35,120 @@ class Form extends Component
         if ($produto && $produto->exists) {
             $this->produto = $produto;
             $this->nome = $produto->nome;
-            $this->categoria = $produto->categoria;
-            $this->unidade = in_array($produto->unidade, self::UNIDADES) ? $produto->unidade : 'outro';
-            $this->novaUnidade = in_array($produto->unidade, self::UNIDADES) ? '' : $produto->unidade;
+            $this->categoria = $produto->categoria ?? '';
+            $this->unidade = $produto->unidade ?? '';
             $this->descricao = $produto->descricao ?? '';
             $this->estoque = $produto->estoque;
-            $this->ativo = $produto->ativo;
+            $this->controlarEstoque = $produto->estoque !== null;
+            $this->ativo = (bool) $produto->ativo;
         }
+    }
+
+    private static function normalizar(?string $texto): string
+    {
+        return Str::of((string) $texto)->ascii()->lower()->squish()->toString();
+    }
+
+    /** Usa a grafia já existente quando o texto bate com uma opção (sem diferenciar acentos). */
+    private static function canonico(string $valor, iterable $opcoes): string
+    {
+        $valor = trim($valor);
+        $alvo = self::normalizar($valor);
+
+        foreach ($opcoes as $o) {
+            if (self::normalizar($o) === $alvo) {
+                return $o;
+            }
+        }
+
+        return $valor;
+    }
+
+    #[Computed]
+    public function categorias(): array
+    {
+        return Produto::whereNotNull('categoria')->distinct()->orderBy('categoria')->pluck('categoria')->filter()->values()->all();
+    }
+
+    #[Computed]
+    public function unidades(): array
+    {
+        $doBanco = Produto::whereNotNull('unidade')->distinct()->pluck('unidade')->filter()->all();
+
+        return collect(self::UNIDADES)->merge($doBanco)->unique(fn ($u) => self::normalizar($u))->values()->all();
+    }
+
+    /** Produtos com o mesmo nome, para evitar cadastro duplicado. */
+    #[Computed]
+    public function parecidos(): Collection
+    {
+        $nome = self::normalizar($this->nome);
+        if (strlen($nome) < 3) {
+            return collect();
+        }
+
+        return Produto::query()
+            ->when($this->produto?->id, fn ($q, $id) => $q->whereKeyNot($id))
+            ->get(['id', 'nome', 'categoria', 'ativo'])
+            ->filter(fn ($p) => self::normalizar($p->nome) === $nome)
+            ->values();
+    }
+
+    public function updatedControlarEstoque(bool $ligado): void
+    {
+        if ($ligado && $this->estoque === null) {
+            $this->estoque = 0;
+        }
+    }
+
+    public function updated(string $campo): void
+    {
+        if ($campo === 'nome') {
+            $this->validateOnly('nome');
+        }
+    }
+
+    protected function rules(): array
+    {
+        return [
+            'nome' => 'required|string|min:2|max:255',
+            'categoria' => 'required|string|max:100',
+            'unidade' => 'required|string|max:50',
+            'descricao' => 'nullable|string',
+            // Pode ficar negativo quando saiu mais do que foi registrado; o voluntário corrige com a contagem real
+            'estoque' => $this->controlarEstoque ? 'required|integer|min:-100000|max:100000' : 'nullable',
+        ];
+    }
+
+    protected function messages(): array
+    {
+        return [
+            'nome.required' => 'Informe o nome do produto.',
+            'categoria.required' => 'Escolha ou digite uma categoria.',
+            'unidade.required' => 'Escolha ou digite a unidade.',
+            'estoque.required' => 'Informe quantos tem em estoque (pode ser 0).',
+            'estoque.integer' => 'O estoque precisa ser um número inteiro.',
+        ];
     }
 
     public function save(): void
     {
-        $unidadeFinal = $this->unidade === 'outro' ? $this->novaUnidade : $this->unidade;
-        $categoriaFinal = $this->categoria === 'outra' ? $this->novaCategoria : $this->categoria;
+        $this->categoria = self::canonico($this->categoria, $this->categorias);
+        $this->unidade = self::canonico($this->unidade, $this->unidades);
 
-        $this->validate([
-            'nome' => 'required|string|max:255',
-            'categoria' => 'required|string',
-            'unidade' => 'required|string',
-            'descricao' => 'nullable|string',
-            'estoque' => 'nullable|integer|min:0',
-        ]);
-
-        if (!$categoriaFinal) {
-            $this->addError('categoria', 'Informe a categoria.');
-            return;
-        }
-
-        if (!$unidadeFinal) {
-            $this->addError('unidade', 'Informe a unidade.');
-            return;
+        try {
+            $this->validate();
+        } catch (ValidationException $e) {
+            $this->dispatch('formulario-invalido');
+            throw $e;
         }
 
         $data = [
-            'nome' => $this->nome,
-            'categoria' => $categoriaFinal,
-            'unidade' => $unidadeFinal,
+            'nome' => trim($this->nome),
+            'categoria' => $this->categoria,
+            'unidade' => $this->unidade,
             'descricao' => $this->descricao ?: null,
-            'estoque' => $this->estoque,
+            'estoque' => $this->controlarEstoque ? (int) $this->estoque : null,
             'ativo' => $this->ativo,
         ];
 
@@ -76,17 +162,16 @@ class Form extends Component
             session()->flash('success', 'Produto salvo com sucesso.');
             $this->redirect(route('produtos.index'), navigate: true);
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error("Erro ao salvar produto: " . $e->getMessage());
-            $this->addError('geral', 'Erro ao salvar o produto no banco de dados.');
+            Log::error('Erro ao salvar produto: '.$e->getMessage());
+            $this->addError('geral', 'Não foi possível salvar agora. Tente de novo em instantes.');
         }
     }
 
     public function render()
     {
-        $categorias = Produto::distinct()->orderBy('categoria')->pluck('categoria');
         $title = $this->produto?->exists ? 'Editar Produto' : 'Novo Produto';
 
-        return view('livewire.produtos.form', compact('categorias'))
+        return view('livewire.produtos.form')
             ->layout('layouts.app', ['title' => $title]);
     }
 }

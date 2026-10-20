@@ -1,16 +1,14 @@
 <?php
 
-use App\Models\User;
+use App\Livewire\Beneficiarios\Form as BeneficiarioForm;
+use App\Livewire\Dashboard;
+use App\Livewire\Produtos\Form as ProdutoForm;
+use App\Livewire\Retiradas\Form as RetiradaForm;
 use App\Models\Beneficiario;
 use App\Models\Produto;
 use App\Models\Retirada;
-use App\Livewire\Beneficiarios\Form as BeneficiarioForm;
-use App\Livewire\Produtos\Form as ProdutoForm;
-use App\Livewire\Retiradas\Form as RetiradaForm;
-use App\Livewire\Dashboard;
+use App\Models\User;
 use Livewire\Livewire;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\UploadedFile;
 
 beforeEach(function () {
     $this->user = User::factory()->create();
@@ -26,7 +24,7 @@ test('system smoke test: full user journey', function () {
     // 2. Create a Beneficiary
     Livewire::test(BeneficiarioForm::class)
         ->set('nome', 'João Silva')
-        ->set('cpf', '123.456.789-00')
+        ->set('cpf', '123.456.789-09')
         ->set('telefone', '(54) 99999-8888')
         ->set('num_pessoas_familia', 4)
         ->call('save')
@@ -62,7 +60,7 @@ test('system smoke test: full user journey', function () {
     $this->assertDatabaseHas('retirada_items', [
         'retirada_id' => $retirada->id,
         'produto_id' => $produto->id,
-        'quantidade' => 1
+        'quantidade' => 1,
     ]);
 
     // 5. Verify Dashboard Metrics
@@ -71,6 +69,3 @@ test('system smoke test: full user journey', function () {
         ->assertViewHas('totalProdutosGeral', 1)
         ->assertSee('João Silva');
 });
-
-
-
