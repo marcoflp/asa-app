@@ -5,6 +5,8 @@ namespace App\Livewire\Retiradas;
 use App\Models\Beneficiario;
 use App\Models\Produto;
 use App\Models\Retirada;
+use Carbon\Carbon;
+use Flux\Flux;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -45,10 +47,34 @@ class Form extends Component
         }
     }
 
+    /** O voluntário confirmou na janela que quer registrar mesmo com retirada recente. */
+    public bool $confirmouRetiradaRecente = false;
+
+    public function diasDesdeUltimaRetirada(): ?int
+    {
+        if (! $this->beneficiario_id) {
+            return null;
+        }
+
+        $ultima = Retirada::where('beneficiario_id', $this->beneficiario_id)
+            ->when($this->retirada?->id, fn ($q, $id) => $q->whereKeyNot($id))
+            ->max('data');
+
+        return $ultima ? (int) abs(Carbon::parse($ultima)->startOfDay()->diffInDays(today())) : null;
+    }
+
+    public function confirmarRetiradaRecente(): void
+    {
+        $this->confirmouRetiradaRecente = true;
+        Flux::modal('retirada-recente')->close();
+        $this->save();
+    }
+
     public function selecionarBeneficiario(int $id): void
     {
         if (Beneficiario::whereKey($id)->exists()) {
             $this->beneficiario_id = $id;
+            $this->confirmouRetiradaRecente = false;
             $this->searchBeneficiario = '';
             $this->resetErrorBag('beneficiario_id');
         }
@@ -174,6 +200,13 @@ class Form extends Component
             'data.before_or_equal' => 'A data não pode ser no futuro.',
         ]);
 
+        // Família que retirou há poucos dias: pergunta antes de registrar outra
+        if (! $this->retirada?->exists && ! $this->confirmouRetiradaRecente && $this->diasDesdeUltimaRetirada() !== null && $this->diasDesdeUltimaRetirada() < 7) {
+            Flux::modal('retirada-recente')->show();
+
+            return;
+        }
+
         $dados = [
             'beneficiario_id' => $this->beneficiario_id,
             'data' => $this->data,
@@ -184,7 +217,8 @@ class Form extends Component
             DB::transaction(function () use ($dados) {
                 if ($this->retirada && $this->retirada->exists) {
                     $this->retirada->update($dados);
-                    $this->retirada->items()->delete();
+                    // Um a um, para devolver ao estoque o que estava na versão anterior
+                    $this->retirada->items()->get()->each->delete();
                     $retirada = $this->retirada;
                 } else {
                     $retirada = Retirada::create($dados);
@@ -198,7 +232,9 @@ class Form extends Component
                 }
             });
 
-            session()->flash('success', 'Retirada salva com sucesso.');
+            $nome = Beneficiario::find($this->beneficiario_id)?->nome;
+            $qtd = count($this->items);
+            session()->flash('success', "Retirada de {$nome} registrada com {$qtd} ".($qtd === 1 ? 'produto' : 'produtos').'.');
             $this->redirect(route('retiradas.index'), navigate: true);
 
         } catch (\Exception $e) {

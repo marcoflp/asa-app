@@ -210,8 +210,8 @@
                         <td class="px-4 py-3.5 text-zinc-600 dark:text-zinc-400 max-w-xs truncate">{{ $r->observacoes ?? '—' }}</td>
                         <td class="px-4 py-3.5 text-right">
                             <div class="flex justify-end gap-2">
-                                <flux:button href="{{ route('retiradas.edit', $r) }}" size="sm" variant="ghost" icon="pencil" class="text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white" wire:navigate />
-                                <flux:button wire:click="confirmDelete({{ $r->id }})" x-on:click="Flux.modal('confirm-delete').show()" size="sm" variant="ghost" icon="trash" class="text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40" />
+                                <flux:button href="{{ route('retiradas.edit', $r) }}" size="sm" variant="ghost" icon="pencil" tooltip="Editar" aria-label="Editar" class="text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white" wire:navigate />
+                                <flux:button wire:click="confirmDelete({{ $r->id }})" size="sm" variant="ghost" icon="trash" tooltip="Excluir" aria-label="Excluir" class="text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40" />
                             </div>
                         </td>
                     </tr>
@@ -234,8 +234,8 @@
                         <p class="font-bold text-base text-zinc-900 dark:text-zinc-100">{{ $r->beneficiario->nome }}</p>
                     </div>
                     <div class="flex gap-2">
-                        <flux:button href="{{ route('retiradas.edit', $r) }}" size="sm" variant="ghost" icon="pencil" class="text-zinc-700 dark:text-zinc-300" wire:navigate />
-                        <flux:button wire:click="confirmDelete({{ $r->id }})" x-on:click="Flux.modal('confirm-delete').show()" size="sm" variant="ghost" icon="trash" class="text-rose-600 dark:text-rose-400" />
+                        <flux:button href="{{ route('retiradas.edit', $r) }}" size="sm" variant="ghost" icon="pencil" tooltip="Editar" aria-label="Editar" class="text-zinc-700 dark:text-zinc-300" wire:navigate />
+                        <flux:button wire:click="confirmDelete({{ $r->id }})" size="sm" variant="ghost" icon="trash" tooltip="Excluir" aria-label="Excluir" class="text-rose-600 dark:text-rose-400" />
                     </div>
                 </div>
                 <div class="pt-2 border-t border-zinc-100 dark:border-zinc-800">
@@ -264,13 +264,18 @@
 
     <div>{{ $retiradas->links() }}</div>
 
-    <flux:modal name="confirm-delete">
+    <flux:modal name="confirm-delete" class="w-full max-w-md">
         <div class="space-y-4">
-            <flux:heading class="font-bold text-zinc-900 dark:text-zinc-100">Confirmar exclusão</flux:heading>
-            <flux:text class="text-zinc-700 dark:text-zinc-300">Tem certeza que deseja remover este registro de retirada?</flux:text>
-            <div class="flex justify-end gap-2 pt-2">
-                <flux:button wire:click="$set('deletingId', null)" x-on:click="Flux.modal('confirm-delete').close()" variant="ghost">Cancelar</flux:button>
-                <flux:button wire:click="delete" x-on:click="Flux.modal('confirm-delete').close()" variant="danger" class="font-bold">Excluir Retirada</flux:button>
+            <flux:heading size="xl">Excluir esta retirada?</flux:heading>
+            <flux:text class="text-base">
+                Retirada de <strong class="text-zinc-900 dark:text-white">{{ $excluindoDescricao }}</strong>.
+                Os itens voltam para o estoque. Use isso só se a retirada foi registrada por engano.
+            </flux:text>
+            <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-2">
+                <flux:modal.close>
+                    <flux:button variant="filled" class="w-full sm:w-auto" wire:click="$set('deletingId', null)">Não, manter</flux:button>
+                </flux:modal.close>
+                <flux:button wire:click="delete" x-on:click="Flux.modal('confirm-delete').close()" variant="danger" class="w-full sm:w-auto">Sim, excluir</flux:button>
             </div>
         </div>
     </flux:modal>

@@ -3,6 +3,7 @@
 namespace App\Livewire\Beneficiarios;
 
 use App\Models\Beneficiario;
+use Flux\Flux;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,14 +12,21 @@ class Index extends Component
     use WithPagination;
 
     public string $search = '';
+
     public string $bairro = '';
+
     public string $programaGoverno = '';
+
     public string $estudoBiblico = '';
+
     public string $documentos = '';
+
     public string $ordenacao = 'nome_asc';
+
     public bool $mostrarFiltros = false;
 
     public ?int $deletingId = null;
+
     public ?Beneficiario $selectedBeneficiario = null;
 
     protected $queryString = [
@@ -39,7 +47,7 @@ class Index extends Component
 
     public function toggleFiltros(): void
     {
-        $this->mostrarFiltros = !$this->mostrarFiltros;
+        $this->mostrarFiltros = ! $this->mostrarFiltros;
     }
 
     public function limparFiltros(): void
@@ -51,30 +59,52 @@ class Index extends Component
     public function getFiltrosAtivosCountProperty(): int
     {
         $count = 0;
-        if (!empty($this->bairro)) $count++;
-        if (!empty($this->programaGoverno)) $count++;
-        if (!empty($this->estudoBiblico)) $count++;
-        if (!empty($this->documentos)) $count++;
-        if ($this->ordenacao !== 'nome_asc') $count++;
+        if (! empty($this->bairro)) {
+            $count++;
+        }
+        if (! empty($this->programaGoverno)) {
+            $count++;
+        }
+        if (! empty($this->estudoBiblico)) {
+            $count++;
+        }
+        if (! empty($this->documentos)) {
+            $count++;
+        }
+        if ($this->ordenacao !== 'nome_asc') {
+            $count++;
+        }
+
         return $count;
     }
 
     public function show(int $id): void
     {
-        $this->selectedBeneficiario = Beneficiario::with(['retiradas' => fn($q) => $q->orderByDesc('data')])->findOrFail($id);
+        $this->selectedBeneficiario = Beneficiario::with(['retiradas' => fn ($q) => $q->orderByDesc('data')])->findOrFail($id);
     }
+
+    /** Dados mostrados na janela de exclusão. */
+    public string $excluindoNome = '';
+
+    public int $excluindoRetiradas = 0;
 
     public function confirmDelete(int $id): void
     {
-        $this->deletingId = $id;
+        $b = Beneficiario::withCount('retiradas')->findOrFail($id);
+        $this->deletingId = $b->id;
+        $this->excluindoNome = $b->nome;
+        $this->excluindoRetiradas = $b->retiradas_count;
+
+        Flux::modal('confirm-delete')->show();
     }
 
     public function delete(): void
     {
         if ($this->deletingId) {
+            $nome = Beneficiario::findOrFail($this->deletingId)->nome;
             Beneficiario::findOrFail($this->deletingId)->delete();
             $this->deletingId = null;
-            session()->flash('success', 'Beneficiário removido com sucesso.');
+            session()->now('success', "O cadastro de {$nome} foi excluído.");
         }
     }
 
@@ -129,7 +159,7 @@ class Index extends Component
             ->where('bairro', '!=', '')
             ->distinct()
             ->pluck('bairro')
-            ->map(fn($b) => mb_strtoupper(trim($b), 'UTF-8'))
+            ->map(fn ($b) => mb_strtoupper(trim($b), 'UTF-8'))
             ->filter()
             ->toArray();
 
@@ -146,16 +176,16 @@ class Index extends Component
                         ->orWhere('bairro', 'like', "%{$this->search}%");
                 });
             })
-            ->when($this->bairro, fn($q) => $q->where('bairro', 'like', "%{$this->bairro}%"))
-            ->when($this->programaGoverno === 'sim', fn($q) => $q->where('inscrito_programa_governo', true))
-            ->when($this->programaGoverno === 'nao', fn($q) => $q->where(fn($sub) => $sub->where('inscrito_programa_governo', false)->orWhereNull('inscrito_programa_governo')))
-            ->when($this->estudoBiblico === 'sim', fn($q) => $q->where('recebe_estudo_biblico', true))
-            ->when($this->estudoBiblico === 'nao', fn($q) => $q->where(fn($sub) => $sub->where('recebe_estudo_biblico', false)->orWhereNull('recebe_estudo_biblico')))
+            ->when($this->bairro, fn ($q) => $q->where('bairro', 'like', "%{$this->bairro}%"))
+            ->when($this->programaGoverno === 'sim', fn ($q) => $q->where('inscrito_programa_governo', true))
+            ->when($this->programaGoverno === 'nao', fn ($q) => $q->where(fn ($sub) => $sub->where('inscrito_programa_governo', false)->orWhereNull('inscrito_programa_governo')))
+            ->when($this->estudoBiblico === 'sim', fn ($q) => $q->where('recebe_estudo_biblico', true))
+            ->when($this->estudoBiblico === 'nao', fn ($q) => $q->where(fn ($sub) => $sub->where('recebe_estudo_biblico', false)->orWhereNull('recebe_estudo_biblico')))
             ->when($this->documentos === 'completos', function ($q) {
                 $q->whereNotNull('foto_documento')->where('foto_documento', '!=', '')
-                  ->whereNotNull('foto_documento_verso')->where('foto_documento_verso', '!=', '')
-                  ->whereNotNull('foto_documento_comprovante_residencia')->where('foto_documento_comprovante_residencia', '!=', '')
-                  ->whereNotNull('foto_documento_consentimento')->where('foto_documento_consentimento', '!=', '');
+                    ->whereNotNull('foto_documento_verso')->where('foto_documento_verso', '!=', '')
+                    ->whereNotNull('foto_documento_comprovante_residencia')->where('foto_documento_comprovante_residencia', '!=', '')
+                    ->whereNotNull('foto_documento_consentimento')->where('foto_documento_consentimento', '!=', '');
             })
             ->when($this->documentos === 'incompletos', function ($q) {
                 $q->where(function ($sub) {
@@ -166,10 +196,10 @@ class Index extends Component
                 });
             })
             ->when($this->documentos === 'sem_documentos', function ($q) {
-                $q->where(fn($sub) => $sub->whereNull('foto_documento')->orWhere('foto_documento', '=', ''))
-                  ->where(fn($sub) => $sub->whereNull('foto_documento_verso')->orWhere('foto_documento_verso', '=', ''))
-                  ->where(fn($sub) => $sub->whereNull('foto_documento_comprovante_residencia')->orWhere('foto_documento_comprovante_residencia', '=', ''))
-                  ->where(fn($sub) => $sub->whereNull('foto_documento_consentimento')->orWhere('foto_documento_consentimento', '=', ''));
+                $q->where(fn ($sub) => $sub->whereNull('foto_documento')->orWhere('foto_documento', '=', ''))
+                    ->where(fn ($sub) => $sub->whereNull('foto_documento_verso')->orWhere('foto_documento_verso', '=', ''))
+                    ->where(fn ($sub) => $sub->whereNull('foto_documento_comprovante_residencia')->orWhere('foto_documento_comprovante_residencia', '=', ''))
+                    ->where(fn ($sub) => $sub->whereNull('foto_documento_consentimento')->orWhere('foto_documento_consentimento', '=', ''));
             });
 
         // Ordenação

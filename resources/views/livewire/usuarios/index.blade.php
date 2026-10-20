@@ -35,7 +35,7 @@
                             @endif
                         </td>
                         <td class="px-5 py-3.5 text-right">
-                            <flux:button href="{{ route('usuarios.edit', $user) }}" size="sm" variant="ghost" icon="pencil-square" class="text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white" wire:navigate />
+                            <flux:button href="{{ route('usuarios.edit', $user) }}" size="sm" variant="ghost" icon="pencil-square" tooltip="Editar" aria-label="Editar" class="text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white" wire:navigate />
                         </td>
                     </tr>
                 @endforeach
@@ -52,7 +52,7 @@
                         <div class="font-bold text-base text-zinc-900 dark:text-zinc-100">{{ $user->name }}</div>
                         <div class="text-xs font-semibold text-zinc-600 dark:text-zinc-400 mt-1">{{ $user->email }}</div>
                     </div>
-                    <flux:button href="{{ route('usuarios.edit', $user) }}" size="sm" variant="ghost" icon="pencil-square" class="text-zinc-700 dark:text-zinc-300" wire:navigate />
+                    <flux:button href="{{ route('usuarios.edit', $user) }}" size="sm" variant="ghost" icon="pencil-square" tooltip="Editar" aria-label="Editar" class="text-zinc-700 dark:text-zinc-300" wire:navigate />
                 </div>
                 <div class="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex justify-between items-center text-xs">
                     <span class="text-zinc-600 dark:text-zinc-400 font-medium">Último Acesso:</span>

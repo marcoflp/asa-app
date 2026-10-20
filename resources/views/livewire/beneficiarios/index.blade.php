@@ -215,9 +215,9 @@
                         </td>
                         <td class="px-4 py-3.5 text-right">
                             <div class="flex justify-end gap-2">
-                                <flux:button wire:click="show({{ $b->id }})" x-on:click="Flux.modal('show-beneficiario').show()" size="sm" variant="ghost" icon="eye" class="text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white" />
-                                <flux:button href="{{ route('beneficiarios.edit', $b) }}" size="sm" variant="ghost" icon="pencil" class="text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white" wire:navigate />
-                                <flux:button wire:click="confirmDelete({{ $b->id }})" x-on:click="Flux.modal('confirm-delete').show()" size="sm" variant="ghost" icon="trash" class="text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40" />
+                                <flux:button wire:click="show({{ $b->id }})" x-on:click="Flux.modal('show-beneficiario').show()" size="sm" variant="ghost" icon="eye" tooltip="Ver detalhes" aria-label="Ver detalhes" class="text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white" />
+                                <flux:button href="{{ route('beneficiarios.edit', $b) }}" size="sm" variant="ghost" icon="pencil" tooltip="Editar" aria-label="Editar" class="text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white" wire:navigate />
+                                <flux:button wire:click="confirmDelete({{ $b->id }})" size="sm" variant="ghost" icon="trash" tooltip="Excluir" aria-label="Excluir" class="text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40" />
                             </div>
                         </td>
                     </tr>
@@ -242,9 +242,9 @@
                         <p class="text-xs font-semibold text-zinc-600 dark:text-zinc-400 uppercase mt-0.5">{{ $b->bairro ?? 'Bairro não inf.' }} • {{ $b->telefone ?? 'Sem tel' }}</p>
                     </div>
                     <div class="flex gap-1.5 self-end sm:self-start">
-                        <flux:button wire:click="show({{ $b->id }})" x-on:click="Flux.modal('show-beneficiario').show()" size="sm" variant="ghost" icon="eye" class="text-zinc-700 dark:text-zinc-300" />
-                        <flux:button href="{{ route('beneficiarios.edit', $b) }}" size="sm" variant="ghost" icon="pencil" class="text-zinc-700 dark:text-zinc-300" wire:navigate />
-                        <flux:button wire:click="confirmDelete({{ $b->id }})" x-on:click="Flux.modal('confirm-delete').show()" size="sm" variant="ghost" icon="trash" class="text-rose-600 dark:text-rose-400" />
+                        <flux:button wire:click="show({{ $b->id }})" x-on:click="Flux.modal('show-beneficiario').show()" size="sm" variant="ghost" icon="eye" tooltip="Ver detalhes" aria-label="Ver detalhes" class="text-zinc-700 dark:text-zinc-300" />
+                        <flux:button href="{{ route('beneficiarios.edit', $b) }}" size="sm" variant="ghost" icon="pencil" tooltip="Editar" aria-label="Editar" class="text-zinc-700 dark:text-zinc-300" wire:navigate />
+                        <flux:button wire:click="confirmDelete({{ $b->id }})" size="sm" variant="ghost" icon="trash" tooltip="Excluir" aria-label="Excluir" class="text-rose-600 dark:text-rose-400" />
                     </div>
                 </div>
                 <div class="flex flex-wrap gap-2 text-sm pt-2 border-t border-zinc-100 dark:border-zinc-800">
@@ -440,13 +440,22 @@
     </flux:modal>
 
     {{-- Modal de confirmação de exclusão --}}
-    <flux:modal name="confirm-delete">
+    <flux:modal name="confirm-delete" class="w-full max-w-md">
         <div class="space-y-4">
-            <flux:heading class="font-bold text-zinc-900 dark:text-zinc-100">Confirmar exclusão</flux:heading>
-            <flux:text class="text-zinc-700 dark:text-zinc-300">Tem certeza que deseja remover este beneficiário? Esta ação não pode ser desfeita.</flux:text>
-            <div class="flex justify-end gap-2 pt-2">
-                <flux:button wire:click="$set('deletingId', null)" x-on:click="Flux.modal('confirm-delete').close()" variant="ghost">Cancelar</flux:button>
-                <flux:button wire:click="delete" x-on:click="Flux.modal('confirm-delete').close()" variant="danger" class="font-bold">Excluir Beneficiário</flux:button>
+            <flux:heading size="xl">Excluir o cadastro de {{ $excluindoNome }}?</flux:heading>
+            @if ($excluindoRetiradas > 0)
+                <flux:callout variant="danger" icon="exclamation-triangle"
+                    heading="{{ $excluindoNome }} tem {{ $excluindoRetiradas }} {{ $excluindoRetiradas === 1 ? 'retirada registrada' : 'retiradas registradas' }}.">
+                    <flux:callout.text>Esse histórico também será apagado e não dá para recuperar depois.</flux:callout.text>
+                </flux:callout>
+            @else
+                <flux:text class="text-base">O cadastro será apagado e não dá para recuperar depois.</flux:text>
+            @endif
+            <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-2">
+                <flux:modal.close>
+                    <flux:button variant="filled" class="w-full sm:w-auto" wire:click="$set('deletingId', null)">Não, manter cadastro</flux:button>
+                </flux:modal.close>
+                <flux:button wire:click="delete" x-on:click="Flux.modal('confirm-delete').close()" variant="danger" class="w-full sm:w-auto">Sim, excluir</flux:button>
             </div>
         </div>
     </flux:modal>

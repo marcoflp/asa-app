@@ -226,4 +226,47 @@
             </flux:button>
         </div>
     </form>
+
+    {{-- Janela: pode ser alguém que já está cadastrado --}}
+    <flux:modal name="cadastro-parecido" class="w-full max-w-lg">
+        <div class="space-y-5">
+            <div>
+                <flux:heading size="xl">Essa pessoa já pode estar cadastrada</flux:heading>
+                <flux:text class="mt-2 text-base">
+                    Encontramos {{ $this->parecidos->count() === 1 ? 'um cadastro parecido' : 'cadastros parecidos' }} com
+                    <strong class="text-zinc-900 dark:text-white">{{ $nome }}</strong>. Veja se não é a mesma pessoa:
+                </flux:text>
+            </div>
+
+            <ul class="space-y-3">
+                @foreach ($this->parecidos as $p)
+                    @php
+                        $dias = $p->retiradas_max_data ? (int) abs(\Carbon\Carbon::parse($p->retiradas_max_data)->startOfDay()->diffInDays(today())) : null;
+                        $tel = preg_replace('/\D/', '', (string) $p->telefone);
+                    @endphp
+                    <li wire:key="parecido-{{ $p->id }}" class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-4">
+                        <p class="text-lg font-semibold text-zinc-900 dark:text-white">{{ $p->nome }}</p>
+                        <dl class="mt-1 grid grid-cols-2 gap-x-4 gap-y-1 text-sm text-zinc-600 dark:text-zinc-400">
+                            <div><dt class="inline">Bairro:</dt> <dd class="inline font-medium text-zinc-800 dark:text-zinc-200">{{ $p->bairro ?: 'não informado' }}</dd></div>
+                            <div><dt class="inline">Pessoas na casa:</dt> <dd class="inline font-medium text-zinc-800 dark:text-zinc-200">{{ $p->num_pessoas_familia }}</dd></div>
+                            <div><dt class="inline">Telefone:</dt> <dd class="inline font-medium text-zinc-800 dark:text-zinc-200">{{ $tel ? '•••• '.substr($tel, -4) : 'não informado' }}</dd></div>
+                            <div><dt class="inline">Última retirada:</dt> <dd class="inline font-medium text-zinc-800 dark:text-zinc-200">{{ $dias === null ? 'nunca' : ($dias === 0 ? 'hoje' : ($dias === 1 ? 'ontem' : "há {$dias} dias")) }}</dd></div>
+                        </dl>
+                        <flux:button href="{{ route('beneficiarios.edit', $p) }}" wire:navigate variant="filled" class="mt-3 w-full">
+                            Sim, é esta pessoa. Abrir o cadastro dela
+                        </flux:button>
+                    </li>
+                @endforeach
+            </ul>
+
+            <div class="flex flex-col gap-2 pt-1">
+                <flux:button wire:click="continuarCadastro" variant="primary" class="w-full">
+                    Não, é outra pessoa. Continuar cadastro
+                </flux:button>
+                <flux:modal.close>
+                    <flux:button variant="ghost" class="w-full">Voltar e revisar os dados</flux:button>
+                </flux:modal.close>
+            </div>
+        </div>
+    </flux:modal>
 </div>

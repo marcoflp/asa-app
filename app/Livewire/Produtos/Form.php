@@ -3,6 +3,7 @@
 namespace App\Livewire\Produtos;
 
 use App\Models\Produto;
+use Flux\Flux;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -89,9 +90,30 @@ class Form extends Component
 
         return Produto::query()
             ->when($this->produto?->id, fn ($q, $id) => $q->whereKeyNot($id))
-            ->get(['id', 'nome', 'categoria', 'ativo'])
-            ->filter(fn ($p) => self::normalizar($p->nome) === $nome)
+            ->get(['id', 'nome', 'categoria', 'unidade', 'estoque', 'ativo'])
+            ->filter(fn ($p) => self::normalizar($p->nome) === $nome
+                || (strlen($nome) >= 6 && levenshtein(self::normalizar($p->nome), $nome) <= 1))
             ->values();
+    }
+
+    /** O voluntário já confirmou na janela que é outro produto. */
+    public bool $confirmouProdutoDiferente = false;
+
+    public function continuarCadastro(): void
+    {
+        $this->confirmouProdutoDiferente = true;
+        Flux::modal('produto-parecido')->close();
+        $this->save();
+    }
+
+    /** Na janela de produto parecido: em vez de criar outro, reativa o que já existe. */
+    public function reativarProduto(int $id): void
+    {
+        $existente = Produto::findOrFail($id);
+        $existente->update(['ativo' => true]);
+
+        session()->flash('success', "O produto \"{$existente->nome}\" foi reativado e já aparece nas retiradas.");
+        $this->redirect(route('produtos.index'), navigate: true);
     }
 
     public function updatedControlarEstoque(bool $ligado): void
@@ -105,6 +127,7 @@ class Form extends Component
     {
         if ($campo === 'nome') {
             $this->validateOnly('nome');
+            $this->confirmouProdutoDiferente = false;
         }
     }
 
@@ -141,6 +164,12 @@ class Form extends Component
         } catch (ValidationException $e) {
             $this->dispatch('formulario-invalido');
             throw $e;
+        }
+
+        if (! $this->produto?->exists && ! $this->confirmouProdutoDiferente && $this->parecidos->isNotEmpty()) {
+            Flux::modal('produto-parecido')->show();
+
+            return;
         }
 
         $data = [

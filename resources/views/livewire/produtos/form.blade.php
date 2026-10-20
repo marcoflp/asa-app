@@ -90,4 +90,39 @@
             </flux:button>
         </div>
     </form>
+
+    {{-- Janela: produto com o mesmo nome já existe --}}
+    <flux:modal name="produto-parecido" class="w-full max-w-lg">
+        <div class="space-y-5">
+            <div>
+                <flux:heading size="xl">Esse produto já existe</flux:heading>
+                <flux:text class="mt-2 text-base">Cadastrar de novo pode dividir o estoque em dois. Veja o que já está cadastrado:</flux:text>
+            </div>
+
+            <ul class="space-y-3">
+                @foreach ($this->parecidos as $p)
+                    <li wire:key="parecido-{{ $p->id }}" class="rounded-xl border border-zinc-200 dark:border-zinc-700 p-4">
+                        <p class="text-lg font-semibold text-zinc-900 dark:text-white">{{ $p->nome }}</p>
+                        <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                            {{ $p->categoria }} · {{ $p->unidade }}
+                            · {{ $p->estoque === null ? 'sem controle de estoque' : 'estoque: '.$p->estoque }}
+                            @unless ($p->ativo) · <span class="font-semibold text-amber-700 dark:text-amber-400">desativado</span>@endunless
+                        </p>
+                        @if ($p->ativo)
+                            <flux:button href="{{ route('produtos.edit', $p) }}" wire:navigate variant="filled" class="mt-3 w-full">Abrir este produto</flux:button>
+                        @else
+                            <flux:button wire:click="reativarProduto({{ $p->id }})" variant="filled" class="mt-3 w-full">Reativar este produto</flux:button>
+                        @endif
+                    </li>
+                @endforeach
+            </ul>
+
+            <div class="flex flex-col gap-2 pt-1">
+                <flux:button wire:click="continuarCadastro" variant="primary" class="w-full">É outro produto. Cadastrar mesmo assim</flux:button>
+                <flux:modal.close>
+                    <flux:button variant="ghost" class="w-full">Voltar e revisar</flux:button>
+                </flux:modal.close>
+            </div>
+        </div>
+    </flux:modal>
 </div>

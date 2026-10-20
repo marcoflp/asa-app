@@ -3,6 +3,8 @@
 namespace App\Livewire\Produtos;
 
 use App\Models\Produto;
+use App\Models\RetiradaItem;
+use Flux\Flux;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,10 +13,15 @@ class Index extends Component
     use WithPagination;
 
     public string $search = '';
+
     public string $categoria = '';
+
     public string $statusEstoque = ''; // todos, em_estoque, baixo_estoque, sem_estoque
+
     public string $statusAtivo = ''; // todos, ativo, inativo
+
     public string $ordenacao = 'categoria_nome'; // categoria_nome, nome_asc, nome_desc, menor_estoque, maior_estoque
+
     public bool $mostrarFiltros = false;
 
     public ?int $deletingId = null;
@@ -36,7 +43,7 @@ class Index extends Component
 
     public function toggleFiltros(): void
     {
-        $this->mostrarFiltros = !$this->mostrarFiltros;
+        $this->mostrarFiltros = ! $this->mostrarFiltros;
     }
 
     public function limparFiltros(): void
@@ -48,30 +55,68 @@ class Index extends Component
     public function getFiltrosAtivosCountProperty(): int
     {
         $count = 0;
-        if (!empty($this->categoria)) $count++;
-        if (!empty($this->statusEstoque)) $count++;
-        if (!empty($this->statusAtivo)) $count++;
-        if ($this->ordenacao !== 'categoria_nome') $count++;
+        if (! empty($this->categoria)) {
+            $count++;
+        }
+        if (! empty($this->statusEstoque)) {
+            $count++;
+        }
+        if (! empty($this->statusAtivo)) {
+            $count++;
+        }
+        if ($this->ordenacao !== 'categoria_nome') {
+            $count++;
+        }
+
         return $count;
     }
 
     public function toggleAtivo(int $id): void
     {
         $produto = Produto::findOrFail($id);
-        $produto->update(['ativo' => !$produto->ativo]);
+        $produto->update(['ativo' => ! $produto->ativo]);
     }
+
+    /** Dados mostrados na janela de exclusão. */
+    public string $excluindoNome = '';
+
+    public int $excluindoUsos = 0;
 
     public function confirmDelete(int $id): void
     {
-        $this->deletingId = $id;
+        $p = Produto::findOrFail($id);
+        $this->deletingId = $p->id;
+        $this->excluindoNome = $p->nome;
+        $this->excluindoUsos = RetiradaItem::where('produto_id', $p->id)->count();
+
+        Flux::modal('confirm-delete')->show();
     }
 
     public function delete(): void
     {
+        if (! $this->deletingId) {
+            return;
+        }
+
+        $produto = Produto::findOrFail($this->deletingId);
+
+        // Produto que já saiu em retiradas não pode ser apagado (perderia o histórico); a janela oferece desativar
+        if (RetiradaItem::where('produto_id', $produto->id)->exists()) {
+            return;
+        }
+
+        $produto->delete();
+        $this->deletingId = null;
+        session()->now('success', "O produto {$produto->nome} foi excluído.");
+    }
+
+    public function desativar(): void
+    {
         if ($this->deletingId) {
-            Produto::findOrFail($this->deletingId)->delete();
+            $produto = Produto::findOrFail($this->deletingId);
+            $produto->update(['ativo' => false]);
             $this->deletingId = null;
-            session()->flash('success', 'Produto removido com sucesso.');
+            session()->now('success', "O produto {$produto->nome} foi desativado. Ele não aparece mais nas retiradas, mas o histórico continua guardado.");
         }
     }
 
@@ -86,12 +131,12 @@ class Index extends Component
                         ->orWhere('descricao', 'like', "%{$this->search}%");
                 });
             })
-            ->when($this->categoria, fn($q) => $q->where('categoria', $this->categoria))
-            ->when($this->statusAtivo === 'ativo', fn($q) => $q->where('ativo', true))
-            ->when($this->statusAtivo === 'inativo', fn($q) => $q->where('ativo', false))
-            ->when($this->statusEstoque === 'em_estoque', fn($q) => $q->where('estoque', '>', 0))
-            ->when($this->statusEstoque === 'baixo_estoque', fn($q) => $q->where('estoque', '>', 0)->where('estoque', '<=', 10))
-            ->when($this->statusEstoque === 'sem_estoque', fn($q) => $q->where(fn($sub) => $sub->where('estoque', '<=', 0)->orWhereNull('estoque')));
+            ->when($this->categoria, fn ($q) => $q->where('categoria', $this->categoria))
+            ->when($this->statusAtivo === 'ativo', fn ($q) => $q->where('ativo', true))
+            ->when($this->statusAtivo === 'inativo', fn ($q) => $q->where('ativo', false))
+            ->when($this->statusEstoque === 'em_estoque', fn ($q) => $q->where('estoque', '>', 0))
+            ->when($this->statusEstoque === 'baixo_estoque', fn ($q) => $q->where('estoque', '>', 0)->where('estoque', '<=', 10))
+            ->when($this->statusEstoque === 'sem_estoque', fn ($q) => $q->where(fn ($sub) => $sub->where('estoque', '<=', 0)->orWhereNull('estoque')));
 
         // Ordenação
         match ($this->ordenacao) {

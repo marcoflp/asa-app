@@ -3,6 +3,7 @@
 namespace App\Livewire\Beneficiarios;
 
 use App\Models\Beneficiario;
+use Flux\Flux;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -290,6 +291,9 @@ class Form extends Component
         if (in_array($campo, ['nome', 'cpf', 'telefone', 'num_pessoas_familia'])) {
             $this->validateOnly($campo);
         }
+        if (in_array($campo, ['nome', 'cpf'])) {
+            $this->confirmouPessoaDiferente = false;
+        }
         if (str_starts_with($campo, 'foto_documento')) {
             $this->validateOnly($campo);
         }
@@ -302,7 +306,31 @@ class Form extends Component
         return $this->cpf !== '' && ! self::cpfValido($this->cpf);
     }
 
-    /** Cadastros parecidos (mesmo CPF ou mesmo nome) para evitar duplicidade. */
+    /** O voluntário já confirmou na janela que é outra pessoa. */
+    public bool $confirmouPessoaDiferente = false;
+
+    /** Nomes que provavelmente são da mesma pessoa (erro de digitação, nome do meio diferente). */
+    public static function nomesParecidos(string $a, string $b): bool
+    {
+        $a = self::normalizar($a);
+        $b = self::normalizar($b);
+        if ($a === '' || $b === '') {
+            return false;
+        }
+        if ($a === $b) {
+            return true;
+        }
+        if (strlen($a) >= 8 && strlen($b) >= 8 && levenshtein($a, $b) <= 2) {
+            return true;
+        }
+        $pa = explode(' ', $a);
+        $pb = explode(' ', $b);
+
+        // Mesmo primeiro e último nome (ex.: "Maria Souza" e "Maria de Fátima Souza")
+        return count($pa) >= 2 && count($pb) >= 2 && $pa[0] === $pb[0] && end($pa) === end($pb);
+    }
+
+    /** Cadastros parecidos (mesmo CPF ou nome parecido) para evitar duplicidade. */
     #[Computed]
     public function parecidos(): Collection
     {
@@ -315,11 +343,20 @@ class Form extends Component
 
         return Beneficiario::query()
             ->when($this->beneficiario?->id, fn ($q, $id) => $q->whereKeyNot($id))
-            ->get(['id', 'nome', 'bairro', 'cpf'])
+            ->withMax('retiradas', 'data')
+            ->get(['id', 'nome', 'bairro', 'cpf', 'telefone', 'num_pessoas_familia'])
             ->filter(fn ($b) => (strlen($cpf) === 11 && self::digitos($b->cpf) === $cpf)
-                || (strlen($nome) >= 5 && self::normalizar($b->nome) === $nome))
+                || (strlen($nome) >= 5 && self::nomesParecidos($this->nome, $b->nome)))
             ->take(3)
             ->values();
+    }
+
+    /** Na janela de cadastro parecido: é outra pessoa, pode cadastrar. */
+    public function continuarCadastro(): void
+    {
+        $this->confirmouPessoaDiferente = true;
+        Flux::modal('cadastro-parecido')->close();
+        $this->save();
     }
 
     public function getBairrosDisponiveisProperty(): array
@@ -364,6 +401,13 @@ class Form extends Component
             // Leva o voluntário até o primeiro campo com erro
             $this->dispatch('formulario-invalido');
             throw $e;
+        }
+
+        // Cadastro novo parecido com um que já existe: pergunta antes de criar
+        if (! $this->beneficiario?->exists && ! $this->confirmouPessoaDiferente && $this->parecidos->isNotEmpty()) {
+            Flux::modal('cadastro-parecido')->show();
+
+            return;
         }
 
         try {

@@ -12,6 +12,14 @@ class Retirada extends Model
 
     protected $casts = ['data' => 'date'];
 
+    protected static function booted()
+    {
+        // Apaga os itens um a um para devolver as quantidades ao estoque (o cascade do banco não faz isso)
+        static::deleting(function (Retirada $retirada) {
+            $retirada->items()->get()->each->delete();
+        });
+    }
+
     public function beneficiario(): BelongsTo
     {
         return $this->belongsTo(Beneficiario::class);

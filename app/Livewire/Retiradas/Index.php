@@ -6,6 +6,7 @@ use App\Models\Beneficiario;
 use App\Models\Produto;
 use App\Models\Retirada;
 use Carbon\Carbon;
+use Flux\Flux;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -14,12 +15,19 @@ class Index extends Component
     use WithPagination;
 
     public string $search = '';
+
     public string $beneficiarioId = '';
+
     public string $dataInicio = '';
+
     public string $dataFim = '';
+
     public string $periodoPredefinido = ''; // '', 'hoje', '7dias', 'mes_atual', 'ano_atual'
+
     public string $produtoId = '';
+
     public string $ordenacao = 'recente'; // recente, antigo, beneficiario_asc
+
     public bool $mostrarFiltros = false;
 
     public ?int $deletingId = null;
@@ -74,7 +82,7 @@ class Index extends Component
 
     public function toggleFiltros(): void
     {
-        $this->mostrarFiltros = !$this->mostrarFiltros;
+        $this->mostrarFiltros = ! $this->mostrarFiltros;
     }
 
     public function limparFiltros(): void
@@ -86,16 +94,32 @@ class Index extends Component
     public function getFiltrosAtivosCountProperty(): int
     {
         $count = 0;
-        if (!empty($this->beneficiarioId)) $count++;
-        if (!empty($this->dataInicio) || !empty($this->dataFim)) $count++;
-        if (!empty($this->produtoId)) $count++;
-        if ($this->ordenacao !== 'recente') $count++;
+        if (! empty($this->beneficiarioId)) {
+            $count++;
+        }
+        if (! empty($this->dataInicio) || ! empty($this->dataFim)) {
+            $count++;
+        }
+        if (! empty($this->produtoId)) {
+            $count++;
+        }
+        if ($this->ordenacao !== 'recente') {
+            $count++;
+        }
+
         return $count;
     }
 
+    /** Dados mostrados na janela de exclusão. */
+    public string $excluindoDescricao = '';
+
     public function confirmDelete(int $id): void
     {
-        $this->deletingId = $id;
+        $r = Retirada::with('beneficiario')->findOrFail($id);
+        $this->deletingId = $r->id;
+        $this->excluindoDescricao = ($r->beneficiario?->nome ?? 'beneficiário removido').' no dia '.$r->data->format('d/m/Y');
+
+        Flux::modal('confirm-delete')->show();
     }
 
     public function delete(): void
@@ -103,7 +127,7 @@ class Index extends Component
         if ($this->deletingId) {
             Retirada::findOrFail($this->deletingId)->delete();
             $this->deletingId = null;
-            session()->flash('success', 'Retirada removida com sucesso.');
+            session()->now('success', 'Retirada excluída. Os itens voltaram para o estoque.');
         }
     }
 
@@ -117,24 +141,24 @@ class Index extends Component
                 $q->where(function ($sub) {
                     $sub->whereHas('beneficiario', function ($b) {
                         $b->where('nome', 'like', "%{$this->search}%")
-                          ->orWhere('cpf', 'like', "%{$this->search}%")
-                          ->orWhere('bairro', 'like', "%{$this->search}%");
+                            ->orWhere('cpf', 'like', "%{$this->search}%")
+                            ->orWhere('bairro', 'like', "%{$this->search}%");
                     })->orWhere('observacoes', 'like', "%{$this->search}%");
                 });
             })
-            ->when($this->beneficiarioId, fn($q) => $q->where('retiradas.beneficiario_id', $this->beneficiarioId))
-            ->when($this->dataInicio, fn($q) => $q->whereDate('retiradas.data', '>=', $this->dataInicio))
-            ->when($this->dataFim, fn($q) => $q->whereDate('retiradas.data', '<=', $this->dataFim))
+            ->when($this->beneficiarioId, fn ($q) => $q->where('retiradas.beneficiario_id', $this->beneficiarioId))
+            ->when($this->dataInicio, fn ($q) => $q->whereDate('retiradas.data', '>=', $this->dataInicio))
+            ->when($this->dataFim, fn ($q) => $q->whereDate('retiradas.data', '<=', $this->dataFim))
             ->when($this->produtoId, function ($q) {
-                $q->whereHas('items', fn($item) => $item->where('produto_id', $this->produtoId));
+                $q->whereHas('items', fn ($item) => $item->where('produto_id', $this->produtoId));
             });
 
         // Ordenação
         match ($this->ordenacao) {
             'antigo' => $query->orderBy('retiradas.data')->orderBy('retiradas.id'),
             'beneficiario_asc' => $query->join('beneficiarios', 'retiradas.beneficiario_id', '=', 'beneficiarios.id')
-                                       ->orderBy('beneficiarios.nome')
-                                       ->select('retiradas.*'),
+                ->orderBy('beneficiarios.nome')
+                ->select('retiradas.*'),
             default => $query->orderByDesc('retiradas.data')->orderByDesc('retiradas.id'),
         };
 

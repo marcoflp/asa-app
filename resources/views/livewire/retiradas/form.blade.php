@@ -235,4 +235,21 @@
         </div>
 
     </form>
+
+    {{-- Janela: família retirou há poucos dias --}}
+    <flux:modal name="retirada-recente" class="w-full max-w-md">
+        @php $diasRecente = $this->diasDesdeUltimaRetirada(); @endphp
+        <div class="space-y-4">
+            <flux:heading size="xl">
+                {{ $beneficiarioSelecionado?->nome }} já retirou {{ $diasRecente === 0 ? 'hoje' : ($diasRecente === 1 ? 'ontem' : "há {$diasRecente} dias") }}
+            </flux:heading>
+            <flux:text class="text-base">Quer registrar outra retirada mesmo assim? Confira com a coordenação se tiver dúvida.</flux:text>
+            <div class="flex flex-col gap-2 pt-2">
+                <flux:button wire:click="confirmarRetiradaRecente" variant="primary" class="w-full">Sim, registrar outra retirada</flux:button>
+                <flux:modal.close>
+                    <flux:button variant="ghost" class="w-full">Não, voltar</flux:button>
+                </flux:modal.close>
+            </div>
+        </div>
+    </flux:modal>
 </div>
