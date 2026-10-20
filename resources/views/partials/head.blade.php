@@ -20,6 +20,17 @@
 
 <script>
     (function () {
+        // Na primeira visita o tema padrão é o claro. Depois vale o que o usuário escolher
+        // em Configurações > Aparência (inclusive "Sistema").
+        try {
+            if (!localStorage.getItem('asa.tema-padrao')) {
+                if (!localStorage.getItem('flux.appearance')) {
+                    localStorage.setItem('flux.appearance', 'light');
+                }
+                localStorage.setItem('asa.tema-padrao', '1');
+            }
+        } catch (e) {}
+
         function syncTheme() {
             var theme = localStorage.getItem('flux.appearance') || 'system';
             var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
