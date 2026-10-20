@@ -68,17 +68,10 @@
                     <a href="#necessidades" class="px-8 sm:px-10 py-4 bg-asa-green text-white rounded-2xl font-bold shadow-xl shadow-asa-green/30 hover:scale-[1.03] transition-all active:scale-95">
                         Ver Itens em Falta
                     </a>
-                    <a href="https://www.adventistas.org/pt/asa/" target="_blank" rel="noopener" class="px-10 py-4 glass rounded-2xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-white/10 group">
+                    <a href="#sobre" class="px-10 py-4 glass rounded-2xl font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-200 dark:border-white/10 group">
                         Sobre a ASA
                         <svg class="inline-block ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                     </a>
-                </div>
-            <!-- Fotos ilustrativas (Unsplash) -->
-                <div class="mt-14 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-5xl mx-auto" aria-hidden="true">
-                    <img src="https://images.unsplash.com/photo-1599059813005-11265ba4b4ce?auto=format&fit=crop&w=700&q=70" alt="" loading="lazy" class="col-span-2 row-span-2 w-full h-full min-h-56 md:min-h-[26rem] object-cover rounded-[1.75rem] bg-asa-green/10 shadow-xl shadow-asa-green/10">
-                    <img src="https://images.unsplash.com/photo-1593113616828-6f22bca04804?auto=format&fit=crop&w=500&q=70" alt="" loading="lazy" class="w-full h-36 md:h-[12.5rem] object-cover rounded-[1.5rem] bg-asa-gold/15">
-                    <img src="https://images.unsplash.com/photo-1608686207856-001b95cf60ca?auto=format&fit=crop&w=500&q=70" alt="" loading="lazy" class="w-full h-36 md:h-[12.5rem] object-cover rounded-[1.5rem] bg-asa-green/10">
-                    <img src="https://images.unsplash.com/photo-1562709902-31c9a3b1ad5c?auto=format&fit=crop&w=700&q=70" alt="" loading="lazy" class="col-span-2 w-full h-36 md:h-[12.5rem] object-cover rounded-[1.5rem] bg-asa-gold/15">
                 </div>
             </section>
 
@@ -140,28 +133,80 @@
                 @endif
             </section>
 
+            <!-- O que é a ASA -->
+            <section id="sobre" class="mt-16 md:mt-28 scroll-mt-28 relative overflow-hidden bg-asa-green text-white rounded-[2rem] md:rounded-[3rem] p-6 sm:p-10 md:p-16">
+                <div class="absolute -right-24 -top-24 w-80 h-80 bg-asa-gold/20 rounded-full blur-[90px] pointer-events-none"></div>
+                <div class="relative grid md:grid-cols-[1fr_1.4fr] gap-8 md:gap-14 items-center">
+                    <div class="text-center md:text-left">
+                        <div class="w-28 h-28 md:w-36 md:h-36 mx-auto md:mx-0 bg-white rounded-full flex items-center justify-center shadow-2xl shadow-black/30">
+                            <img src="/logo.png" alt="Logo da ASA" class="w-20 h-20 md:w-24 md:h-24 object-contain">
+                        </div>
+                        <h2 class="mt-6 font-outfit text-3xl md:text-5xl font-bold">O que é a ASA?</h2>
+                        <p class="mt-4 text-white/75 leading-relaxed max-w-md mx-auto md:mx-0">A Ação Solidária Adventista é o braço social da igreja local, feito por liderança e membros em favor dos seus semelhantes, com base nos princípios bíblicos.</p>
+                    </div>
+                    <ul class="grid gap-3">
+                    <li class="flex gap-4 bg-white/[.06] border border-white/10 rounded-2xl p-5">
+                        <span class="shrink-0 w-11 h-11 rounded-xl bg-asa-gold/15 text-asa-gold flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 8.7 5 8.7-5"/></svg></span>
+                        <span>
+                            <span class="block font-outfit font-bold text-lg">Cestas básicas</span>
+                            <span class="block mt-1 text-sm leading-relaxed text-white/70">Entrega de alimentos para as famílias cadastradas.</span>
+                        </span>
+                    </li>
+                    <li class="flex gap-4 bg-white/[.06] border border-white/10 rounded-2xl p-5">
+                        <span class="shrink-0 w-11 h-11 rounded-xl bg-asa-gold/15 text-asa-gold flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></span>
+                        <span>
+                            <span class="block font-outfit font-bold text-lg">Varal solidário</span>
+                            <span class="block mt-1 text-sm leading-relaxed text-white/70">Roupas e calçados doados para quem precisa.</span>
+                        </span>
+                    </li>
+                    <li class="flex gap-4 bg-white/[.06] border border-white/10 rounded-2xl p-5">
+                        <span class="shrink-0 w-11 h-11 rounded-xl bg-asa-gold/15 text-asa-gold flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+                        <span>
+                            <span class="block font-outfit font-bold text-lg">Visitas</span>
+                            <span class="block mt-1 text-sm leading-relaxed text-white/70">Acompanhamento das pessoas cadastradas.</span>
+                        </span>
+                    </li>
+                    <li class="flex gap-4 bg-white/[.06] border border-white/10 rounded-2xl p-5">
+                        <span class="shrink-0 w-11 h-11 rounded-xl bg-asa-gold/15 text-asa-gold flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>
+                        <span>
+                            <span class="block font-outfit font-bold text-lg">Apoio à comunidade</span>
+                            <span class="block mt-1 text-sm leading-relaxed text-white/70">Suporte psicológico, espiritual e social.</span>
+                        </span>
+                    </li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Onde e quando entregar -->
             <section id="como-doar" class="mt-16 md:mt-28 grid md:grid-cols-2 gap-6 md:gap-12 items-center scroll-mt-28">
-                <img src="https://images.unsplash.com/photo-1593113646773-028c64a8f1b8?auto=format&fit=crop&w=900&q=70" alt="" loading="lazy" aria-hidden="true" class="w-full h-60 md:h-[26rem] object-cover rounded-[2rem] md:rounded-[2.5rem] bg-asa-green/10 shadow-xl shadow-asa-green/10">
+                <img src="/img/sede-asa.jpg" alt="Prédio da Igreja Adventista na Rua Capitão Eleutério, onde funciona a ASA" width="799" height="600" loading="lazy" class="w-full h-64 md:h-[28rem] object-cover rounded-[2rem] md:rounded-[2.5rem] bg-asa-green/10 shadow-xl shadow-asa-green/10">
                 <div>
-                    <h2 class="font-outfit text-3xl md:text-5xl font-bold text-asa-green dark:text-white mb-6 md:mb-8">Como doar</h2>
-                    <ol class="space-y-5">
-                        <li class="flex gap-4">
-                            <span class="shrink-0 w-10 h-10 rounded-full bg-asa-green text-asa-gold font-outfit font-bold flex items-center justify-center">1</span>
-                            <p class="pt-2 text-slate-600 dark:text-slate-300">Escolha um ou mais itens da lista acima.</p>
-                        </li>
-                        <li class="flex gap-4">
-                            <span class="shrink-0 w-10 h-10 rounded-full bg-asa-green text-asa-gold font-outfit font-bold flex items-center justify-center">2</span>
-                            <p class="pt-2 text-slate-600 dark:text-slate-300">Leve até a ASA, na Rua Capitão Eleutério, 293 – Centro.</p>
-                        </li>
-                        <li class="flex gap-4">
-                            <span class="shrink-0 w-10 h-10 rounded-full bg-asa-green text-asa-gold font-outfit font-bold flex items-center justify-center">3</span>
-                            <p class="pt-2 text-slate-600 dark:text-slate-300">Os voluntários entregam às famílias que atendemos.</p>
-                        </li>
-                    </ol>
-                    <a href="https://www.google.com/maps/search/?api=1&query=Rua+Capit%C3%A3o+Eleut%C3%A9rio%2C+293%2C+Passo+Fundo+-+RS" target="_blank" rel="noopener" class="mt-8 inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 bg-asa-green text-white rounded-2xl font-bold shadow-xl shadow-asa-green/25 hover:scale-[1.03] transition-all active:scale-95">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
-                        Abrir no mapa
-                    </a>
+                    <h2 class="font-outfit text-3xl md:text-5xl font-bold text-asa-green dark:text-white">Onde e quando doar</h2>
+                    <div class="mt-6 grid gap-3">
+                        <div class="flex gap-4 items-start bg-white dark:bg-slate-900/50 rounded-2xl p-5 border border-slate-100 dark:border-white/5">
+                            <span class="shrink-0 w-11 h-11 rounded-xl bg-asa-green text-asa-gold flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+                            <span>
+                                <span class="block font-outfit font-bold text-lg text-slate-800 dark:text-white">Sábados, das 15h às 16h</span>
+                                <span class="block mt-1 text-sm text-slate-500 dark:text-slate-400">Aberto todos os sábados no mesmo horário.</span>
+                            </span>
+                        </div>
+                        <div class="flex gap-4 items-start bg-white dark:bg-slate-900/50 rounded-2xl p-5 border border-slate-100 dark:border-white/5">
+                            <span class="shrink-0 w-11 h-11 rounded-xl bg-asa-green text-asa-gold flex items-center justify-center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg></span>
+                            <span>
+                                <span class="block font-outfit font-bold text-lg text-slate-800 dark:text-white">Rua Capitão Eleutério, 293</span>
+                                <span class="block mt-1 text-sm text-slate-500 dark:text-slate-400">Centro, Passo Fundo – RS. No prédio da Igreja Adventista.</span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex flex-col sm:flex-row gap-3">
+                        <a href="https://www.google.com/maps/search/?api=1&query=Rua+Capit%C3%A3o+Eleut%C3%A9rio%2C+293%2C+Passo+Fundo+-+RS" target="_blank" rel="noopener" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-asa-green text-white rounded-2xl font-bold shadow-xl shadow-asa-green/25 hover:scale-[1.03] transition-all active:scale-95">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+                            Abrir no mapa
+                        </a>
+                        <a href="https://www.adventistas.org/pt/asa/" target="_blank" rel="noopener" class="inline-flex items-center justify-center px-8 py-4 glass rounded-2xl font-bold text-asa-green dark:text-white border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                            Site oficial da ASA
+                        </a>
+                    </div>
                 </div>
             </section>
         </main>
