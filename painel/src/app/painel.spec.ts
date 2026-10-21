@@ -9,7 +9,6 @@ import { ImpactoDoPeriodo, PontosDeAtencao } from './modelos';
 import { Painel } from './painel';
 
 const configuracao: ConfiguracaoDoPainel = {
-  usuario: 'Marco Dias',
   horarioDeAtendimento: 'das 15h às 16h',
   rotas: {
     novaRetirada: '/retiradas/nova',
@@ -87,10 +86,16 @@ describe('Painel', () => {
   it('mostra o que fazer hoje e os números do período', async () => {
     await responder();
 
-    expect(elemento.textContent).toContain('Marco');
-    expect(elemento.textContent).toContain('Ana Lima');
+    expect(elemento.textContent).toContain('Atendidas hoje');
+    expect(elemento.textContent).toContain('Fralda e Leite');
+    expect(elemento.textContent).not.toContain('Ana Lima');
+
+    [...elemento.querySelectorAll<HTMLButtonElement>('asa-hoje .resumo')]
+      .find((botao) => botao.textContent?.includes('Estoque acabando'))
+      ?.click();
+    await fixture.whenStable();
+
     expect(elemento.textContent).toContain('3 litros');
-    expect(elemento.textContent).toContain('Fralda e Leite.');
     expect(elemento.textContent).toContain('1.474');
     expect(elemento.textContent).toContain('15% a menos que no período anterior');
     expect(elemento.textContent).toContain('Retiradas por semana');

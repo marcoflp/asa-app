@@ -7,8 +7,6 @@ import {
   haQuantoTempo,
   listarEmPortugues,
   parametrosDoFiltro,
-  primeiroNome,
-  saudacaoPara,
   unidadeNoPlural,
 } from './formatacao';
 
@@ -34,19 +32,7 @@ describe('haQuantoTempo', () => {
   });
 });
 
-describe('saudacaoPara', () => {
-  it('muda conforme a hora do dia', () => {
-    expect(saudacaoPara(8)).toBe('Bom dia');
-    expect(saudacaoPara(14)).toBe('Boa tarde');
-    expect(saudacaoPara(21)).toBe('Boa noite');
-  });
-});
-
 describe('textos', () => {
-  it('pega só o primeiro nome', () => {
-    expect(primeiroNome('  Marco Antônio Dias ')).toBe('Marco');
-  });
-
   it('lista itens como se fala em português', () => {
     expect(listarEmPortugues([])).toBe('');
     expect(listarEmPortugues(['Fralda'])).toBe('Fralda');

@@ -27,17 +27,6 @@ export function haQuantoTempo(dias: number): string {
   return dias === 1 ? 'ontem' : `há ${dias} dias`;
 }
 
-export function saudacaoPara(hora: number): string {
-  if (hora < 12) {
-    return 'Bom dia';
-  }
-  return hora < 18 ? 'Boa tarde' : 'Boa noite';
-}
-
-export function primeiroNome(nomeCompleto: string): string {
-  return nomeCompleto.trim().split(/\s+/)[0] ?? '';
-}
-
 export function listarEmPortugues(itens: readonly string[]): string {
   if (itens.length <= 1) {
     return itens.join('');

@@ -32,12 +32,11 @@ beforeEach(function () {
     $this->actingAs(User::factory()->create(['name' => 'Marco Dias']));
 });
 
-test('a página inicial monta o painel com a configuração do usuário', function () {
+test('a página inicial monta o painel com os endereços da API', function () {
     $this->get(route('dashboard'))
         ->assertOk()
         ->assertSee('<asa-painel', false)
-        ->assertSee(e(json_encode(route('api.painel.impacto'))), false)
-        ->assertSee('Marco Dias');
+        ->assertSee(e(json_encode(route('api.painel.impacto'))), false);
 });
 
 test('a API do painel exige login', function () {

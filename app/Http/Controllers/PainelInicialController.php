@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PainelInicialController extends Controller
 {
     private const HORARIO_DE_ATENDIMENTO = 'das 15h às 16h';
 
-    public function __invoke(Request $request): View
+    public function __invoke(): View
     {
         return view('painel', [
             'configuracao' => [
-                'usuario' => $request->user()->name,
                 'horarioDeAtendimento' => self::HORARIO_DE_ATENDIMENTO,
                 'rotas' => [
                     'novaRetirada' => route('retiradas.create'),

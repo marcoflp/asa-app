@@ -3,17 +3,6 @@
   gap: 2rem;
 }
 
-.atencao {
-  display: grid;
-  gap: 1rem;
-}
-
-@media (min-width: 64rem) {
-  .atencao {
-    grid-template-columns: 1fr 2fr;
-  }
-}
-
 .impacto,
 .conteudo {
   display: grid;

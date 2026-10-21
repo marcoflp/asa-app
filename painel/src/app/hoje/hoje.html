@@ -1,0 +1,138 @@
+<header>
+  <div>
+    <h2>Hoje</h2>
+    <p class="subtitulo data">
+      {{ hoje | date: "EEEE, d 'de' MMMM" }}
+      @if (temAtendimentoHoje) {
+        <span class="atendimento"
+          ><asa-icone nome="relogio" /> atendimento {{ configuracao().horarioDeAtendimento }}</span
+        >
+      }
+    </p>
+  </div>
+  <nav aria-label="Ações principais">
+    <a class="botao principal" [href]="configuracao().rotas.novaRetirada">
+      <asa-icone nome="adicionar" /> Registrar retirada
+    </a>
+    <a class="botao" [href]="configuracao().rotas.novaFamilia">
+      <asa-icone nome="adicionar-pessoa" /> Cadastrar família
+    </a>
+  </nav>
+</header>
+
+@if (falhou()) {
+  <div class="cartao falha">
+    <p>Não foi possível carregar os avisos do dia.</p>
+    <button type="button" class="link" (click)="recarregar.emit()">Tentar de novo</button>
+  </div>
+} @else if (pontos(); as pontos) {
+  <div class="resumos">
+    @for (resumo of resumos(); track resumo.assunto) {
+      <button
+        type="button"
+        class="cartao resumo"
+        [class.pendente]="resumo.pendente"
+        [class.aberto]="aberto() === resumo.assunto"
+        [attr.aria-expanded]="aberto() === resumo.assunto"
+        [attr.aria-controls]="'detalhe-' + resumo.assunto"
+        (click)="alternar(resumo.assunto)"
+      >
+        <span class="rotulo"><asa-icone [nome]="resumo.icone" /> {{ resumo.rotulo }}</span>
+        <span class="valor">{{ resumo.valor }}</span>
+        <span class="complemento">{{ resumo.complemento }}</span>
+        <span class="ver">{{ aberto() === resumo.assunto ? 'Fechar' : 'Ver detalhes' }}</span>
+      </button>
+    }
+  </div>
+
+  @if (aberto(); as assunto) {
+    <div class="cartao detalhe" [id]="'detalhe-' + assunto" role="region">
+      @switch (assunto) {
+        @case ('atendidas') {
+          @if (pontos.atendidasHoje.length === 0) {
+            <p class="vazio">Nenhuma retirada registrada hoje ainda.</p>
+          } @else {
+            <ul>
+              @for (retirada of pontos.atendidasHoje; track retirada.id) {
+                <li>
+                  <a [href]="retirada.url">{{ retirada.familia ?? 'Beneficiário removido' }}</a>
+                  <span>{{ retirada.itens }} {{ retirada.itens === 1 ? 'item' : 'itens' }}</span>
+                </li>
+              }
+            </ul>
+          }
+          <a class="link" [href]="configuracao().rotas.retiradas">Ver todas as retiradas</a>
+        }
+        @case ('estoque') {
+          @if (pontos.estoqueAcabando.length === 0) {
+            <p class="vazio">Nenhum produto controlado com menos de 10.</p>
+          } @else {
+            <ul>
+              @for (produto of pontos.estoqueAcabando; track produto.id) {
+                <li>
+                  <a [href]="produto.url">{{ produto.nome }}</a>
+                  @if (produto.estoque <= 0) {
+                    <strong class="acabou">acabou</strong>
+                  } @else {
+                    <strong
+                      >{{ produto.estoque }}
+                      {{ unidadeNoPlural(produto.estoque, produto.unidade) }}</strong
+                    >
+                  }
+                </li>
+              }
+            </ul>
+          }
+          <a class="link" [href]="configuracao().rotas.produtosComEstoqueBaixo"
+            >Abrir na lista de produtos</a
+          >
+        }
+        @case ('ausentes') {
+          @if (pontos.familiasSemVir.length === 0) {
+            <p class="vazio">Todas as famílias vieram nos últimos meses.</p>
+          } @else {
+            <p class="dica">Vale ligar e saber se está tudo bem.</p>
+            <ul>
+              @for (familia of pontos.familiasSemVir; track familia.id) {
+                <li>
+                  <a [href]="familia.url">{{ familia.nome }}</a>
+                  <span>{{ haQuantoTempo(familia.diasSemVir) }}</span>
+                </li>
+              }
+            </ul>
+          }
+        }
+        @case ('documentos') {
+          @if (pontos.cadastrosSemDocumento === 0) {
+            <p class="vazio">Todos os cadastros têm ao menos uma foto de documento.</p>
+          } @else {
+            <p class="dica">
+              Aproveite quando a família vier buscar a próxima retirada para fotografar os
+              documentos.
+            </p>
+          }
+          <a class="link" [href]="configuracao().rotas.cadastrosSemDocumento">Ver quais são</a>
+        }
+      }
+    </div>
+  }
+
+  <p class="site">
+    <asa-icone nome="site" />
+    <span>
+      @if (pontos.produtosUrgentes.length === 0) {
+        O site não está pedindo nenhum produto específico.
+      } @else {
+        O site está pedindo <strong>{{ urgentesPorExtenso() }}</strong
+        >.
+      }
+    </span>
+    <a class="link" [href]="configuracao().rotas.produtos">Alterar</a>
+  </p>
+} @else {
+  <div class="resumos" aria-busy="true">
+    @for (marcador of [1, 2, 3, 4]; track marcador) {
+      <div class="cartao carregando"></div>
+    }
+  </div>
+}

@@ -9,11 +9,9 @@ import {
   linkedSignal,
   signal,
 } from '@angular/core';
-import { AtendidasHoje } from './atencao/atendidas-hoje';
-import { PrecisaDeAtencao } from './atencao/precisa-de-atencao';
-import { Cabecalho } from './cabecalho/cabecalho';
 import { Icone, NomeDoIcone } from './compartilhado/icone';
 import { lerConfiguracao } from './configuracao';
+import { Hoje } from './hoje/hoje';
 import {
   colunaDaFatia,
   dataDaApi,
@@ -50,14 +48,12 @@ const INDICADORES: readonly {
   selector: 'asa-painel-completo',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    AtendidasHoje,
     BarrasHorizontais,
-    Cabecalho,
     DatePipe,
     GraficoDeColunas,
+    Hoje,
     Icone,
     IndicadorDoPeriodo,
-    PrecisaDeAtencao,
     SeletorDePeriodo,
   ],
   templateUrl: './painel.html',

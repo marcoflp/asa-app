@@ -1,23 +1,9 @@
-<asa-cabecalho [configuracao]="configuracao()" />
-
-<section class="atencao" aria-label="O que fazer agora">
-  @if (atencao.error()) {
-    <div class="cartao falha">
-      <p>Não foi possível carregar os avisos do dia.</p>
-      <button type="button" class="link" (click)="atencao.reload()">Tentar de novo</button>
-    </div>
-  } @else if (atencao.hasValue()) {
-    @let pontos = atencao.value();
-    <asa-atendidas-hoje
-      [retiradas]="pontos.atendidasHoje"
-      [enderecoDasRetiradas]="configuracao().rotas.retiradas"
-    />
-    <asa-precisa-de-atencao [pontos]="pontos" [rotas]="configuracao().rotas" />
-  } @else {
-    <div class="cartao carregando" aria-busy="true"></div>
-    <div class="cartao carregando" aria-busy="true"></div>
-  }
-</section>
+<asa-hoje
+  [configuracao]="configuracao()"
+  [pontos]="atencao.hasValue() ? atencao.value() : undefined"
+  [falhou]="!!atencao.error()"
+  (recarregar)="atencao.reload()"
+/>
 
 <section class="impacto" aria-labelledby="titulo-do-impacto">
   <header>

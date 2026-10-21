@@ -1,5 +1,4 @@
 export interface ConfiguracaoDoPainel {
-  readonly usuario: string;
   readonly horarioDeAtendimento: string;
   readonly rotas: {
     readonly novaRetirada: string;
