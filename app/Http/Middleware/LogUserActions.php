@@ -71,7 +71,8 @@ class LogUserActions
 
         $message = "{$method} {$path}{$livewireDetails} por user {$user} [Status: {$status}]";
 
-        $body = $this->sanitizeData($request->all());
+        $ehAtualizacaoDoLivewire = str_contains($path, 'livewire') && str_contains($path, '/update');
+        $body = $ehAtualizacaoDoLivewire || str_starts_with($path, '/api/') ? [] : $this->sanitizeData($request->all());
 
         if (empty($body)) {
             Log::channel('user-requests')->info($message);

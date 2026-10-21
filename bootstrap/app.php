@@ -14,6 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo('/login');
         $middleware->redirectUsersTo('/dashboard');
 
+        $middleware->prepend(\App\Http\Middleware\BloquearVarredurasAutomaticas::class);
+
         $middleware->encryptCookies(except: [
             'flux_appearance',
             'flux.appearance',
