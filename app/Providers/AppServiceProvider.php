@@ -5,6 +5,7 @@ namespace App\Providers;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -25,10 +26,10 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
 
-        \Illuminate\Support\Facades\Gate::define('viewLogViewer', function ($user) {
-            // Permite acesso apenas para usuários logados
-            return $user !== null;
-        });
+        Gate::define(
+            'viewLogViewer',
+            fn ($user) => in_array(mb_strtolower($user->email), config('app.acesso_aos_logs'), true),
+        );
     }
 
     /**

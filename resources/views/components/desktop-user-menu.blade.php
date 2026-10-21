@@ -28,9 +28,11 @@
             <flux:menu.item @click="$dispatch('open-help-modal')" icon="question-mark-circle" class="cursor-pointer">
                 {{ __('Ajuda & Tutorial') }}
             </flux:menu.item>
-            <flux:menu.item href="/log-viewer" icon="command-line" target="_blank">
-                {{ __('Logs do Sistema') }}
-            </flux:menu.item>
+            @can('viewLogViewer')
+                <flux:menu.item href="/log-viewer" icon="command-line" target="_blank">
+                    {{ __('Logs do Sistema') }}
+                </flux:menu.item>
+            @endcan
             <form method="POST" action="{{ route('logout') }}" class="w-full">
                 @csrf
                 <flux:menu.item

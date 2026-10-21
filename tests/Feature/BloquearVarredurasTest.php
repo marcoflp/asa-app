@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\LogUserActions;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -43,4 +44,15 @@ test('o log de ações não guarda os dados pessoais enviados pelos formulários
     expect($contextos)->toHaveCount(1)
         ->and($contextos[0])->toContain('beneficiarios.form (updates: cpf)')
         ->and($contextos[0])->not->toContain('529.982.247-25');
+});
+
+test('só o e-mail autorizado abre os logs do sistema', function () {
+    $voluntaria = User::factory()->create(['email' => 'voluntaria@asa.com']);
+    $responsavel = User::factory()->create(['email' => 'Marco@ASA.com']);
+
+    $this->actingAs($voluntaria)->get('/log-viewer')->assertForbidden();
+    $this->actingAs($voluntaria)->get(route('beneficiarios.index'))->assertDontSee('Logs do Sistema');
+
+    $this->actingAs($responsavel)->get('/log-viewer')->assertOk();
+    $this->actingAs($responsavel)->get(route('beneficiarios.index'))->assertSee('Logs do Sistema');
 });

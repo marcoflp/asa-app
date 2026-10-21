@@ -67,6 +67,11 @@ return [
 
     'timezone' => env('APP_TIMEZONE', 'America/Sao_Paulo'),
 
+    'acesso_aos_logs' => array_map(
+        fn (string $email) => mb_strtolower(trim($email)),
+        explode(',', env('LOG_VIEWER_EMAILS', 'marco@asa.com')),
+    ),
+
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
