@@ -6,8 +6,8 @@
 
         <title>ASA - Ação Solidária Adventista</title>
 
-        <link rel="icon" href="/logo.png" type="image/png">
-        <link rel="apple-touch-icon" href="/logo.png">
+        <link rel="icon" href="/logo.png?v=2" type="image/png">
+        <link rel="apple-touch-icon" href="/logo.png?v=2">
 
 
         <!-- Tailwind CSS & Vite -->
@@ -19,7 +19,7 @@
         <header class="fixed top-0 left-0 right-0 z-50 glass scroll-py-4 transition-all duration-300">
             <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <img src="/logo.png" alt="ASA Logo" class="w-12 h-12 object-contain drop-shadow-sm">
+                    <img src="/logo.png?v=2" alt="ASA Logo" class="w-12 h-12 object-contain drop-shadow-sm">
                     <span class="font-outfit text-2xl font-bold tracking-tight text-asa-green dark:text-white">ASA</span>
                 </div>
 
@@ -130,7 +130,7 @@
                 <div class="grid md:grid-cols-[0.9fr_1.1fr] gap-10 md:gap-16">
                     <div>
                         <div class="w-24 h-24 md:w-32 md:h-32 mb-8 bg-white rounded-full flex items-center justify-center shadow-2xl shadow-black/30">
-                            <img src="/logo.png" alt="Logo da ASA" class="w-16 h-16 md:w-[5.5rem] md:h-[5.5rem] object-contain">
+                            <img src="/logo.png?v=2" alt="Logo da ASA" class="w-16 h-16 md:w-[5.5rem] md:h-[5.5rem] object-contain">
                         </div>
                         <h2 class="leading-none">
                             <span class="block font-script font-normal text-[3.25rem] md:text-7xl leading-[0.9] text-asa-gold pl-1">O que é a</span>
@@ -198,7 +198,7 @@
         <!-- Footer -->
         <footer class="py-16 border-t border-slate-100 dark:border-white/5 text-center">
             <div class="max-w-7xl mx-auto px-6">
-                <img src="/logo.png" alt="ASA Logo" class="w-10 h-10 object-contain mx-auto mb-6 grayscale opacity-50">
+                <img src="/logo.png?v=2" alt="ASA Logo" class="w-10 h-10 object-contain mx-auto mb-6 grayscale opacity-50">
                 <p class="text-sm font-bold text-slate-400 dark:text-slate-600 uppercase tracking-[0.2em]">&copy; {{ date('Y') }} ASA - Ação Solidária Adventista de Passo Fundo</p>
                 <p class="text-sm font-bold text-slate-400 dark:text-slate-600 uppercase tracking-[0.2em]">Rua Capitão Eleutério, 293 - Centro</p>
                 <p class="text-sm font-bold text-slate-400 dark:text-slate-600 uppercase tracking-[0.2em]">Passo Fundo - RS</p>
