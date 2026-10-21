@@ -1,10 +1,3 @@
-<asa-hoje
-  [configuracao]="configuracao()"
-  [pontos]="atencao.hasValue() ? atencao.value() : undefined"
-  [falhou]="!!atencao.error()"
-  (recarregar)="atencao.reload()"
-/>
-
 <section class="impacto" aria-labelledby="titulo-do-impacto">
   <header>
     <div>
@@ -110,3 +103,10 @@
     <p class="vazio">Escolha a data de início e de fim para ver os números.</p>
   }
 </section>
+
+<asa-hoje
+  [configuracao]="configuracao()"
+  [pontos]="atencao.hasValue() ? atencao.value() : undefined"
+  [falhou]="!!atencao.error()"
+  (recarregar)="atencao.reload()"
+/>
