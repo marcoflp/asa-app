@@ -27,6 +27,12 @@ class Index extends Component
 
     public ?int $deletingId = null;
 
+    public function mount(): void
+    {
+        // Chegou com filtro na URL: mostra o painel de filtros para o voluntário ver o que está aplicado
+        $this->mostrarFiltros = $this->documentos !== '' || $this->bairro !== '';
+    }
+
     public ?Beneficiario $selectedBeneficiario = null;
 
     protected $queryString = [

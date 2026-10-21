@@ -19,7 +19,7 @@ test('system smoke test: full user journey', function () {
     // 1. Visit Dashboard
     $this->get(route('dashboard'))
         ->assertOk()
-        ->assertSee('Dashboard');
+        ->assertSee('Atendidas hoje');
 
     // 2. Create a Beneficiary
     Livewire::test(BeneficiarioForm::class)
@@ -65,7 +65,6 @@ test('system smoke test: full user journey', function () {
 
     // 5. Verify Dashboard Metrics
     Livewire::test(Dashboard::class)
-        ->assertViewHas('totalBeneficiariosGeral', 1)
-        ->assertViewHas('totalProdutosGeral', 1)
+        ->assertViewHas('resumo', fn ($r) => $r['familias'] === 1 && $r['retiradas'] === 1 && $r['pessoas'] === 4 && $r['itens'] === 1)
         ->assertSee('João Silva');
 });

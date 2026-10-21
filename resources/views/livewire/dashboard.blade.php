@@ -1,307 +1,369 @@
-<div class="flex h-full w-full flex-1 flex-col gap-5 sm:gap-6">
+@php
+    $hora = now()->hour;
+    $saudacao = $hora < 12 ? 'Bom dia' : ($hora < 18 ? 'Boa tarde' : 'Boa noite');
+    $primeiroNome = explode(' ', trim(auth()->user()->name))[0];
+    $ehSabado = now()->isSaturday();
 
-    {{-- 1. CABEÇALHO & FILTRO DE PERÍODO --}}
-    <div class="bg-white dark:bg-zinc-900 rounded-2xl p-4 sm:p-6 border border-zinc-200 dark:border-zinc-800 shadow-xs space-y-4">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-                <div class="flex items-center gap-2.5">
-                    <flux:heading size="xl" class="text-zinc-900 dark:text-zinc-100 font-bold tracking-tight">Visão Geral</flux:heading>
-                </div>
-                <p class="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 mt-1 flex items-center gap-1.5 font-medium">
-                    <svg class="w-3.5 h-3.5 text-zinc-400 dark:text-zinc-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                    </svg>
-                    <span>Período: <strong class="text-zinc-800 dark:text-zinc-200">{{ $inicio->format('d/m/Y') }}</strong> até <strong class="text-zinc-800 dark:text-zinc-200">{{ $fim->format('d/m/Y') }}</strong></span>
+    $nomesPeriodo = [
+        'hoje' => 'Hoje',
+        'semanal' => '7 dias',
+        'mensal' => '30 dias',
+        'trimestral' => '3 meses',
+        'semestral' => '6 meses',
+        'personalizado' => 'Escolher datas',
+    ];
+    $comparacao = $periodo === 'hoje' ? 'ontem' : 'período anterior';
+
+    $kpis = [
+        ['chave' => 'familias', 'rotulo' => 'Famílias atendidas', 'icone' => 'home'],
+        ['chave' => 'pessoas', 'rotulo' => 'Pessoas alcançadas', 'icone' => 'users'],
+        ['chave' => 'retiradas', 'rotulo' => 'Retiradas', 'icone' => 'clipboard-document-check'],
+        ['chave' => 'itens', 'rotulo' => 'Itens entregues', 'icone' => 'cube'],
+    ];
+
+    $pontos = $serie['pontos'];
+    $maxSerie = max(1, collect($pontos)->max('total'));
+    $passoRotulo = max(1, (int) ceil(count($pontos) / 10));
+    $maxCategoria = max(1, (int) $itensPorCategoria->max('total'));
+    $maxProduto = max(1, (int) $topProdutos->max('total'));
+    $maxBairro = max(1, (int) collect($bairros)->max());
+
+    $quando = fn (int $dias) => $dias === 0 ? 'hoje' : ($dias === 1 ? 'ontem' : "há {$dias} dias");
+@endphp
+
+<div class="painel flex h-full w-full flex-1 flex-col gap-8">
+    <style>
+        .painel { --viz-barra: #16774f; --viz-apagada: #d4d4d8; }
+        .dark .painel { --viz-barra: #2fa271; --viz-apagada: #3f3f46; }
+    </style>
+
+    {{-- ===================== CABEÇALHO ===================== --}}
+    <header class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+        <div>
+            <p class="text-sm font-medium text-zinc-500 dark:text-zinc-400 first-letter:uppercase">{{ now()->translatedFormat('l, d \d\e F') }}</p>
+            <h1 class="mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-zinc-900 dark:text-white">{{ $saudacao }}, {{ $primeiroNome }}</h1>
+            @if ($ehSabado)
+                <p class="mt-2 inline-flex items-center gap-2 rounded-full bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1 text-sm font-semibold text-emerald-800 dark:text-emerald-300">
+                    <flux:icon.clock variant="micro" /> Hoje tem atendimento, das 15h às 16h
                 </p>
-            </div>
+            @endif
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:w-auto">
+            <flux:button href="{{ route('retiradas.create') }}" wire:navigate variant="primary" icon="plus" class="h-12 px-5 text-base">Registrar retirada</flux:button>
+            <flux:button href="{{ route('beneficiarios.create') }}" wire:navigate icon="user-plus" class="h-12 px-5 text-base">Cadastrar família</flux:button>
+        </div>
+    </header>
 
-            {{-- Botão de Exportar no Cabeçalho --}}
-            <div class="flex items-center gap-2 shrink-0">
-                <flux:button id="tour-dashboard-exportar" wire:click="gerarRelatorio" icon="document-arrow-down" variant="primary" size="sm" class="w-full sm:w-auto shadow-xs font-semibold text-xs py-2">
-                    Exportar PDF
-                </flux:button>
+    {{-- ===================== HOJE + PRECISA DE ATENÇÃO ===================== --}}
+    <section aria-labelledby="titulo-atencao" class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {{-- Atendidas hoje --}}
+        <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5 flex flex-col">
+            <div class="flex items-baseline justify-between gap-3">
+                <h2 class="text-base font-semibold text-zinc-900 dark:text-white">Atendidas hoje</h2>
+                <a href="{{ route('retiradas.index') }}" wire:navigate class="text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:underline">Ver retiradas</a>
             </div>
+            <p class="mt-3 text-5xl font-bold tracking-tight text-zinc-900 dark:text-white tabular-nums">{{ $hoje->count() }}</p>
+            <p class="text-sm text-zinc-500 dark:text-zinc-400">{{ $hoje->count() === 1 ? 'família' : 'famílias' }}</p>
+
+            @if ($hoje->isEmpty())
+                <p class="mt-4 text-sm text-zinc-500 dark:text-zinc-400">Nenhuma retirada registrada hoje ainda.</p>
+            @else
+                <ul class="mt-4 divide-y divide-zinc-100 dark:divide-zinc-800 -mx-1" x-data="{ todas: false }">
+                    @foreach ($hoje as $r)
+                        <li @if ($loop->index >= 5) x-show="todas" x-cloak @endif>
+                            <a href="{{ route('retiradas.edit', $r) }}" wire:navigate class="flex items-center justify-between gap-3 rounded-lg px-1 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800">
+                                <span class="truncate text-sm font-medium text-zinc-800 dark:text-zinc-200">{{ $r->beneficiario?->nome ?? 'Beneficiário removido' }}</span>
+                                <span class="shrink-0 text-xs text-zinc-500 tabular-nums">{{ $r->items_count }} {{ $r->items_count === 1 ? 'item' : 'itens' }}</span>
+                            </a>
+                        </li>
+                    @endforeach
+                    @if ($hoje->count() > 5)
+                        <li class="pt-2"><button type="button" @click="todas = !todas" class="text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:underline" x-text="todas ? 'Mostrar menos' : 'Mostrar todas ({{ $hoje->count() }})'"></button></li>
+                    @endif
+                </ul>
+            @endif
         </div>
 
-        {{-- Seletor de Período Responsivo (Sem scroll horizontal) --}}
-        <div id="tour-dashboard-periodo" class="pt-2 border-t border-zinc-100 dark:border-zinc-800">
-            <div class="grid grid-cols-3 sm:flex sm:flex-wrap sm:items-center gap-1.5 w-full">
-                @php
-                    $periodos = [
-                        'hoje' => 'Hoje',
-                        'semanal' => '7 Dias',
-                        'mensal' => 'Este Mês',
-                        'trimestral' => 'Trimestre',
-                        'semestral' => 'Semestre',
-                        'personalizado' => 'Personalizado',
-                    ];
-                @endphp
+        {{-- Precisa de atenção --}}
+        <div class="lg:col-span-2 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-5">
+            <h2 id="titulo-atencao" class="text-base font-semibold text-zinc-900 dark:text-white">Precisa de atenção</h2>
 
-                @foreach($periodos as $key => $label)
-                    <button 
-                        type="button"
-                        wire:click="$set('periodo', '{{ $key }}')"
-                        class="px-2.5 py-2 sm:px-3 sm:py-1.5 rounded-lg text-xs font-semibold text-center transition-colors cursor-pointer {{ $periodo === $key ? 'bg-emerald-700 text-white font-bold shadow-xs' : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700' }}"
-                    >
-                        {{ $label }}
-                    </button>
-                @endforeach
+            <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6">
+                {{-- Estoque acabando --}}
+                <div>
+                    <div class="flex items-center gap-2">
+                        <flux:icon.archive-box class="size-5 {{ $estoqueBaixo->isNotEmpty() ? 'text-amber-600 dark:text-amber-400' : 'text-zinc-400' }}" />
+                        <h3 class="text-sm font-semibold text-zinc-800 dark:text-zinc-200">Estoque acabando</h3>
+                    </div>
+                    @if ($estoqueBaixo->isEmpty())
+                        <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Nenhum produto controlado com menos de 10.</p>
+                    @else
+                        <ul class="mt-2 space-y-1.5">
+                            @foreach ($estoqueBaixo->take(4) as $p)
+                                <li class="flex items-center justify-between gap-3 text-sm">
+                                    <a href="{{ route('produtos.edit', $p) }}" wire:navigate class="truncate text-zinc-700 dark:text-zinc-300 hover:underline">{{ $p->nome }}</a>
+                                    <span class="shrink-0 font-semibold tabular-nums {{ $p->estoque <= 0 ? 'text-red-700 dark:text-red-400' : 'text-zinc-700 dark:text-zinc-300' }}">
+                                        {{ $p->estoque <= 0 ? 'acabou' : $p->estoque.' '.\App\Livewire\Dashboard::unidade($p->estoque, $p->unidade) }}
+                                    </span>
+                                </li>
+                            @endforeach
+                        </ul>
+                        <a href="{{ route('produtos.index', ['statusEstoque' => 'baixo_estoque']) }}" wire:navigate class="mt-2 inline-block text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:underline">
+                            {{ $estoqueBaixo->count() > 4 ? 'Ver os '.$estoqueBaixo->count().' produtos' : 'Ver produtos' }}
+                        </a>
+                    @endif
+                </div>
+
+                {{-- Famílias que não vêm há tempo --}}
+                <div x-data="{ todas: false }">
+                    <div class="flex items-center gap-2">
+                        <flux:icon.user-minus class="size-5 {{ $sumidas->isNotEmpty() ? 'text-amber-600 dark:text-amber-400' : 'text-zinc-400' }}" />
+                        <h3 class="text-sm font-semibold text-zinc-800 dark:text-zinc-200">Não vêm há mais de 2 meses</h3>
+                    </div>
+                    @if ($sumidas->isEmpty())
+                        <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Todas as famílias vieram nos últimos 2 meses.</p>
+                    @else
+                        <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">Vale ligar e saber se está tudo bem.</p>
+                        <ul class="mt-2 space-y-1.5">
+                            @foreach ($sumidas as $b)
+                                <li @if ($loop->index >= 4) x-show="todas" x-cloak @endif class="flex items-center justify-between gap-3 text-sm">
+                                    <a href="{{ route('beneficiarios.edit', $b) }}" wire:navigate class="truncate text-zinc-700 dark:text-zinc-300 hover:underline">{{ $b->nome }}</a>
+                                    <span class="shrink-0 text-zinc-500 tabular-nums">{{ $quando($b->dias) }}</span>
+                                </li>
+                            @endforeach
+                        </ul>
+                        @if ($sumidas->count() > 4)
+                            <button type="button" @click="todas = !todas" class="mt-2 text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:underline"
+                                x-text="todas ? 'Mostrar menos' : 'Ver as {{ $sumidas->count() }} famílias'"></button>
+                        @endif
+                    @endif
+                </div>
+
+                {{-- Cadastros sem documentos --}}
+                <div>
+                    <div class="flex items-center gap-2">
+                        <flux:icon.identification class="size-5 {{ $semDocumentos > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-zinc-400' }}" />
+                        <h3 class="text-sm font-semibold text-zinc-800 dark:text-zinc-200">Cadastros sem nenhum documento</h3>
+                    </div>
+                    @if ($semDocumentos === 0)
+                        <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Todos os cadastros têm ao menos uma foto de documento.</p>
+                    @else
+                        <p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+                            <span class="text-2xl font-bold text-zinc-900 dark:text-white tabular-nums">{{ $semDocumentos }}</span>
+                            {{ $semDocumentos === 1 ? 'família ainda sem' : 'famílias ainda sem' }} foto de documento. Aproveite quando vierem buscar a próxima retirada.
+                        </p>
+                        <a href="{{ route('beneficiarios.index', ['documentos' => 'sem_documentos']) }}" wire:navigate class="mt-1 inline-block text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:underline">Ver quais são</a>
+                    @endif
+                </div>
+
+                {{-- Urgentes no site --}}
+                <div>
+                    <div class="flex items-center gap-2">
+                        <flux:icon.globe-alt class="size-5 text-zinc-400" />
+                        <h3 class="text-sm font-semibold text-zinc-800 dark:text-zinc-200">Pedindo doação no site</h3>
+                    </div>
+                    @if ($urgentes->isEmpty())
+                        <p class="mt-2 text-sm text-zinc-500 dark:text-zinc-400">Nenhum produto marcado como urgente. O site mostra “Toda doação é bem-vinda”.</p>
+                    @else
+                        <p class="mt-2 text-sm text-zinc-700 dark:text-zinc-300">{{ $urgentes->join(', ', ' e ') }}.</p>
+                    @endif
+                    <a href="{{ route('produtos.index') }}" wire:navigate class="mt-1 inline-block text-sm font-medium text-emerald-700 dark:text-emerald-400 hover:underline">Escolher produtos urgentes</a>
+                </div>
             </div>
+        </div>
+    </section>
 
-            {{-- Seleção de Datas Personalizadas --}}
-            @if($periodo === 'personalizado')
-                <div class="mt-3 p-3 bg-zinc-50 dark:bg-zinc-800/40 rounded-xl border border-zinc-200 dark:border-zinc-700 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-                    <div class="flex items-center gap-2 flex-1">
-                        <span class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 w-8 shrink-0">De:</span>
-                        <input 
-                            type="date" 
-                            wire:model.live="dataInicio" 
-                            class="w-full text-xs font-semibold py-1.5 px-2.5 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
-                        />
-                    </div>
-                    <div class="flex items-center gap-2 flex-1">
-                        <span class="text-xs font-semibold text-zinc-500 dark:text-zinc-400 w-8 shrink-0">Até:</span>
-                        <input 
-                            type="date" 
-                            wire:model.live="dataFim" 
-                            class="w-full text-xs font-semibold py-1.5 px-2.5 rounded-lg border border-zinc-300 dark:border-zinc-600 bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
-                        />
-                    </div>
+    {{-- ===================== IMPACTO ===================== --}}
+    <section aria-labelledby="titulo-impacto" class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div>
+                <h2 id="titulo-impacto" class="text-xl font-bold tracking-tight text-zinc-900 dark:text-white">Impacto da ASA</h2>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400 tabular-nums">De {{ $inicio->format('d/m/Y') }} a {{ $fim->format('d/m/Y') }}</p>
+            </div>
+            <flux:button id="tour-dashboard-exportar" wire:click="gerarRelatorio" icon="document-arrow-down" size="sm">Baixar relatório em PDF</flux:button>
+        </div>
+
+        {{-- Filtro de período: uma linha, acima dos gráficos --}}
+        <div id="tour-dashboard-periodo" class="flex flex-wrap items-center gap-2" role="group" aria-label="Período">
+            @foreach ($nomesPeriodo as $chave => $rotulo)
+                <button type="button" wire:click="$set('periodo', '{{ $chave }}')" aria-pressed="{{ $periodo === $chave ? 'true' : 'false' }}"
+                    class="h-9 px-3.5 rounded-full text-sm font-medium border transition-colors {{ $periodo === $chave ? 'bg-zinc-900 text-white border-zinc-900 dark:bg-white dark:text-zinc-900 dark:border-white' : 'bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-700 hover:border-zinc-400' }}">
+                    {{ $rotulo }}
+                </button>
+            @endforeach
+            @if ($periodo === 'personalizado')
+                <div class="flex items-center gap-2 w-full sm:w-auto sm:ml-2">
+                    <label class="sr-only" for="dash-de">De</label>
+                    <input id="dash-de" type="date" wire:model.live="dataInicio" max="{{ now()->toDateString() }}" class="h-9 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2 text-sm text-zinc-900 dark:text-zinc-100" />
+                    <span class="text-sm text-zinc-500">até</span>
+                    <label class="sr-only" for="dash-ate">Até</label>
+                    <input id="dash-ate" type="date" wire:model.live="dataFim" max="{{ now()->toDateString() }}" class="h-9 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 px-2 text-sm text-zinc-900 dark:text-zinc-100" />
                 </div>
             @endif
         </div>
-    </div>
 
-    {{-- 2. CARDS KPI PRINCIPAIS (Uniformizados, Elegantes e Profissionais) --}}
-    <div id="tour-dashboard-kpis" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        
-        {{-- Card 1: Retiradas --}}
-        <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-5 shadow-xs flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Retiradas</span>
-                <div class="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-zinc-600 dark:text-zinc-300 shrink-0">
-                    <flux:icon.arrow-trending-up class="w-4 h-4" />
-                </div>
-            </div>
-            <div>
-                <p class="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight">{{ $totalRetiradas }}</p>
-                <span class="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 mt-0.5 block">no período</span>
-            </div>
-        </div>
-
-        {{-- Card 2: Beneficiários Atendidos --}}
-        <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-5 shadow-xs flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Atendidos</span>
-                <div class="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-zinc-600 dark:text-zinc-300 shrink-0">
-                    <flux:icon.users class="w-4 h-4" />
-                </div>
-            </div>
-            <div>
-                <p class="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight">{{ $totalBeneficiarios }}</p>
-                <span class="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 mt-0.5 block">beneficiários ativos</span>
-            </div>
-        </div>
-
-        {{-- Card 3: Itens Entregues --}}
-        <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-5 shadow-xs flex flex-col justify-between">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Itens Entregues</span>
-                <div class="p-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-zinc-600 dark:text-zinc-300 shrink-0">
-                    <flux:icon.cube class="w-4 h-4" />
-                </div>
-            </div>
-            <div>
-                <p class="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight">{{ $totalItens }}</p>
-                <span class="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 mt-0.5 block">produtos totais</span>
-            </div>
-        </div>
-
-        {{-- Card 4: Base Geral de Beneficiários --}}
-        <a href="{{ route('beneficiarios.index') }}" wire:navigate class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-5 shadow-xs hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors flex flex-col justify-between cursor-pointer group">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-[11px] sm:text-xs font-semibold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">Beneficiários</span>
-                <div class="p-2 bg-zinc-100 dark:bg-zinc-800 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-950/60 rounded-lg text-zinc-600 dark:text-zinc-300 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors shrink-0">
-                    <flux:icon.users class="w-4 h-4" />
-                </div>
-            </div>
-            <div>
-                <p class="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-zinc-100 tracking-tight">{{ $totalBeneficiariosGeral }}</p>
-                <span class="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 mt-0.5 flex items-center gap-1">
-                    Ver todos &rarr;
-                </span>
-            </div>
-        </a>
-    </div>
-
-    {{-- 3. ATALHOS OPERACIONAIS (Elegante e discreto) --}}
-    <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-5 shadow-xs space-y-3">
-        <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">Atalhos Operacionais</span>
-            <span class="text-xs text-zinc-400 dark:text-zinc-500 font-medium">Acesso rápido</span>
-        </div>
-
-        <div class="grid grid-cols-3 gap-2.5">
-            <a 
-                href="{{ route('retiradas.create') }}" 
-                wire:navigate 
-                class="rounded-xl p-2.5 sm:p-3 flex flex-col items-center justify-center text-center gap-1.5 border border-zinc-200 dark:border-zinc-700/80 bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:border-emerald-500/50 transition-colors cursor-pointer group"
-            >
-                <div class="p-1.5 rounded-lg bg-white dark:bg-zinc-700 text-zinc-700 dark:text-zinc-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
-                    <flux:icon.plus class="w-4 h-4" />
-                </div>
-                <span class="text-xs font-semibold text-zinc-800 dark:text-zinc-200 leading-tight">Nova Retirada</span>
-            </a>
-
-            <a 
-                href="{{ route('beneficiarios.create') }}" 
-                wire:navigate 
-                class="rounded-xl p-2.5 sm:p-3 flex flex-col items-center justify-center text-center gap-1.5 border border-zinc-200 dark:border-zinc-700/80 bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:border-emerald-500/50 transition-colors cursor-pointer group"
-            >
-                <div class="p-1.5 rounded-lg bg-white dark:bg-zinc-700 text-zinc-700 dark:text-zinc-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
-                    <flux:icon.user-plus class="w-4 h-4" />
-                </div>
-                <span class="text-xs font-semibold text-zinc-800 dark:text-zinc-200 leading-tight">Novo Beneficiário</span>
-            </a>
-
-            <a 
-                href="{{ route('produtos.create') }}" 
-                wire:navigate 
-                class="rounded-xl p-2.5 sm:p-3 flex flex-col items-center justify-center text-center gap-1.5 border border-zinc-200 dark:border-zinc-700/80 bg-zinc-50 dark:bg-zinc-800/50 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:border-emerald-500/50 transition-colors cursor-pointer group"
-            >
-                <div class="p-1.5 rounded-lg bg-white dark:bg-zinc-700 text-zinc-700 dark:text-zinc-200 group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
-                    <flux:icon.archive-box-arrow-down class="w-4 h-4" />
-                </div>
-                <span class="text-xs font-semibold text-zinc-800 dark:text-zinc-200 leading-tight">Novo Produto</span>
-            </a>
-        </div>
-    </div>
-
-    {{-- 4. GRÁFICOS & RANKINGS --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
-        
-        {{-- Top Produtos --}}
-        <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-6 shadow-xs flex flex-col gap-4">
-            <div class="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
-                <div class="flex items-center gap-2">
-                    <div class="p-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-zinc-700 dark:text-zinc-300">
-                        <flux:icon.chart-bar class="w-4 h-4 sm:w-5 sm:h-5" />
-                    </div>
-                    <flux:heading size="lg" class="text-zinc-900 dark:text-zinc-100 font-bold text-sm sm:text-base">Produtos Mais Retirados</flux:heading>
-                </div>
-                <span class="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded-md">Ranking</span>
-            </div>
-
-            <div class="flex flex-col gap-3.5 mt-1">
-                @forelse ($topProdutos as $index => $tp)
-                    <div class="flex flex-col gap-1.5">
-                        <div class="flex justify-between items-center text-xs sm:text-sm">
-                            <div class="flex items-center gap-2">
-                                <span class="w-4.5 h-4.5 rounded-md bg-zinc-100 dark:bg-zinc-800 text-[10px] font-bold text-zinc-600 dark:text-zinc-400 flex items-center justify-center shrink-0">
-                                    {{ $index + 1 }}
+        <div wire:loading.class="opacity-60" wire:target="periodo, dataInicio, dataFim, filtrarCategoria" class="space-y-4 transition-opacity">
+            {{-- KPIs com comparação --}}
+            <div id="tour-dashboard-kpis" class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                @foreach ($kpis as $k)
+                    @php $v = $variacoes[$k['chave']]; @endphp
+                    <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-5">
+                        <div class="flex items-center gap-2 text-sm font-medium text-zinc-600 dark:text-zinc-400">
+                            <flux:icon :icon="$k['icone']" class="size-4" /> {{ $k['rotulo'] }}
+                        </div>
+                        <p class="mt-2 text-3xl sm:text-4xl font-bold tracking-tight text-zinc-900 dark:text-white tabular-nums">{{ number_format($resumo[$k['chave']], 0, ',', '.') }}</p>
+                        <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                            @if ($v === null)
+                                sem dados do {{ $comparacao }}
+                            @elseif ($v === 0)
+                                igual ao {{ $comparacao }}
+                            @else
+                                <span class="inline-flex items-center gap-0.5 font-semibold text-zinc-800 dark:text-zinc-200">
+                                    <flux:icon :icon="$v > 0 ? 'arrow-up' : 'arrow-down'" variant="micro" class="size-3.5" />{{ abs($v) }}%
                                 </span>
-                                <span class="font-semibold text-zinc-900 dark:text-zinc-100 truncate max-w-[170px] sm:max-w-xs">{{ $tp->produto->nome }}</span>
+                                {{ $v > 0 ? 'a mais' : 'a menos' }} que no {{ $comparacao }}
+                            @endif
+                        </p>
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Retiradas ao longo do tempo --}}
+            <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-6" x-data="{ dica: null, tabela: false }">
+                <div class="flex items-baseline justify-between gap-3">
+                    <h3 class="text-base font-semibold text-zinc-900 dark:text-white">Retiradas {{ $serie['semanal'] ? 'por semana' : 'por dia' }}</h3>
+                    <button type="button" @click="tabela = !tabela" class="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:underline" x-text="tabela ? 'Ver gráfico' : 'Ver como tabela'"></button>
+                </div>
+
+                @if (collect($pontos)->sum('total') === 0)
+                    <p class="py-12 text-center text-sm text-zinc-500 dark:text-zinc-400">Nenhuma retirada neste período.</p>
+                @else
+                    <div x-show="!tabela" class="mt-4">
+                        <div class="relative h-48 sm:h-56">
+                            {{-- linha de referência do maior valor --}}
+                            <div class="absolute inset-x-0 top-0 border-t border-dashed border-zinc-200 dark:border-zinc-700"></div>
+                            <span class="absolute -top-2.5 right-0 bg-white dark:bg-zinc-900 pl-1 text-[11px] text-zinc-500 tabular-nums">{{ $maxSerie }}</span>
+                            <div class="absolute inset-x-0 bottom-0 border-t border-zinc-300 dark:border-zinc-600"></div>
+
+                            <div class="absolute inset-0 flex items-end gap-[2px]">
+                                @foreach ($pontos as $i => $pt)
+                                    <button type="button" class="group relative flex-1 h-full flex items-end focus:outline-none"
+                                        @mouseenter="dica = {{ $i }}" @mouseleave="dica = null" @focus="dica = {{ $i }}" @blur="dica = null"
+                                        aria-label="{{ $pt['dica'] }}: {{ $pt['total'] }} {{ $pt['total'] === 1 ? 'retirada' : 'retiradas' }}">
+                                        <span class="block w-full rounded-t-[4px] transition-opacity"
+                                            :class="dica !== null && dica !== {{ $i }} ? 'opacity-40' : ''"
+                                            style="height: {{ $pt['total'] ? max(2, round($pt['total'] / $maxSerie * 100)) : 0 }}%; background: var(--viz-barra)"></span>
+                                        <span x-show="dica === {{ $i }}" x-cloak
+                                            class="pointer-events-none absolute bottom-full mb-2 z-10 whitespace-nowrap rounded-lg bg-zinc-900 dark:bg-white px-2.5 py-1.5 text-xs text-white dark:text-zinc-900 shadow-lg
+                                                   {{ $i < count($pontos) / 3 ? 'left-0' : ($i > count($pontos) * 2 / 3 ? 'right-0' : 'left-1/2 -translate-x-1/2') }}">
+                                            <span class="block font-semibold first-letter:uppercase">{{ $pt['dica'] }}</span>
+                                            <span class="tabular-nums">{{ $pt['total'] }} {{ $pt['total'] === 1 ? 'retirada' : 'retiradas' }}</span>
+                                        </span>
+                                    </button>
+                                @endforeach
                             </div>
-                            <span class="text-xs font-semibold text-zinc-700 dark:text-zinc-300 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded-md shrink-0">
-                                {{ $tp->total }} {{ $tp->produto->unidade }}(s)
-                            </span>
                         </div>
-                        @php $max = $topProdutos->first()->total ?: 1; @endphp
-                        <div class="h-2 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden">
-                            <div class="h-full rounded-full bg-emerald-600 dark:bg-emerald-500 transition-all duration-300" style="width: {{ round(($tp->total / $max) * 100) }}%"></div>
+                        <div class="mt-2 flex gap-[2px]" aria-hidden="true">
+                            @foreach ($pontos as $i => $pt)
+                                <span class="flex-1 text-center text-[11px] text-zinc-500 tabular-nums {{ $i % $passoRotulo === 0 ? '' : 'invisible' }}">{{ $pt['rotulo'] }}</span>
+                            @endforeach
                         </div>
                     </div>
-                @empty
-                    <div class="py-8 flex flex-col items-center justify-center text-center gap-2">
-                        <flux:icon.inbox class="w-8 h-8 text-zinc-400 dark:text-zinc-600" />
-                        <p class="text-xs text-zinc-500 dark:text-zinc-400 font-medium">Nenhuma retirada registrada neste período.</p>
-                    </div>
-                @endforelse
-            </div>
-        </div>
 
-        {{-- Retiradas por Dia --}}
-        <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-6 shadow-xs flex flex-col gap-4">
-            <div class="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
-                <div class="flex items-center gap-2">
-                    <div class="p-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-zinc-700 dark:text-zinc-300">
-                        <flux:icon.calendar-days class="w-4 h-4 sm:w-5 sm:h-5" />
+                    <div x-show="tabela" x-cloak class="mt-4 max-h-72 overflow-y-auto">
+                        <table class="w-full text-sm">
+                            <thead class="text-left text-zinc-500"><tr><th class="py-1.5 font-medium">{{ $serie['semanal'] ? 'Semana' : 'Dia' }}</th><th class="py-1.5 font-medium text-right">Retiradas</th></tr></thead>
+                            <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
+                                @foreach ($pontos as $pt)
+                                    <tr><td class="py-1.5 text-zinc-700 dark:text-zinc-300 first-letter:uppercase">{{ $pt['dica'] }}</td><td class="py-1.5 text-right font-semibold tabular-nums text-zinc-900 dark:text-white">{{ $pt['total'] }}</td></tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
-                    <flux:heading size="lg" class="text-zinc-900 dark:text-zinc-100 font-bold text-sm sm:text-base">Retiradas por Dia</flux:heading>
+                @endif
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {{-- Itens por categoria (clicável) --}}
+                <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-6">
+                    <h3 class="text-base font-semibold text-zinc-900 dark:text-white">Itens entregues por categoria</h3>
+                    <p class="text-xs text-zinc-500 dark:text-zinc-400">Toque numa categoria para ver os produtos dela.</p>
+                    @if ($itensPorCategoria->isEmpty())
+                        <p class="py-10 text-center text-sm text-zinc-500 dark:text-zinc-400">Nenhum item entregue neste período.</p>
+                    @else
+                        <ul class="mt-4 space-y-1">
+                            @foreach ($itensPorCategoria as $c)
+                                @php $ativa = $categoria === $c->categoria; $apagada = $categoria !== '' && ! $ativa; @endphp
+                                <li>
+                                    <button type="button" wire:click="filtrarCategoria(@js($c->categoria))" aria-pressed="{{ $ativa ? 'true' : 'false' }}"
+                                        class="w-full text-left rounded-lg px-2 py-2 -mx-2 hover:bg-zinc-50 dark:hover:bg-zinc-800 {{ $ativa ? 'bg-zinc-50 dark:bg-zinc-800' : '' }}">
+                                        <span class="flex items-baseline justify-between gap-3 text-sm">
+                                            <span class="font-medium {{ $apagada ? 'text-zinc-400 dark:text-zinc-500' : 'text-zinc-800 dark:text-zinc-200' }}">{{ $c->categoria }}</span>
+                                            <span class="tabular-nums {{ $apagada ? 'text-zinc-400 dark:text-zinc-500' : 'font-semibold text-zinc-900 dark:text-white' }}">{{ number_format($c->total, 0, ',', '.') }}</span>
+                                        </span>
+                                        <span class="mt-1.5 block h-2.5 rounded-full bg-zinc-100 dark:bg-zinc-800">
+                                            <span class="block h-full rounded-full" style="width: {{ round($c->total / $maxCategoria * 100) }}%; background: var({{ $apagada ? '--viz-apagada' : '--viz-barra' }})"></span>
+                                        </span>
+                                    </button>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
                 </div>
-                <span class="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 bg-zinc-100 dark:bg-zinc-800 px-2 py-0.5 rounded-md">Atividade</span>
-            </div>
 
-            <div class="flex flex-col gap-3 mt-1 max-h-[320px] overflow-y-auto pr-1">
-                @forelse ($retiradasPorDia as $dia => $total)
-                    <div class="flex items-center gap-3">
-                        <span class="text-xs font-semibold text-zinc-600 dark:text-zinc-400 w-14 shrink-0">{{ \Carbon\Carbon::parse($dia)->format('d/m') }}</span>
-                        <div class="flex-1">
-                            @php $maxDia = $retiradasPorDia->max() ?: 1; @endphp
-                            <div class="h-2.5 rounded-full bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex items-center">
-                                <div class="h-full rounded-full bg-emerald-600 dark:bg-emerald-500 transition-all duration-300" style="width: {{ round(($total / $maxDia) * 100) }}%"></div>
-                            </div>
+                {{-- Produtos mais retirados --}}
+                <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-6">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <h3 class="text-base font-semibold text-zinc-900 dark:text-white">Produtos mais retirados</h3>
+                            <p class="text-xs text-zinc-500 dark:text-zinc-400">{{ $categoria ? 'Só da categoria '.$categoria : 'Todas as categorias' }}</p>
                         </div>
-                        <span class="text-xs font-bold text-zinc-900 dark:text-zinc-100 w-7 text-right">{{ $total }}</span>
+                        @if ($categoria)
+                            <flux:button size="xs" variant="ghost" icon="x-mark" wire:click="filtrarCategoria(@js($categoria))">Ver todas</flux:button>
+                        @endif
                     </div>
-                @empty
-                    <div class="py-8 flex flex-col items-center justify-center text-center gap-2">
-                        <flux:icon.inbox class="w-8 h-8 text-zinc-400 dark:text-zinc-600" />
-                        <p class="text-xs text-zinc-500 dark:text-zinc-400 font-medium">Nenhuma retirada registrada neste período.</p>
-                    </div>
-                @endforelse
-            </div>
-        </div>
-    </div>
-
-    {{-- 5. ÚLTIMAS RETIRADAS REGISTRADAS --}}
-    <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-6 shadow-xs flex flex-col gap-4">
-        <div class="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
-            <div class="flex items-center gap-2">
-                <div class="p-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-zinc-700 dark:text-zinc-300">
-                    <flux:icon.clock class="w-4 h-4 sm:w-5 sm:h-5" />
+                    @if ($topProdutos->isEmpty())
+                        <p class="py-10 text-center text-sm text-zinc-500 dark:text-zinc-400">Nenhum produto retirado neste período.</p>
+                    @else
+                        <ol class="mt-4 space-y-3">
+                            @foreach ($topProdutos as $tp)
+                                <li>
+                                    <div class="flex items-baseline justify-between gap-3 text-sm">
+                                        <span class="truncate font-medium text-zinc-800 dark:text-zinc-200">{{ $tp->produto?->nome ?? 'Produto removido' }}</span>
+                                        <span class="shrink-0 font-semibold tabular-nums text-zinc-900 dark:text-white">{{ number_format($tp->total, 0, ',', '.') }} <span class="font-normal text-zinc-500">{{ \App\Livewire\Dashboard::unidade($tp->total, $tp->produto?->unidade) }}</span></span>
+                                    </div>
+                                    <div class="mt-1.5 h-2.5 rounded-full bg-zinc-100 dark:bg-zinc-800">
+                                        <div class="h-full rounded-full" style="width: {{ round($tp->total / $maxProduto * 100) }}%; background: var(--viz-barra)"></div>
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ol>
+                    @endif
                 </div>
-                <flux:heading size="lg" class="text-zinc-900 dark:text-zinc-100 font-bold text-sm sm:text-base">Últimas Retiradas Registradas</flux:heading>
             </div>
-            <a href="{{ route('retiradas.index') }}" class="text-xs font-semibold text-emerald-700 dark:text-emerald-400 hover:underline flex items-center gap-1" wire:navigate>
-                <span>Ver todas</span>
-                <span>&rarr;</span>
-            </a>
-        </div>
 
-        <div class="divide-y divide-zinc-100 dark:divide-zinc-800/80">
-            @forelse ($ultimasRetiradas as $r)
-                <a 
-                    href="{{ route('retiradas.edit', $r) }}" 
-                    wire:navigate
-                    class="flex items-center justify-between py-3 px-2 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/60 active:bg-zinc-100 dark:active:bg-zinc-800 transition-colors group cursor-pointer"
-                >
-                    <div class="flex items-center gap-3">
-                        <div class="w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 flex items-center justify-center font-bold shrink-0 text-sm border border-zinc-200 dark:border-zinc-700">
-                            {{ mb_substr($r->beneficiario->nome, 0, 1) }}
-                        </div>
-                        <div class="min-w-0">
-                            <p class="font-semibold text-xs sm:text-sm text-zinc-900 dark:text-zinc-100 truncate max-w-[180px] sm:max-w-md group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
-                                {{ $r->beneficiario->nome }}
-                            </p>
-                            <p class="text-[11px] font-medium text-zinc-500 dark:text-zinc-400 flex items-center gap-1.5 mt-0.5">
-                                <span>{{ $r->data->format('d/m/Y') }}</span>
-                                <span>&bull;</span>
-                                <span class="text-zinc-700 dark:text-zinc-300 font-semibold">{{ $r->items_count ?? $r->items->count() }} item(ns)</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-1 text-zinc-400 group-hover:text-zinc-700 dark:group-hover:text-zinc-200">
-                        <span class="text-xs font-medium hidden sm:inline">Detalhes</span>
-                        <flux:icon.chevron-right class="w-4 h-4" />
-                    </div>
-                </a>
-            @empty
-                <div class="py-8 flex flex-col items-center justify-center text-center gap-2">
-                    <flux:icon.inbox class="w-8 h-8 text-zinc-400 dark:text-zinc-600" />
-                    <p class="text-xs text-zinc-500 dark:text-zinc-400 font-medium">Nenhuma retirada recente registrada.</p>
-                </div>
-            @endforelse
+            {{-- Bairros --}}
+            <div class="rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-4 sm:p-6">
+                <h3 class="text-base font-semibold text-zinc-900 dark:text-white">De onde vêm as famílias atendidas</h3>
+                <p class="text-xs text-zinc-500 dark:text-zinc-400">Famílias atendidas no período, por bairro.</p>
+                @if (collect($bairros)->isEmpty())
+                    <p class="py-10 text-center text-sm text-zinc-500 dark:text-zinc-400">Nenhuma família atendida neste período.</p>
+                @else
+                    <ul class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
+                        @foreach ($bairros as $nomeBairro => $total)
+                            <li>
+                                <div class="flex items-baseline justify-between gap-3 text-sm">
+                                    <span class="truncate font-medium text-zinc-800 dark:text-zinc-200">{{ $nomeBairro }}</span>
+                                    <span class="shrink-0 font-semibold tabular-nums text-zinc-900 dark:text-white">{{ $total }} <span class="font-normal text-zinc-500">{{ $total === 1 ? 'família' : 'famílias' }}</span></span>
+                                </div>
+                                <div class="mt-1.5 h-2.5 rounded-full bg-zinc-100 dark:bg-zinc-800">
+                                    <div class="h-full rounded-full" style="width: {{ round($total / $maxBairro * 100) }}%; background: var({{ str_starts_with($nomeBairro, 'Outros') || $nomeBairro === 'Não informado' ? '--viz-apagada' : '--viz-barra' }})"></div>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
         </div>
-    </div>
+    </section>
 </div>
