@@ -117,22 +117,22 @@
     </div>
 
     <div class="section-header">
-        <h1 class="main-title">Resumo do Período ({{ ucfirst($periodo) }})</h1>
+        <h1 class="main-title">Resumo do Período ({{ $periodo }})</h1>
         <div class="sub-title">Visão consolidada de movimentações, beneficiários atendidos e entregas realizadas.</div>
     </div>
 
     <div class="kpi-container">
         <div class="kpi-card">
             <div class="kpi-label">Retiradas Realizadas</div>
-            <div class="kpi-value">{{ $totalRetiradas }}</div>
+            <div class="kpi-value">{{ $indicadores['retiradas']['valor'] }}</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-label">Beneficiários Atendidos</div>
-            <div class="kpi-value">{{ $totalBeneficiarios }}</div>
+            <div class="kpi-value">{{ $indicadores['familias']['valor'] }}</div>
         </div>
         <div class="kpi-card last">
             <div class="kpi-label">Total de Itens</div>
-            <div class="kpi-value">{{ $totalItens }}</div>
+            <div class="kpi-value">{{ $indicadores['itens']['valor'] }}</div>
         </div>
     </div>
 
@@ -140,16 +140,16 @@
         <div class="col-left">
             <div class="box-title">Atendimento por Categoria</div>
             <table class="bar-table">
-                @forelse($itensPorCategoria as $ic)
+                @forelse($itensPorCategoria as $categoria)
                 <tr>
-                    <td class="cat-name">{{ $ic->categoria }}</td>
+                    <td class="cat-name">{{ $categoria['nome'] }}</td>
                     <td class="cat-bar-cell">
                         <div class="cat-bar-bg">
-                            @php $percent = $totalItens > 0 ? ($ic->total / $totalItens) * 100 : 0; @endphp
+                            @php $percent = $indicadores['itens']['valor'] > 0 ? ($categoria['total'] / $indicadores['itens']['valor']) * 100 : 0; @endphp
                             <div class="cat-bar-fill" style="width: {{ $percent }}%;"></div>
                         </div>
                     </td>
-                    <td class="cat-val">{{ $ic->total }}</td>
+                    <td class="cat-val">{{ $categoria['total'] }}</td>
                 </tr>
                 @empty
                 <tr><td colspan="3" style="font-size: 12px; color: #94a3b8; padding: 10px 0;">Nenhuma categoria registrada.</td></tr>
@@ -167,13 +167,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($topProdutos as $tp)
+                    @forelse($produtosMaisRetirados as $produto)
                     <tr>
                         <td style="font-weight: 500;">
-                            {{ $tp->produto->nome }}
-                            <div style="font-size: 10px; color: #94a3b8; font-weight: normal; margin-top: 2px;">{{ $tp->produto->categoria }}</div>
+                            {{ $produto['nome'] }}
+                            <div style="font-size: 10px; color: #94a3b8; font-weight: normal; margin-top: 2px;">{{ $produto['categoria'] }}</div>
                         </td>
-                        <td class="qty">{{ $tp->total }} <span style="font-size: 9px; font-weight: normal; color: #64748b;">{{ $tp->produto->unidade }}</span></td>
+                        <td class="qty">{{ $produto['total'] }} <span style="font-size: 9px; font-weight: normal; color: #64748b;">{{ $produto['unidade'] }}</span></td>
                     </tr>
                     @empty
                     <tr><td colspan="2" style="font-size: 12px; color: #94a3b8; text-align: center; padding: 15px;">Nenhum produto distribuído.</td></tr>

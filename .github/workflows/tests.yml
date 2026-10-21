@@ -59,11 +59,61 @@ jobs:
       - name: Run Tests
         run: ./vendor/bin/pest
 
+  painel:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: painel
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: painel/package-lock.json
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests
+        run: npm test -- --watch=false
+
+      - name: Build
+        run: npm run build
+
   deploy:
-    needs: ci
+    needs: [ci, painel]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: painel/package-lock.json
+
+      - name: Build do painel
+        working-directory: painel
+        run: npm ci && npm run build
+
+      - name: Enviando o painel para o servidor
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: public/painel
+          target: /var/www/asa-app
+          rm: false
+
       - name: Conectando no servidor e atualizando o Laravel
         uses: appleboy/ssh-action@v1.0.3
         with:

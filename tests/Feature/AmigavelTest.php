@@ -1,7 +1,6 @@
 <?php
 
 use App\Livewire\Beneficiarios\Form as BeneficiarioForm;
-use App\Livewire\Dashboard;
 use App\Livewire\Produtos\Form as ProdutoForm;
 use App\Livewire\Produtos\Index as ProdutoIndex;
 use App\Livewire\Retiradas\Form as RetiradaForm;
@@ -172,39 +171,4 @@ test('marcar e desmarcar urgente pela lista de produtos', function () {
 
     Livewire::test(ProdutoIndex::class)->call('toggleUrgente', $fralda->id);
     expect($fralda->fresh()->urgente)->toBeFalse();
-});
-
-// ---------- Painel inicial ----------
-
-test('painel mostra o que precisa de atenção', function () {
-    $sumida = novaFamilia('Família Sumida');
-    Retirada::create(['beneficiario_id' => $sumida->id, 'data' => today()->subDays(90)]);
-    $recente = novaFamilia('Família Recente');
-    Retirada::create(['beneficiario_id' => $recente->id, 'data' => today()->subDays(10)]);
-    novoProduto('Óleo', 3);
-    novoProduto('Arroz', 50);
-
-    Livewire::test(Dashboard::class)
-        ->assertSee('Família Sumida')
-        ->assertSee('Óleo')
-        ->assertViewHas('sumidas', fn ($s) => $s->pluck('nome')->all() === ['Família Sumida'])
-        ->assertViewHas('estoqueBaixo', fn ($e) => $e->pluck('nome')->all() === ['Óleo']);
-});
-
-test('painel compara com o período anterior e filtra produtos pela categoria', function () {
-    $f = novaFamilia('Ana Lima');
-    $arroz = novoProduto('Arroz', null);
-    $sabonete = novoProduto('Sabonete', null, ['categoria' => 'Higiene']);
-
-    // 1 retirada no período anterior, 2 no atual (7 dias)
-    Retirada::create(['beneficiario_id' => $f->id, 'data' => today()->subDays(10)])->items()->create(['produto_id' => $arroz->id, 'quantidade' => 1]);
-    Retirada::create(['beneficiario_id' => $f->id, 'data' => today()->subDays(2)])->items()->create(['produto_id' => $arroz->id, 'quantidade' => 2]);
-    Retirada::create(['beneficiario_id' => $f->id, 'data' => today()])->items()->create(['produto_id' => $sabonete->id, 'quantidade' => 1]);
-
-    Livewire::test(Dashboard::class)
-        ->set('periodo', 'semanal')
-        ->assertViewHas('variacoes', fn ($v) => $v['retiradas'] === 100)
-        ->assertViewHas('serie', fn ($s) => count($s['pontos']) === 7 && collect($s['pontos'])->sum('total') === 2)
-        ->call('filtrarCategoria', 'Higiene')
-        ->assertViewHas('topProdutos', fn ($t) => $t->pluck('produto.nome')->all() === ['Sabonete']);
 });

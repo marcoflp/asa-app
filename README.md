@@ -21,6 +21,7 @@ Este é um sistema desenvolvido para auxiliar e otimizar o trabalho da **Ação 
 - **Componentes UI**: [Flux UI](https://fluxui.dev)
 - **Linguagem**: PHP 8.3+
 - **Estilização**: Tailwind CSS
+- **Painel inicial**: [Angular 22](https://angular.dev) (componentes standalone, signals, zoneless, `httpResource`) consumindo uma API JSON do Laravel
 
 ## 📋 Requisitos
 
@@ -63,6 +64,22 @@ Este é um sistema desenvolvido para auxiliar e otimizar o trabalho da **Ação 
    # Inicia servidor PHP, Vite e Queue Listener simultaneamente
    npm run dev
    ```
+
+## 📊 Painel inicial (Angular)
+
+O painel da tela inicial é um app Angular que roda dentro do layout do Laravel como um *custom element* (`<asa-painel>`), usando a mesma sessão de login.
+
+- **API (Laravel)**: `GET /api/painel/atencao`, `GET /api/painel/impacto?periodo=30-dias&categoria=` e `GET /api/painel/relatorio` (PDF). A lógica fica em `app/Painel` (`Periodo`, `Intervalo`, `ImpactoDoPeriodo`, `PontosDeAtencao`).
+- **App (Angular)**: código em `painel/`, compilado para `public/painel`.
+
+```bash
+cd painel
+npm install
+npm test -- --watch=false   # testes (Vitest)
+npm run build               # gera public/painel
+```
+
+No deploy, o GitHub Actions roda os testes, compila o painel e envia para o servidor.
 
 ## 🤝 Contribuição
 

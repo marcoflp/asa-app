@@ -1,0 +1,36 @@
+@for (opcao of periodos; track opcao.valor) {
+  <button
+    type="button"
+    class="opcao"
+    [class.escolhida]="periodo() === opcao.valor"
+    [attr.aria-pressed]="periodo() === opcao.valor"
+    (click)="periodo.set(opcao.valor)"
+  >
+    {{ opcao.rotulo }}
+  </button>
+}
+
+@if (periodo() === 'personalizado') {
+  <div class="datas">
+    <label>
+      <span class="sr-only">De</span>
+      <input
+        type="date"
+        [max]="hoje"
+        [value]="inicio()"
+        (change)="inicio.set($any($event.target).value)"
+      />
+    </label>
+    <span>até</span>
+    <label>
+      <span class="sr-only">Até</span>
+      <input
+        type="date"
+        [max]="hoje"
+        [min]="inicio()"
+        [value]="fim()"
+        (change)="fim.set($any($event.target).value)"
+      />
+    </label>
+  </div>
+}

@@ -1,0 +1,37 @@
+<ul [class.duas-colunas]="colunas() === 2">
+  @for (barra of barras(); track barra.nome) {
+    <li>
+      <ng-template #conteudo>
+        <span class="linha">
+          <span class="nome">{{ barra.nome }}</span>
+          <span class="valor">
+            <strong>{{ barra.valor | number }}</strong>
+            @if (barra.complemento) {
+              {{ barra.complemento }}
+            }
+          </span>
+        </span>
+        <span class="trilho">
+          <span class="preenchimento" [style.inline-size]="largura(barra.valor)"></span>
+        </span>
+      </ng-template>
+
+      @if (selecionavel()) {
+        <button
+          type="button"
+          class="item"
+          [class.secundaria]="barra.secundaria"
+          [class.escolhida]="selecionada() === barra.nome"
+          [attr.aria-pressed]="selecionada() === barra.nome"
+          (click)="selecionar.emit(barra.nome)"
+        >
+          <ng-container [ngTemplateOutlet]="conteudo" />
+        </button>
+      } @else {
+        <div class="item" [class.secundaria]="barra.secundaria">
+          <ng-container [ngTemplateOutlet]="conteudo" />
+        </div>
+      }
+    </li>
+  }
+</ul>

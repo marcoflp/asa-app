@@ -1,0 +1,126 @@
+<asa-cabecalho [configuracao]="configuracao()" />
+
+<section class="atencao" aria-label="O que fazer agora">
+  @if (atencao.error()) {
+    <div class="cartao falha">
+      <p>Não foi possível carregar os avisos do dia.</p>
+      <button type="button" class="link" (click)="atencao.reload()">Tentar de novo</button>
+    </div>
+  } @else if (atencao.hasValue()) {
+    @let pontos = atencao.value();
+    <asa-atendidas-hoje
+      [retiradas]="pontos.atendidasHoje"
+      [enderecoDasRetiradas]="configuracao().rotas.retiradas"
+    />
+    <asa-precisa-de-atencao [pontos]="pontos" [rotas]="configuracao().rotas" />
+  } @else {
+    <div class="cartao carregando" aria-busy="true"></div>
+    <div class="cartao carregando" aria-busy="true"></div>
+  }
+</section>
+
+<section class="impacto" aria-labelledby="titulo-do-impacto">
+  <header>
+    <div>
+      <h2 id="titulo-do-impacto">Impacto da ASA</h2>
+      @if (inicioDoPeriodo(); as inicio) {
+        <p class="subtitulo">
+          De {{ inicio | date: 'dd/MM/yyyy' }} a {{ fimDoPeriodo() | date: 'dd/MM/yyyy' }}
+        </p>
+      }
+    </div>
+    <a id="tour-dashboard-exportar" class="botao-relatorio" [href]="enderecoDoRelatorio()">
+      <asa-icone nome="baixar" /> Baixar relatório em PDF
+    </a>
+  </header>
+
+  <asa-seletor-de-periodo
+    id="tour-dashboard-periodo"
+    [periodo]="periodo()"
+    (periodoChange)="escolherPeriodo($event)"
+    [(inicio)]="inicio"
+    [(fim)]="fim"
+  />
+
+  @if (impacto.error()) {
+    <div class="cartao falha">
+      <p>Não foi possível carregar os números deste período.</p>
+      <button type="button" class="link" (click)="impacto.reload()">Tentar de novo</button>
+    </div>
+  } @else if (impactoExibido(); as dados) {
+    <div
+      class="conteudo"
+      [class.atualizando]="impacto.isLoading()"
+      [attr.aria-busy]="impacto.isLoading()"
+    >
+      <div id="tour-dashboard-kpis" class="indicadores">
+        @for (indicador of indicadores; track indicador.nome) {
+          <asa-indicador
+            [rotulo]="indicador.rotulo"
+            [icone]="indicador.icone"
+            [indicador]="dados.indicadores[indicador.nome]"
+            [referencia]="referencia()"
+          />
+        }
+      </div>
+
+      <asa-grafico-de-colunas
+        [titulo]="tituloDoGrafico()"
+        [colunas]="colunas()"
+        [unidade]="{ singular: 'retirada', plural: 'retiradas' }"
+      />
+
+      <div class="lado-a-lado">
+        <div class="cartao">
+          <h3 class="titulo-do-cartao">Itens entregues por categoria</h3>
+          <p class="subtitulo">Toque numa categoria para ver os produtos dela.</p>
+          @if (categorias().length === 0) {
+            <p class="vazio centralizado">Nenhum item entregue neste período.</p>
+          } @else {
+            <asa-barras-horizontais
+              [barras]="categorias()"
+              [selecionavel]="true"
+              [selecionada]="categoria()"
+              (selecionar)="alternarCategoria($event)"
+            />
+          }
+        </div>
+
+        <div class="cartao">
+          <div class="titulo-com-acao">
+            <div>
+              <h3 class="titulo-do-cartao">Produtos mais retirados</h3>
+              <p class="subtitulo">
+                {{ categoria() ? 'Só da categoria ' + categoria() : 'Todas as categorias' }}
+              </p>
+            </div>
+            @if (categoria()) {
+              <button type="button" class="link limpar" (click)="categoria.set(null)">
+                <asa-icone nome="fechar" /> Ver todas
+              </button>
+            }
+          </div>
+          @if (produtos().length === 0) {
+            <p class="vazio centralizado">Nenhum produto retirado neste período.</p>
+          } @else {
+            <asa-barras-horizontais [barras]="produtos()" />
+          }
+        </div>
+      </div>
+
+      <div class="cartao">
+        <h3 class="titulo-do-cartao">De onde vêm as famílias atendidas</h3>
+        <p class="subtitulo">Famílias atendidas no período, por bairro.</p>
+        @if (bairros().length === 0) {
+          <p class="vazio centralizado">Nenhuma família atendida neste período.</p>
+        } @else {
+          <asa-barras-horizontais [barras]="bairros()" [colunas]="2" />
+        }
+      </div>
+    </div>
+  } @else if (impacto.isLoading()) {
+    <div class="cartao carregando alto" aria-busy="true"></div>
+  } @else {
+    <p class="vazio">Escolha a data de início e de fim para ver os números.</p>
+  }
+</section>

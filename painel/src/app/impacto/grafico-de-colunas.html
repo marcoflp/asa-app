@@ -1,0 +1,62 @@
+<header>
+  <h3 class="titulo-do-cartao">{{ titulo() }}</h3>
+  @if (!vazio()) {
+    <button type="button" class="link" (click)="comoTabela.set(!comoTabela())">
+      {{ comoTabela() ? 'Ver gráfico' : 'Ver como tabela' }}
+    </button>
+  }
+</header>
+
+@if (vazio()) {
+  <p class="vazio centralizado">Nenhuma retirada neste período.</p>
+} @else if (comoTabela()) {
+  <div class="tabela">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Quando</th>
+          <th scope="col">{{ unidade().plural }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (coluna of colunas(); track coluna.detalhe) {
+          <tr>
+            <td>{{ coluna.detalhe }}</td>
+            <td>{{ coluna.valor }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <div class="area">
+    <span class="referencia" aria-hidden="true">{{ maior() }}</span>
+    <div class="colunas">
+      @for (coluna of colunas(); track coluna.detalhe; let indice = $index) {
+        <button
+          type="button"
+          class="coluna"
+          [class.apagada]="destacada() !== null && destacada() !== indice"
+          [attr.aria-label]="coluna.detalhe + ': ' + quantidade(coluna.valor)"
+          (mouseenter)="destacada.set(indice)"
+          (mouseleave)="destacada.set(null)"
+          (focus)="destacada.set(indice)"
+          (blur)="destacada.set(null)"
+        >
+          <span class="barra" [style.block-size]="altura(coluna.valor)"></span>
+          @if (destacada() === indice) {
+            <span class="dica" [attr.data-posicao]="posicaoDaDica(indice)">
+              <strong>{{ coluna.detalhe }}</strong>
+              {{ quantidade(coluna.valor) }}
+            </span>
+          }
+        </button>
+      }
+    </div>
+  </div>
+  <div class="eixo" aria-hidden="true">
+    @for (coluna of colunas(); track coluna.detalhe; let indice = $index) {
+      <span [class.oculto]="indice % intervaloDosRotulos() !== 0">{{ coluna.rotulo }}</span>
+    }
+  </div>
+}

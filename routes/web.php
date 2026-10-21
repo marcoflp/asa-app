@@ -17,7 +17,16 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', \App\Livewire\Dashboard::class)->name('dashboard');
+    Route::get('dashboard', \App\Http\Controllers\PainelInicialController::class)->name('dashboard');
+
+    Route::prefix('api/painel')
+        ->name('api.painel.')
+        ->controller(\App\Http\Controllers\Api\PainelController::class)
+        ->group(function () {
+            Route::get('atencao', 'atencao')->name('atencao');
+            Route::get('impacto', 'impacto')->name('impacto');
+            Route::get('relatorio', 'relatorio')->name('relatorio');
+        });
 
     Route::get('usuarios', \App\Livewire\Usuarios\Index::class)->name('usuarios.index');
     Route::get('usuarios/novo', \App\Livewire\Usuarios\Form::class)->name('usuarios.create');

@@ -1,7 +1,6 @@
 <?php
 
 use App\Livewire\Beneficiarios\Form as BeneficiarioForm;
-use App\Livewire\Dashboard;
 use App\Livewire\Produtos\Form as ProdutoForm;
 use App\Livewire\Retiradas\Form as RetiradaForm;
 use App\Models\Beneficiario;
@@ -19,7 +18,7 @@ test('system smoke test: full user journey', function () {
     // 1. Visit Dashboard
     $this->get(route('dashboard'))
         ->assertOk()
-        ->assertSee('Atendidas hoje');
+        ->assertSee('<asa-painel', false);
 
     // 2. Create a Beneficiary
     Livewire::test(BeneficiarioForm::class)
@@ -63,8 +62,14 @@ test('system smoke test: full user journey', function () {
         'quantidade' => 1,
     ]);
 
-    // 5. Verify Dashboard Metrics
-    Livewire::test(Dashboard::class)
-        ->assertViewHas('resumo', fn ($r) => $r['familias'] === 1 && $r['retiradas'] === 1 && $r['pessoas'] === 4 && $r['itens'] === 1)
-        ->assertSee('João Silva');
+    $this->getJson(route('api.painel.impacto', ['periodo' => 'hoje']))
+        ->assertOk()
+        ->assertJsonPath('indicadores.familias.valor', 1)
+        ->assertJsonPath('indicadores.pessoas.valor', 4)
+        ->assertJsonPath('indicadores.retiradas.valor', 1)
+        ->assertJsonPath('indicadores.itens.valor', 1);
+
+    $this->getJson(route('api.painel.atencao'))
+        ->assertOk()
+        ->assertJsonPath('atendidasHoje.0.familia', 'João Silva');
 });
